@@ -1,0 +1,22 @@
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+//
+import SettingScreen from './_main';
+import HelpeCenterScreen from './helpCenter';
+import PrivacyAndPolocyScreen from './privacyAndPolocy';
+
+//
+const Stack = createNativeStackNavigator();
+//
+const SettingStack = () => {
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Settings" component={SettingScreen} />
+            <Stack.Screen name="HelpCenter" component={HelpeCenterScreen} />
+            <Stack.Screen name="PrivacyAndPolocy" component={PrivacyAndPolocyScreen} />
+        </Stack.Navigator>
+    )
+}
+
+export default SettingStack
+
