@@ -49,7 +49,7 @@ const BasketCard = ({ id, productName, brandName, price, quantity, discountPerce
                 </View>
                 {/* Section Three --------------------------------------------------- */}
                 <View style={styles.sectionThree}>
-                    <Text style={styles.price}>
+                    <Text style={styles.oldPrice}>
                         ${price}
                     </Text>
                     <View style={styles.discountCon}>
@@ -138,23 +138,30 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between'
     },
+    oldPrice: {
+        fontSize: 16,
+        color: 'gray',
+        fontWeight: '500',
+        textDecorationLine: 'line-through'
+    },
     price: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '500'
     },
     discountCon: {
         paddingVertical: '1%',
-        paddingHorizontal: '8%',
+        paddingHorizontal: '6%',
         borderRadius: 40,
         backgroundColor: '#f7847f'
     },
     counterCo: {
+        flex: 0.7,
         borderRadius: 40,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingVertical: '2%',
-        paddingHorizontal: '4%',
+        paddingVertical: '1%',
+        paddingHorizontal: '2%',
         backgroundColor: COLORS.bg_tertiary
     },
     counterText: {

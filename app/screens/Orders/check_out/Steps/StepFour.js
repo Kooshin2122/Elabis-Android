@@ -4,8 +4,10 @@ import { useSelector } from 'react-redux';
 import { Devider } from '../../../../components';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
+import { useNavigation } from '@react-navigation/core';
 
 const StepFour = ({ changeCurrentPosition }) => {
+    const { navigate } = useNavigation()
     const { personalInfo, deliveryAddress, paymentInfo } = useSelector((state) => state.ordersSlice)
     return (
         <View style={styles.container}>
@@ -88,7 +90,7 @@ const StepFour = ({ changeCurrentPosition }) => {
             <Devider />
             {/* Address Buttons */}
             <View style={LAY_OUT.flex_row}>
-                <Pressable style={styles.addressBtn}>
+                <Pressable style={styles.addressBtn} onPress={() => navigate('AddressesScreen')} >
                     <Text>Select Exist Address</Text>
                 </Pressable>
                 <Pressable style={styles.addressBtn} onPress={() => changeCurrentPosition(0)}>

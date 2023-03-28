@@ -1,9 +1,10 @@
 //
-import React from 'react';
+import React, { useEffect } from 'react';
 import { COLORS } from '../../../Theme/GLOBAL_STYLES';
 import { Header, Devider } from '../../../components';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import MaterialTopTabs from './screens';
+import { useNavigation } from '@react-navigation/core';
 
 const OrdersScreen = () => {
     return (

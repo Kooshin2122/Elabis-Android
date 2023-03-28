@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/core';
 const FilteringScreen = () => {
     const { getParent } = useNavigation();
     const [selectTab, setSelectTab] = useState('Category')
+    // Hide bottom tabs 
     useEffect(() => {
         getParent().setOptions({ tabBarStyle: { display: 'none' } })
         return () => {

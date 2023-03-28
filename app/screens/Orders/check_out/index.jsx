@@ -37,20 +37,20 @@ const CheckOutScreen = () => {
     const { getParent } = useNavigation()
     const [currentPosition, setCurrentPosition] = useState(0);
     // Hide Bottom Tabs when you are in sub screen
-    useEffect(() => {
-        getParent().setOptions({ tabBarStyle: { display: 'none' } })
-        return () => {
-            getParent().setOptions({
-                tabBarStyle: {
-                    display: 'flex',
-                    borderTopColor: 'rgba(0, 0, 0, .2)',
-                    paddingTop: Platform.OS === 'android' ? 15 : 10,
-                    paddingBottom: Platform.OS === 'android' ? 15 : 30,
-                    height: Platform.OS === 'android' ? 70 : 90,
-                }
-            })
-        }
-    }, [])
+    // useEffect(() => {
+    //     getParent().setOptions({ tabBarStyle: { display: 'none', } })
+    //     return () => {
+    //         getParent().setOptions({
+    //             tabBarStyle: {
+    //                 display: 'flex',
+    //                 borderTopColor: 'rgba(0, 0, 0, .2)',
+    //                 paddingTop: Platform.OS === 'android' ? 15 : 10,
+    //                 paddingBottom: Platform.OS === 'android' ? 15 : 30,
+    //                 height: Platform.OS === 'android' ? 70 : 90,
+    //             }
+    //         })
+    //     }
+    // }, [])
     //
     const onPageChange = (position) => {
         if (position > currentPosition)

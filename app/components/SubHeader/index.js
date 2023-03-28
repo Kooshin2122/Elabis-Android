@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
         padding: LAY_OUT.padding,
         justifyContent: 'space-between',
         borderBottomWidth: 1.2,
+        backgroundColor: COLORS.bg_primary,
         borderBottomColor: COLORS.bg_tertiary
     },
     iconCon: {
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
         // backgroundColor: 'gray',
     },
     titleTxt: {
-        fontSize: 19,
+        fontSize: 16,
         marginLeft: -50,
         fontWeight: '500',
         textTransform: 'uppercase'
