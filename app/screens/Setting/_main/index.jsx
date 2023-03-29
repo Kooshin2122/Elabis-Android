@@ -1,21 +1,24 @@
 //
-import React from 'react';
-import { Devider, Header } from '../../../components';
-import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { ImageViewer } from './components';
+import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
+import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
+import { ImageViewer, LoginModal, SettingCards } from './components';
+import { Devider, Header, LoadingIndicator, ModalContainer } from '../../../components';
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 const SettingScreen = ({ isUserLogin = true }) => {
     const { navigate } = useNavigation();
+    const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+    const [notifToggle, setNotifToggle] = useState(false)
     return (
         <SafeAreaView style={styles.container}>
             <Header label="Settings" />
+            {/* <LoadingIndicator /> */}
             <ScrollView style={styles.scrollCon}>
                 <Devider height={23} />
                 {/* Profile Container */}
                 <View style={styles.profileContainer}>
-                    <ImageViewer image={isUserLogin ? 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8&w=1000&q=80' : null} />
+                    <ImageViewer image={isUserLogin && 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8&w=1000&q=80'} />
                     <Devider />
                     {
                         isUserLogin ?
@@ -37,7 +40,24 @@ const SettingScreen = ({ isUserLogin = true }) => {
                             </Pressable>
                     }
                 </View>
+                <Devider />
+                {/* Setting Cards Container */}
+                <View style={styles.settingCardsContainer}>
+                    <SettingCards leftIconName="bell" label="General Notification" switchValue={notifToggle} onSwitchValueChange={setNotifToggle} />
+                    <SettingCards leftIconName="unlock" label="Privacy & Policy" rightIconName="right" clickHandler={() => navigate('PrivacyAndPolocy')} />
+                    <SettingCards leftIconName="help-circle" label="Help-Center" rightIconName="right" clickHandler={() => navigate('HelpCenter')} />
+                    {
+                        isUserLogin &&
+                        <SettingCards leftIconName="log-out" label="Log-Out" rightIconName="right" clickHandler={() => setIsLoginModalVisible(!isLoginModalVisible)} />
+                    }
+                </View>
             </ScrollView>
+            {
+                isLoginModalVisible &&
+                <ModalContainer>
+                    <LoginModal modalVisible={isLoginModalVisible} changeModalVisible={setIsLoginModalVisible} />
+                </ModalContainer>
+            }
         </SafeAreaView>
     )
 }
@@ -62,7 +82,7 @@ const styles = StyleSheet.create({
     loginBtn: {
         paddingVertical: '3%',
         paddingHorizontal: '8%',
-        borderRadius: '5',
+        borderRadius: 5,
         backgroundColor: COLORS.primary_color,
     },
     loginBtnTxt: {
@@ -72,17 +92,21 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase'
     },
     userName: {
-        fontSize: 15,
-        fontWeight: '500',
+        fontSize: 18,
+        fontWeight: '400',
         textAlign: 'center',
         letterSpacing: 0.7,
     },
     editBtnTxt: {
-        fontSize: 15,
+        fontSize: 18,
         color: 'gray',
         marginTop: '3%',
         fontWeight: '500',
         letterSpacing: 0.7,
         textAlign: 'center',
-    }
+    },
+    settingCardsContainer: {
+
+    },
+    // ----------
 })

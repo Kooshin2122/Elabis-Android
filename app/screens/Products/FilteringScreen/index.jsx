@@ -11,7 +11,12 @@ const FilteringScreen = () => {
     const [selectTab, setSelectTab] = useState('Category')
     // Hide bottom tabs 
     useEffect(() => {
-        getParent().setOptions({ tabBarStyle: { display: 'none' } })
+        getParent().setOptions({
+            tabBarStyle: {
+                display: 'none',
+                position: 'relative',
+            }
+        })
         return () => {
             getParent().setOptions({
                 tabBarStyle: {

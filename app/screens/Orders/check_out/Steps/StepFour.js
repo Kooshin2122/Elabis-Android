@@ -91,7 +91,7 @@ const StepFour = ({ changeCurrentPosition }) => {
             {/* Address Buttons */}
             <View style={LAY_OUT.flex_row}>
                 <Pressable style={styles.addressBtn} onPress={() => navigate('AddressesScreen')} >
-                    <Text>Select Exist Address</Text>
+                    <Text>Select An Other Address</Text>
                 </Pressable>
                 <Pressable style={styles.addressBtn} onPress={() => changeCurrentPosition(0)}>
                     <Text>Add New Address</Text>
@@ -166,10 +166,11 @@ const styles = StyleSheet.create({
         borderColor: COLORS.primary_color,
     },
     addressBtn: {
-        width: '45%',
+        width: '48%',
         borderWidth: 1,
         borderRadius: 5,
         paddingVertical: '3%',
+        paddingHorizontal: '2%',
         alignItems: 'center',
         justifyContent: 'center',
         borderColor: COLORS.gray_color,

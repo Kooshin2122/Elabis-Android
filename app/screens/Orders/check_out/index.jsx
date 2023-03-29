@@ -53,10 +53,10 @@ const CheckOutScreen = () => {
     // }, [])
     //
     const onPageChange = (position) => {
-        if (position > currentPosition)
-            alert('Please Fill The Form then click next button')
-        else
-            setCurrentPosition(position)
+        // if (position > currentPosition)
+        //     alert('Please Fill The Form then click next button')
+        // else
+        setCurrentPosition(position)
     }
     //
     return (
@@ -82,6 +82,7 @@ const CheckOutScreen = () => {
                     {currentPosition == 1 && <StepTwo changeCurrentPosition={setCurrentPosition} />}
                     {currentPosition == 2 && <StepThree changeCurrentPosition={setCurrentPosition} />}
                     {currentPosition == 3 && <StepFour changeCurrentPosition={setCurrentPosition} />}
+                    <Devider />
                 </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>

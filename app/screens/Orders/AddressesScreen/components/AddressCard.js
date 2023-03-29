@@ -5,15 +5,17 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { LAY_OUT, COLORS } from '../../../../Theme/GLOBAL_STYLES';
 
-const AddressCard = ({ id, fullName, phoneNumber, email, country, city, village, addressDescription }) => {
-    const [selectedAddress, setSelectedAddress] = useState()
+const AddressCard = ({ id, fullName, phoneNumber, email, country, city, village, addressDescription, selectAddress, changeSelectAddress = () => { } }) => {
+    const addressInfo = { id, fullName, phoneNumber, email, country, city, village, addressDescription };
+    //
     const onSelectAddress = () => {
-        setSelectedAddress(id)
+        changeSelectAddress(addressInfo)
     }
+    //
     const isActive = useMemo(() => {
-        return selectedAddress == id
-    }, [selectedAddress])
-
+        return selectAddress.id == id
+    }, [selectAddress])
+    //
     return (
         <View style={styles.addressContainer}>
             <View style={LAY_OUT.flex_row} >
@@ -21,7 +23,7 @@ const AddressCard = ({ id, fullName, phoneNumber, email, country, city, village,
                     <RadioButton isActive={isActive} />
                 </Pressable>
                 <Text style={styles.addressTitle}>
-                    Default Address
+                    {isActive ? 'Default Address' : 'Address'}
                 </Text>
                 <Pressable>
                     <AntDesign name="delete" size={23} color="red" />

@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { changePaymentInfo } from '../../../../ReduxStore/OrdersSlice';
 
 const formVerificationSchema = yup.object().shape({
-    phoneNumber: yup.string().required("required").min(8),
+    phoneNumber: yup.string().required("required").min(9),
 })
 
 const PamentCards = ({ id, serviceName, companyName, imageUrl, expand = false, changeCurrentPosition = () => { }, changeSelectPayment = () => { } }) => {
@@ -60,12 +60,12 @@ const PamentCards = ({ id, serviceName, companyName, imageUrl, expand = false, c
                         <View style={[styles.formContainer, { display: expand ? 'flex' : 'none' }]}>
                             <CustomInput
                                 name='phoneNumber'
-                                label='Phone Number'
+                                label='payment number'
                                 value={values.phoneNumber}
                                 placeholder="+252 XX X XX XX XX"
                                 onChangeText={handleChange}
                                 keyboardType="numeric"
-                                required={errors.phoneNumber ? ` (required 7 digits)` : '*'}
+                                required={errors.phoneNumber ? ` (must be 9 digits)` : '*'}
                             />
                             <Devider />
                             <Pressable onPress={handleSubmit} style={styles.nextBtnCon}>

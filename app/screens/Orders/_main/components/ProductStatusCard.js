@@ -1,11 +1,8 @@
 //
-import React from 'react'
+import React from 'react';
+import { sliceText } from '../../../../utils';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import { Dimensions, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import AntDesign from "react-native-vector-icons/AntDesign";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { sliceText } from '../../../../utils';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -142,8 +139,8 @@ const styles = StyleSheet.create({
     },
     trackOrder: {
         borderRadius: 40,
-        paddingVertical: '3%',
-        paddingHorizontal: '5%',
+        paddingVertical: '2%',
+        paddingHorizontal: '4%',
         backgroundColor: COLORS.primary_color
     }
 

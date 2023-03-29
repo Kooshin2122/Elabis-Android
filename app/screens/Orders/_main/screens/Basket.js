@@ -64,7 +64,7 @@ export default Basket;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.bg_primary
+        backgroundColor: COLORS.bg_secondary
     },
     scrollCon: {
         flex: 1,
@@ -74,7 +74,8 @@ const styles = StyleSheet.create({
         padding: '4%',
         borderWidth: 0.6,
         borderRadius: 7,
-        borderColor: COLORS.gray_color
+        borderColor: COLORS.gray_color,
+        backgroundColor: COLORS.bg_primary
     },
     servicesCon: {
         width: '100%',
