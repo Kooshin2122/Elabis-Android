@@ -1,12 +1,14 @@
 //
 import React from 'react';
 import { sliceText } from '../../../../utils';
+import { useNavigation } from '@react-navigation/core';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import { Dimensions, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const { width, height } = Dimensions.get('screen');
 
 const ProductStatusCard = ({ id, productName, brandName, price, quantity, category, imageUrl }) => {
+    const { navigate } = useNavigation();
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
@@ -51,11 +53,11 @@ const ProductStatusCard = ({ id, productName, brandName, price, quantity, catego
                             In Delivery
                         </Text>
                     </View>
-                    <View style={styles.trackOrder}>
+                    <Pressable onPress={() => navigate('Map')} style={styles.trackOrder}>
                         <Text style={{ color: '#ffffff', fontSize: 12, fontWeight: '500' }}>
                             Track Order
                         </Text>
-                    </View>
+                    </Pressable>
                 </View>
             </View>
         </View>

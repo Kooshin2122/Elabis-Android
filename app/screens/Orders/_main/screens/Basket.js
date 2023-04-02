@@ -64,7 +64,7 @@ export default Basket;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.bg_secondary
+        backgroundColor: COLORS.bg_primary
     },
     scrollCon: {
         flex: 1,

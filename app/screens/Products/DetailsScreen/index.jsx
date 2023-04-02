@@ -16,6 +16,7 @@ const ProductDetailsScreen = ({ route }) => {
     const { getParent } = useNavigation();
     const [scrollPossition, setScrollPossition] = useState()
     const { productName, productPrice, productBrandName, productImageUrl, parentScreen } = route.params;
+    // Hiding Bottom Tab Navigation
     useEffect(() => {
         getParent().setOptions({ tabBarStyle: { display: 'none' } })
         return () => {
@@ -30,6 +31,7 @@ const ProductDetailsScreen = ({ route }) => {
             })
         }
     }, [])
+    //
     return (
         <SafeAreaView style={styles.container}>
             {scrollPossition > 0.5 ? <SubHeader title="Product Details" backTo={parentScreen} /> : <DetailsHeader backTo={parentScreen} />}
@@ -121,11 +123,13 @@ const styles = StyleSheet.create({
     },
     iconCon: {
         width: 37,
-        height: 35,
-        borderRadius: 10,
+        height: 37,
+        borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: COLORS.black_color
+        backgroundColor: "#00000097",
+        // opacity: 0.8
+        // backgroundColor: COLORS.black_color
     },
     contentContainer: {
         paddingHorizontal: LAY_OUT.paddingX,

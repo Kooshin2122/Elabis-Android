@@ -53,7 +53,8 @@ const SettingScreen = ({ isUserLogin = true }) => {
                 </View>
             </ScrollView>
             {
-                isLoginModalVisible &&
+                isLoginModalVisible
+                &&
                 <ModalContainer>
                     <LoginModal modalVisible={isLoginModalVisible} changeModalVisible={setIsLoginModalVisible} />
                 </ModalContainer>

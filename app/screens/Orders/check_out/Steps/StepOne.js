@@ -5,13 +5,13 @@ import React, { useRef } from 'react';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import image from '../../../../../assets/images/step1.png';
 import { Image, KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { CustomInput, Devider } from '../../../../components';
+import { CustomInput, Devider, MasketFeild } from '../../../../components';
 import { useSelector, useDispatch } from 'react-redux';
 import { changePersonalInfo } from '../../../../ReduxStore/OrdersSlice';
 
 const formVerificationSchema = yup.object().shape({
     fullName: yup.string().required("required"),
-    phoneNumber: yup.string().required("required").min(8),
+    phoneNumber: yup.string().required("required"),
 })
 
 // Main Function ------------------------------------------------------------
@@ -59,16 +59,16 @@ const StepOne = ({ changeCurrentPosition = () => { } }) => {
                                 onSubmitEditing={() => feildTwo.current.focus()}
                                 required={errors.fullName ? ` (${errors.fullName})` : '*'}
                             />
-                            <CustomInput
+                            <MasketFeild
                                 name='phoneNumber'
                                 label='Phone Number'
                                 value={values.phoneNumber}
                                 reference={feildTwo}
-                                placeholder="252 XX X XX XX XX"
+                                placeholder="(XX) X-XX-XX-XX"
                                 onChangeText={handleChange}
-                                keyboardType="numeric"
                                 onSubmitEditing={() => feildThree.current.focus()}
-                                required={errors.phoneNumber ? ` (required 7 digits)` : '*'}
+                                required={errors.phoneNumber ? ` (${errors.phoneNumber})` : '*'}
+                                mask={['(', /[6-7]/, /[1-9]/, ')', ' ', /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]}
                             />
                             <CustomInput
                                 name='email'
@@ -76,6 +76,7 @@ const StepOne = ({ changeCurrentPosition = () => { } }) => {
                                 required=''
                                 value={values.email}
                                 reference={feildThree}
+                                keyboardType="email-address"
                                 placeholder="Enter Your Email"
                                 onChangeText={handleChange}
                             />
@@ -98,7 +99,7 @@ export default StepOne;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: LAY_OUT.padding
+        padding: LAY_OUT.padding,
     },
     descriptionContainer: {
         paddingBottom: '2%',

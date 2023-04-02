@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
 import { SafeAreaView, StyleSheet, Text, View, Image, ScrollView, FlatList } from 'react-native'
+import { useDispatch } from 'react-redux';
 import { CarModelCard, Container, Devider, PopularBrandsCard, SubHeader } from '../../../components'
+import { hideTabBar } from '../../../ReduxStore/GlobalSlice';
 import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
 import { allBrandsEndPoint } from '../_main/services';
 import { SearchModal } from './components';

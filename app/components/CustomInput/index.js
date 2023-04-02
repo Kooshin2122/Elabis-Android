@@ -1,8 +1,9 @@
+//
 import React, { useState } from 'react';
+import { COLORS } from '../../Theme/GLOBAL_STYLES';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { COLORS } from '../../Theme/GLOBAL_STYLES';
-
+//
 const CustomInput = ({
     name = '',
     value = '',
@@ -25,7 +26,7 @@ const CustomInput = ({
         <View style={styles.container}>
             <Text style={styles.label}>
                 {label}
-                <Text style={{ color: 'red', fontSize: 14 }}>
+                <Text style={{ color: 'red', }}>
                     {required}
                 </Text>
             </Text>

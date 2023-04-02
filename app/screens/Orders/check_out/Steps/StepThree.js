@@ -1,14 +1,16 @@
 //
 import React, { useState } from 'react';
-import { LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
+import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import image from '../../../../../assets/images/step3.png';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Devider } from '../../../../components';
 import { PamentCards } from '../components';
 import { paymentServiceCompanies } from '../../_main/services';
+import { useSelector } from 'react-redux';
 
 const StepThree = ({ changeCurrentPosition = () => { } }) => {
-    const [selectPayment, setSelectPayment] = useState('EVC-Plus')
+    const { paymentInfo } = useSelector(state => state.ordersSlice)
+    const [selectPayment, setSelectPayment] = useState(paymentInfo.serviceName)
     return (
         <View style={styles.container}>
             <View style={styles.descriptionContainer} >
@@ -24,9 +26,9 @@ const StepThree = ({ changeCurrentPosition = () => { } }) => {
                 </Text>
             </View>
             <Devider />
-            <Text>
-                Pay with
-            </Text>
+            {/* <Text style={styles.hintText}>
+                Please choose one of these payment methods
+            </Text> */}
             <Devider />
             {
                 paymentServiceCompanies.map((item) => <PamentCards key={item.id} {...item} changeSelectPayment={setSelectPayment} changeCurrentPosition={changeCurrentPosition} expand={selectPayment == item.serviceName ? true : false} />)
@@ -60,4 +62,9 @@ const styles = StyleSheet.create({
         letterSpacing: 0.7,
         textAlign: 'center',
     },
+    // hintText: {
+    //     padding: '3%',
+    //     borderWidth: 0.7,
+    //     borderColor: COLORS.gray_color,
+    // }
 })

@@ -19,7 +19,6 @@ const BotomTabs = () => {
                 headerShown: false,
                 tabBarActiveTintColor: COLORS.primary_color,
                 tabBarStyle: {
-                    // position: 'absolute',
                     borderTopColor: 'rgba(0, 0, 0, .2)',
                     paddingTop: Platform.OS === 'android' ? 15 : 10,
                     paddingBottom: Platform.OS === 'android' ? 15 : 30,

@@ -4,4 +4,30 @@ export const sliceText = (text = '', numberOfLetters = 36) => {
         return text.slice(0, numberOfLetters) + '...'
     return text;
 }
-//
+// 
+export const getServiceMask = (companyName) => {
+    // Hormuud Mask
+    if (companyName == 'Hormuud')
+        return {
+            placeHolder: '(61) X-XX-XX-XX',
+            mask: ['(', /[6-7]/, /[1]/, ')', ' ', /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]
+        }
+    // Somtel Mask
+    else if (companyName == 'Somtel')
+        return {
+            placeHolder: '(62) X-XX-XX-XX',
+            mask: ['(', /[6]/, /[2]/, ')', ' ', /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]
+        }
+    // Somnet Mask
+    else if (companyName == 'Somnet')
+        return {
+            placeHolder: '(68) X-XX-XX-XX',
+            mask: ['(', /[6]/, /[8]/, ')', ' ', /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]
+        }
+    // Defaul Mask
+    else
+        return {
+            placeHolder: '(61) X-XX-XX-XX',
+            mask: ['(', /[6-7]/, /[1]/, ')', ' ', /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]
+        }
+}

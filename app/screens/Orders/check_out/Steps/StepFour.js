@@ -1,14 +1,24 @@
 //
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { Devider } from '../../../../components';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import { useNavigation } from '@react-navigation/core';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { Devider, ModalContainer } from '../../../../components';
+import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { showPaymentLoadingModal } from '../../../../ReduxStore/OrdersSlice';
+//
 const StepFour = ({ changeCurrentPosition }) => {
-    const { navigate } = useNavigation()
-    const { personalInfo, deliveryAddress, paymentInfo } = useSelector((state) => state.ordersSlice)
+    const dispatch = useDispatch();
+    const { navigate } = useNavigation();
+    const { personalInfo, deliveryAddress, paymentInfo } = useSelector((state) => state.ordersSlice);
+    // On Pay Money 
+    const paymentMethod = () => {
+        // payment Number
+        console.log('payment Number ------------>', paymentInfo.phoneNumber);
+        // 
+        dispatch(showPaymentLoadingModal())
+    }
+    //
     return (
         <View style={styles.container}>
             <Devider />
@@ -122,7 +132,7 @@ const StepFour = ({ changeCurrentPosition }) => {
                 </View>
                 <Devider />
                 {/* Payment Button */}
-                <Pressable style={styles.paymentButton} >
+                <Pressable onPress={paymentMethod} style={styles.paymentButton} >
                     <Text style={styles.paymentButtonTxt} >
                         Pay $10
                     </Text>

@@ -5,18 +5,19 @@ import { Formik } from 'formik';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { CustomInput, Devider } from '../../../../components';
+import { CustomInput, Devider, MasketFeild } from '../../../../components';
 import { useSelector, useDispatch } from 'react-redux';
 import { changePaymentInfo } from '../../../../ReduxStore/OrdersSlice';
-
+import { getServiceMask } from '../../../../utils';
+//
 const formVerificationSchema = yup.object().shape({
-    phoneNumber: yup.string().required("required").min(9),
+    phoneNumber: yup.string().required("required"),
 })
-
+//
 const PamentCards = ({ id, serviceName, companyName, imageUrl, expand = false, changeCurrentPosition = () => { }, changeSelectPayment = () => { } }) => {
     const dispatch = useDispatch()
     const { paymentInfo } = useSelector((state) => state.ordersSlice)
-    const initialData = { phoneNumber: paymentInfo.phoneNumber };
+    const initialData = { phoneNumber: paymentInfo.serviceName == serviceName ? paymentInfo.phoneNumber : null };
     // Next Button
     const onNextHandler = (values) => {
         changeCurrentPosition(3)
@@ -58,14 +59,14 @@ const PamentCards = ({ id, serviceName, companyName, imageUrl, expand = false, c
                 {({ handleChange, handleBlur, handleSubmit, values, errors }) => {
                     return (
                         <View style={[styles.formContainer, { display: expand ? 'flex' : 'none' }]}>
-                            <CustomInput
+                            <MasketFeild
                                 name='phoneNumber'
                                 label='payment number'
                                 value={values.phoneNumber}
-                                placeholder="+252 XX X XX XX XX"
                                 onChangeText={handleChange}
-                                keyboardType="numeric"
-                                required={errors.phoneNumber ? ` (must be 9 digits)` : '*'}
+                                mask={getServiceMask(companyName).mask}
+                                placeholder={getServiceMask(companyName).placeHolder}
+                                required={errors.phoneNumber ? ` (${errors.phoneNumber})` : '*'}
                             />
                             <Devider />
                             <Pressable onPress={handleSubmit} style={styles.nextBtnCon}>
@@ -80,9 +81,9 @@ const PamentCards = ({ id, serviceName, companyName, imageUrl, expand = false, c
         </TouchableOpacity>
     )
 }
-
+//
 export default PamentCards;
-
+//
 const styles = StyleSheet.create({
     container: {
         padding: '3%',

@@ -14,7 +14,6 @@ const FilteringScreen = () => {
         getParent().setOptions({
             tabBarStyle: {
                 display: 'none',
-                position: 'relative',
             }
         })
         return () => {
@@ -29,6 +28,7 @@ const FilteringScreen = () => {
             })
         }
     }, [])
+    //
     return (
         <SafeAreaView style={styles.container}>
             <SubHeader title="Filter" />
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     },
     controlsContainer: {
         flex: 0.1,
+        backgroundColor: 'blue',
         borderTopWidth: 0.6,
         borderColor: COLORS.gray_color
     }

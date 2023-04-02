@@ -4,6 +4,7 @@ import Devider from './Devider';
 import SubHeader from './SubHeader';
 import Container from './container';
 import MyStatusBar from './MyStatusBar';
+import MasketFeild from './MasketFeild';
 import CustomInput from './CustomInput';
 import ProductCard from './ProductCard';
 import LoadingIndicator from './Loading';
@@ -17,6 +18,7 @@ export {
     Devider,
     SubHeader,
     Container,
+    MasketFeild,
     MyStatusBar,
     CustomInput,
     ProductCard,
