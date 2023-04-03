@@ -1,17 +1,22 @@
 //
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { BasketCards, ServicesCard } from '../components';
 import { Container, Devider } from '../../../../components';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import { basketProductInfo, paymentServiceCompanies } from '../services';
 import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-
+//
 const Basket = () => {
-    const { navigate } = useNavigation()
+    const { navigate } = useNavigation();
+    const { isUserLogin } = useSelector(state => state.globalSlice);
+    // 
     const goCheckOutScreen = () => {
-        navigate('CheckOut')
-    }
+        // Check if the user is login
+        isUserLogin ? navigate('CheckOut') : navigate('AuthStack')
+    };
+    //
     return (
         <View style={styles.container}>
             <ScrollView style={styles.scrollCon} showsVerticalScrollIndicator={false} >
@@ -64,7 +69,7 @@ export default Basket;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.bg_primary
+        backgroundColor: COLORS.bg_primary,
     },
     scrollCon: {
         flex: 1,
@@ -75,29 +80,29 @@ const styles = StyleSheet.create({
         borderWidth: 0.6,
         borderRadius: 7,
         borderColor: COLORS.gray_color,
-        backgroundColor: COLORS.bg_primary
+        backgroundColor: COLORS.bg_primary,
     },
     servicesCon: {
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
         paddingBottom: '3%',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.7,
         borderColor: COLORS.gray_color,
         justifyContent: 'space-between',
     },
     contentCon: {
         paddingBottom: '4%',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.4,
         paddingHorizontal: '2%',
         borderColor: COLORS.gray_color,
     },
     title: {
         fontSize: 16,
+        marginBottom: 3,
         fontWeight: '500',
         letterSpacing: 0.7,
-        marginBottom: 3,
-        textTransform: 'uppercase'
+        textTransform: 'uppercase',
     },
     subTitle: {
         fontSize: 14,

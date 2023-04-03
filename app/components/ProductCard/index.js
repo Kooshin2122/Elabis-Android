@@ -2,12 +2,14 @@ import React from 'react';
 import { sliceText } from '../../utils';
 import { useNavigation } from '@react-navigation/core';
 import { COLORS, LAY_OUT } from '../../Theme/GLOBAL_STYLES';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
+//
+const { height } = Dimensions.get('screen');
+//
 const ProductCard = ({ productName, productPrice, productBrandName, productImageUrl, parentScreen = null }) => {
     const { navigate } = useNavigation();
-
+    //
     const navigateDetailsScreen = () => {
         navigate('ProductStack', {
             screen: 'DetailsScreen',
@@ -21,7 +23,7 @@ const ProductCard = ({ productName, productPrice, productBrandName, productImage
             }
         })
     }
-
+    //
     return (
         <Pressable onPress={navigateDetailsScreen} style={styles.container}>
             <View style={styles.imageContainer}>
@@ -34,24 +36,24 @@ const ProductCard = ({ productName, productPrice, productBrandName, productImage
             <View style={styles.contentContainer}>
                 {/* Product Name */}
                 <Text style={styles.proName}>
-                    {sliceText(productName)}
+                    {sliceText(productName, 40)}
                 </Text>
                 {/* product Brand Name */}
                 <Text style={styles.proBrandName}>
                     Brand : {productBrandName}
                 </Text>
-                <View style={styles.controlsCon}>
-                    <Text style={styles.proPrice}>
-                        ${productPrice}
-                    </Text>
-                    <View style={[LAY_OUT.flex_row, { alignSelf: 'flex-end' }]}>
-                        <Pressable style={styles.iconCon}>
-                            <MaterialCommunityIcons name="cards-heart-outline" size={18} />
-                        </Pressable>
-                        <Pressable style={styles.iconCon}>
-                            <MaterialCommunityIcons name="cart-plus" size={18} />
-                        </Pressable>
-                    </View>
+            </View>
+            <View style={styles.controlsCon}>
+                <Text style={styles.proPrice}>
+                    ${productPrice}
+                </Text>
+                <View style={[LAY_OUT.flex_row, { alignSelf: 'flex-end' }]}>
+                    <Pressable style={styles.iconCon}>
+                        <MaterialCommunityIcons name="cards-heart-outline" size={18} />
+                    </Pressable>
+                    <Pressable style={styles.iconCon}>
+                        <MaterialCommunityIcons name="cart-plus" size={18} />
+                    </Pressable>
                 </View>
             </View>
         </Pressable>
@@ -66,12 +68,13 @@ const styles = StyleSheet.create({
         height: 220,
         padding: '2%',
         borderRadius: 7,
+        justifyContent: 'space-between',
         borderWidth: 0.5,
         marginBottom: '4%',
         borderColor: COLORS.gray_color
     },
     imageContainer: {
-        flex: 1.2,
+        height: 110,
         borderRadius: 7,
         alignItems: 'center',
         justifyContent: 'center',
@@ -82,10 +85,10 @@ const styles = StyleSheet.create({
         height: '80%'
     },
     contentContainer: {
-        flex: 1,
-        paddingVertical: '2%'
+        // marginTop: '3%'
     },
     proName: {
+        fontSize: 13,
         fontWeight: '500',
         textTransform: 'uppercase'
     },
@@ -93,7 +96,6 @@ const styles = StyleSheet.create({
         fontWeight: '300'
     },
     controlsCon: {
-        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',

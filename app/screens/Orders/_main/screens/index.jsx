@@ -13,6 +13,12 @@ function MaterialTopTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarStyle: {
+          elevation: 1,
+        },
+        tabBarIndicatorStyle: {
+          backgroundColor: COLORS.primary_color
+        },
         tabBarActiveTintColor: '#000',
         tabBarInactiveTintColor: 'gray',
         // tabBarStyle: { marginHorizontal: '3%' },

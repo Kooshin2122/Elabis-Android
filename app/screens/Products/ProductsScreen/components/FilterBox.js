@@ -25,7 +25,7 @@ const FilterBox = ({ title = 'Category', selectItem = 'Select Item' }) => {
                 <Text style={styles.selectItemText}>
                     {sliceText(selectItem, 5)}
                 </Text>
-                <AntDesign name="down" size={18} style={styles.selectItemText} />
+                <AntDesign name="down" size={18} style={styles.selectItemText} color='gray' />
             </View>
         </Pressable>
     )

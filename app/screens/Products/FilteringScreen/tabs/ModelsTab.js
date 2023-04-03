@@ -1,6 +1,7 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-
+//
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+//
 const ModelsTab = () => {
     return (
         <View>
@@ -8,7 +9,7 @@ const ModelsTab = () => {
         </View>
     )
 }
-
+//
 export default ModelsTab;
-
+//
 const styles = StyleSheet.create({})
