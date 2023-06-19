@@ -10,7 +10,8 @@ export const COLORS = {
     // Background Colors
     bg_primary: '#ffffff',
     bg_secondary: '#fafafa',
-    bg_tertiary: '#f2f3f7'
+    bg_tertiary: '#f8f9fa'
+    // bg_tertiary: '#f2f3f7'
 }
 //
 export const LAY_OUT = {
@@ -39,3 +40,5 @@ export const SIZES = {
 
     }
 }
+
+// https://www.behance.net/gallery/133297009/Futsal-Booking-App-Case-Study?locale=fr_FR

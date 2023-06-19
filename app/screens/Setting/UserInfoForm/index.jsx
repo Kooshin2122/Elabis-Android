@@ -1,31 +1,36 @@
 //
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import React, { useRef } from 'react';
-import { useNavigation } from '@react-navigation/core';
+import React, { useEffect, useRef, useState } from 'react';
 import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
-import { CustomInput, Devider, SubHeader } from '../../../components';
+import { formDataGenerator } from '../../../utils';
+import { useNavigation } from '@react-navigation/core';
+import { fetchGetAuthData, fetchPostAuthData } from '../../../API';
+import { CustomInput, Devider, LoadingModal, SubHeader } from '../../../components';
 import { KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-
-const formDataVerificationSchema = yup.object().shape({
-    fullName: yup.string().required("required"),
-    phoneNumber: yup.string().required("required").min(8),
-    country: yup.string().required("required"),
-    city: yup.string().required("required"),
-    village: yup.string().required("required"),
-})
-
+import { useAppContext } from '../../../context';
+//
 const UserInfoForm = () => {
-    const formData = { fullName: '', phoneNumber: '', email: '', country: '', city: '', village: '', addressDiscription: '' }
-    const { navigate } = useNavigation()
-    // main function
-    const onSaveData = (values) => {
-        console.log('Values-------------->', values);
+    //
+    const { navigate } = useNavigation();
+    const [loading, setLoading] = useState(false);
+    const { userData, setUserData, } = useAppContext();
+    const formData = { name: userData.name, phone_number: userData.phone_number, email: userData.email }
+    // main function;
+    const onSaveData = async (values) => {
+        const formData = await formDataGenerator(values);
+        // UPDATE USER BASIC INFO DATA
+        const res = await fetchPostAuthData('buyer/user/update', formData, setLoading);
+        console.log("response --------->", res);
+        // GET USER INFO 
+        await fetchGetAuthData("buyer/user/view", setUserData);
         navigate('EditProfile')
     }
+    //
     return (
         <SafeAreaView style={styles.container} >
             <SubHeader title="Form" />
+            {loading && <LoadingModal />}
             <KeyboardAvoidingView
                 keyboardVerticalOffset={15}
                 behavior={Platform.OS == 'ios' ? 'padding' : null}
@@ -36,29 +41,28 @@ const UserInfoForm = () => {
                     <Devider />
                     <Devider />
                     <Formik
-                        initialValues={formData}
-                        validationSchema={formDataVerificationSchema}
                         onSubmit={onSaveData}
+                        initialValues={formData}
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors }) => {
                             return (
                                 <View style={styles.formContainer}>
                                     <CustomInput
-                                        name='fullName'
+                                        name='name'
                                         label='Full Name'
-                                        value={values.fullName}
+                                        value={values.name}
                                         placeholder="Enter Your Full Name"
                                         onChangeText={handleChange}
-                                        required={errors.fullName ? ` (${errors.fullName})` : '*'}
+                                        required={errors.name ? ` (${errors.name})` : '*'}
                                     />
                                     <CustomInput
-                                        name='phoneNumber'
+                                        name='phone_number'
                                         label='Phone Number'
-                                        value={values.phoneNumber}
+                                        value={values.phone_number}
                                         placeholder="252 XX X XX XX XX"
                                         onChangeText={handleChange}
                                         keyboardType="numeric"
-                                        required={errors.phoneNumber ? ` (required 7 digits)` : '*'}
+                                        required={errors.phone_number ? ` (required 7 digits)` : '*'}
                                     />
                                     <CustomInput
                                         name='email'
@@ -68,43 +72,11 @@ const UserInfoForm = () => {
                                         placeholder="Enter Your Email"
                                         onChangeText={handleChange}
                                     />
-                                    <CustomInput
-                                        name='country'
-                                        label='Country'
-                                        value={values.country}
-                                        placeholder="Somalia"
-                                        onChangeText={handleChange}
-                                        required={errors.country ? ` (${errors.country})` : '*'}
-                                    />
-                                    <CustomInput
-                                        name='city'
-                                        label='City'
-                                        value={values.city}
-                                        placeholder="enter the city"
-                                        onChangeText={handleChange}
-                                        required={errors.city ? ` (${errors.city})` : '*'}
-                                    />
-                                    <CustomInput
-                                        name='village'
-                                        label='Village'
-                                        value={values.village}
-                                        placeholder="enter your village"
-                                        onChangeText={handleChange}
-                                        required={errors.village ? ` (${errors.village})` : '*'}
-                                    />
-                                    <CustomInput
-                                        name='addressDiscription'
-                                        label='Address Discription (optional)'
-                                        required=''
-                                        value={values.addressDiscription}
-                                        placeholder="Enter Your address discription"
-                                        onChangeText={handleChange}
-                                    />
                                     <Devider />
                                     <Pressable onPress={handleSubmit} style={styles.nextBtnCon}>
                                         <Text style={styles.nextBtnTxt}>
                                             Save
-                                </Text>
+                                        </Text>
                                     </Pressable>
                                 </View>
                             )

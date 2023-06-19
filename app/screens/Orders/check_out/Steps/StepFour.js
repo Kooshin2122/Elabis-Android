@@ -14,9 +14,10 @@ const StepFour = ({ changeCurrentPosition }) => {
     // On Pay Money 
     const paymentMethod = () => {
         // payment Number
-        console.log('payment Number ------------>', paymentInfo.phoneNumber);
-        // 
-        dispatch(showPaymentLoadingModal())
+        dispatch(showPaymentLoadingModal());
+        console.log('personalInfo ------------>', personalInfo);
+        console.log('deliveryAddress ------------>', deliveryAddress);
+        console.log('paymentInfo ------------>', paymentInfo);
     }
     //
     return (
@@ -51,7 +52,7 @@ const StepFour = ({ changeCurrentPosition }) => {
                 <View>
                     <View style={LAY_OUT.flex_row} >
                         <Text style={styles.title}>
-                            Address Information
+                            {deliveryAddress.title} Address Information
                         </Text>
                         <Pressable onPress={() => changeCurrentPosition(1)} >
                             <Text style={styles.title}>
@@ -60,9 +61,11 @@ const StepFour = ({ changeCurrentPosition }) => {
                         </Pressable>
                     </View>
                     <Text style={styles.description}>
-                        Country : {deliveryAddress.country},
-                        City: {deliveryAddress.city},
-                        Village: {deliveryAddress.village} {deliveryAddress.addressDescription}
+                        Country : Somalia,
+                        State:{deliveryAddress.state?.name},
+                        Region:{deliveryAddress.region?.name},
+                        Near By:{deliveryAddress.landmark},
+                        Description:{deliveryAddress.additional_information}
                     </Text>
                 </View>
                 <Devider />
@@ -103,7 +106,7 @@ const StepFour = ({ changeCurrentPosition }) => {
                 <Pressable style={styles.addressBtn} onPress={() => navigate('AddressesScreen')} >
                     <Text>Select An Other Address</Text>
                 </Pressable>
-                <Pressable style={styles.addressBtn} onPress={() => changeCurrentPosition(0)}>
+                <Pressable style={styles.addressBtn} onPress={() => navigate("AddressFormScreen")}>
                     <Text>Add New Address</Text>
                 </Pressable>
             </View>

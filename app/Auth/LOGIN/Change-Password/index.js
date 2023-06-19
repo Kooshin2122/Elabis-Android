@@ -3,9 +3,9 @@ import React, { useRef, useState } from 'react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { useNavigation } from '@react-navigation/core'
-import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
+import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
 import changePasswordImage from '../../../../../assets/images/AUTH-IMAGES/changePassword.png';
-import { SubHeader, CustomInput, Devider, CustomButton } from '../../../../components';
+import { SubHeader, CustomInput, Devider, CustomButton } from '../../../components';
 import { Image, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 //
 const ChangePasswordScreen = () => {

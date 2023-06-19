@@ -15,6 +15,7 @@ const CustomInput = ({
     isMultiLine = false,
     secureTextEntry = false,
     showEyeIcon = false,
+    defaultValue,
     reference,
     required = '*',
     onChangeText = () => { },
@@ -26,7 +27,7 @@ const CustomInput = ({
         <View style={styles.container}>
             <Text style={styles.label}>
                 {label}
-                <Text style={{ color: 'red', }}>
+                <Text style={{ color: required == " (optional)" ? 'black' : 'red', }}>
                     {required}
                 </Text>
             </Text>
@@ -36,6 +37,7 @@ const CustomInput = ({
                     label={label}
                     multiline={isMultiLine}
                     ref={reference}
+                    defaultValue={defaultValue}
                     blurOnSubmit={false}
                     keyboardType={keyboardType}
                     placeholder={placeholder}
@@ -69,7 +71,7 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 17,
         letterSpacing: 2,
-        fontWeight: '300',
+        // fontWeight: '500',
     },
     textFeildCon: {
         paddingRight: '3%',

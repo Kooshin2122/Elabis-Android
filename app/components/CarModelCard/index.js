@@ -4,37 +4,43 @@ import { COLORS } from '../../Theme/GLOBAL_STYLES';
 import { useNavigation } from '@react-navigation/core';
 import { Dimensions, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
-import { changeSelectModel } from '../../ReduxStore/ProductScreenSlice'
+import { changeSelectModel, changeSelectBrand } from '../../ReduxStore/ProductScreenSlice'
 
 const { width, height } = Dimensions.get('screen')
 
 const CarModelCard = ({ id, modelName, modelImageUrl, style = {} }) => {
-    const dispatch = useDispatch()
-    const { navigate } = useNavigation()
+    //
+    const dispatch = useDispatch();
+    const { navigate } = useNavigation();
+    // const { selectBrand } = useSelector(state => state.productsSlice);
 
-    const onSelectBrandModal = () => {
-        navigate('ProductStack', {
-            screen: "ModelsScreen",
-            params: {
-                selectModalInfo: { id, modelName, modelImageUrl }
-            }
-        })
-        dispatch(changeSelectModel(modelName))
-    }
-
+    // //
+    // const onSelectBrandModal = () => {
+    //     navigate('ProductStack', {
+    //         screen: "ModelsScreen",
+    //         params: {
+    //             selectModalInfo: { id, modelName, modelImageUrl }
+    //         }
+    //     })
+    //     dispatch(changeSelectBrand({ ...selectBrand, Modal: modelName }))
+    // }
+    //
     return (
-        <TouchableOpacity onPress={onSelectBrandModal} style={[styles.container, style]} activeOpacity={0.6}>
-            <View style={styles.imageContainer}>
-                <Image
-                    style={styles.image}
-                    resizeMode="contain"
-                    source={modelImageUrl}
-                />
-            </View>
-            <Text style={styles.modelNameText}>
-                {sliceText(modelName, 10)}
-            </Text>
-        </TouchableOpacity>
+        <View>
+
+        </View>
+        // <TouchableOpacity onPress={onSelectBrandModal} style={[styles.container, style]} activeOpacity={0.6}>
+        //     <View style={styles.imageContainer}>
+        //         <Image
+        //             style={styles.image}
+        //             resizeMode="contain"
+        //             source={modelImageUrl}
+        //         />
+        //     </View>
+        //     <Text style={styles.modelNameText}>
+        //         {sliceText(modelName, 10)}
+        //     </Text>
+        // </TouchableOpacity>
     )
 }
 

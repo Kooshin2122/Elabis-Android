@@ -3,12 +3,19 @@ import { createSlice } from '@reduxjs/toolkit'
 // Initial States
 const initialState = {
     activeTab: true,
-    selectCategory: 'Body Parts',
-    selectSubCategory: 'All',
-    selectBrand: 'All',
+    selectCategory: "All",
+    selectSubCategory: {
+        id: 0,
+        name: "All",
+    },
+    selectBrand: {
+        id: 0,
+        name: "All"
+    },
+    // selectBrandInfo: "All",
     selectModel: 'All',
     selectShop: 'All',
-    selectYear: 'All'
+    selectYear: 'All',
 }
 // Main Slice
 export const productScreenSlice = createSlice({
@@ -16,8 +23,8 @@ export const productScreenSlice = createSlice({
     name: 'productsSlice',
     reducers: {
         // main product screen top tabs 
-        changeActiveTab: (state) => {
-            state.activeTab = !state.activeTab
+        changeActiveTab: (state, action) => {
+            state.activeTab = action.payload
         },
         // 
         changeSelectCategory: (state, action) => {
@@ -42,8 +49,8 @@ export const productScreenSlice = createSlice({
 
     },
 })
-
 // Action creators are generated for each case reducer function
 export const { changeActiveTab, changeSelectCategory, changeSelectSubCategory, changeSelectBrand, changeSelectModel, changeSelectYear } = productScreenSlice.actions
-
+//
 export default productScreenSlice.reducer;
+//

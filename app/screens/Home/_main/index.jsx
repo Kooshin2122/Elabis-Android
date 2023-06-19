@@ -1,26 +1,63 @@
 //
-import React from 'react';
-import { availableCategoriesEndPoint, mostViewedProducts, popularBrandsEndPoint, specialOffersEndPoint } from './services';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
+import { changeActiveTab } from '../../../ReduxStore/ProductScreenSlice';
 import { HomeHeader, SpecialCards, AvailableCategoryCard, HomeSkeleton } from './components';
-import { Devider, MyStatusBar, Container, PopularBrandsCard, ProductCard } from '../../../components';
-import { StyleSheet, Text, View, SafeAreaView, ImageBackground, ScrollView, Button, FlatList } from 'react-native';
+import { Devider, MyStatusBar, Container, PopularBrandsCard, ProductCard, LoadingIndicator, LoadingModal } from '../../../components';
+import { StyleSheet, Text, View, SafeAreaView, ImageBackground, ScrollView, Button, FlatList, RefreshControl } from 'react-native';
+import { availableCategoriesEndPoint, mostViewedProducts, popularBrandsEndPoint, specialOffersEndPoint } from './services';
+import { fetchGetData } from '../../../API';
 //
 const HomeScreen = () => {
-    const { navigate } = useNavigation()
+    //
+    const dispatch = useDispatch();
+    const { navigate } = useNavigation();
+    const [loading, setLoading] = useState(false);
+    const [productsData, setProductsData] = useState([]);
+    const [categoriesData, setCategoriesData] = useState([]);
+    const [populaBrandsData, setPopulaBrandsData] = useState([]);
+    //
+    const getHomeDataAsync = async () => {
+        const response = await fetchGetData("buyer/user/dashboard", setLoading);
+        setProductsData(response.products);
+        setCategoriesData(response.categories);
+        setPopulaBrandsData(response.popular_brands);
+    };
+    //
+    useEffect(() => {
+        getHomeDataAsync();
+    }, [])
+    //
+    const onPressPopularBrandsSeeMore = () => {
+        navigate('ProductStack')
+        dispatch(changeActiveTab(false))
+    }
+    const onPressAvailableProductsSeeMore = () => {
+        navigate('ProductStack')
+        dispatch(changeActiveTab(true))
+    }
+    const onPressPopularProductsSeeMore = () => {
+        navigate('ProductStack', {
+            screen: "ProductsScreen"
+        })
+    }
+    //
     return (
         <SafeAreaView style={styles.mainContainer}>
             <MyStatusBar />
-            {/* Skeleton Loading */}
-            {/* <HomeSkeleton /> */}
+            {loading && <LoadingModal />}
             <HomeHeader />
-            <ScrollView style={styles.scrollCon} showsVerticalScrollIndicator={false}>
+            <ScrollView
+                refreshControl={<RefreshControl onRefresh={getHomeDataAsync} />}
+                style={styles.scrollCon} showsVerticalScrollIndicator={false}
+            >
                 <Devider />
                 <View style={styles.container}>
-                    <Container title="Popular Brands" seeMore style={styles.brandsCon}  >
+                    <Container title="Popular Brands" seeMore style={styles.brandsCon} onPressSeeMore={onPressPopularBrandsSeeMore}  >
                         {
-                            popularBrandsEndPoint.map(brandInfo => (
+                            populaBrandsData.map(brandInfo => (
                                 <PopularBrandsCard key={brandInfo.id} {...brandInfo} parentScreen="HomeStack" />
                             ))
                         }
@@ -37,18 +74,18 @@ const HomeScreen = () => {
                         />
                     </Container>
                     <Devider />
-                    <Container title="Available Categories" seeMore style={styles.categoriesCon}  >
+                    <Container title="Available Categories" seeMore style={styles.categoriesCon} onPressSeeMore={onPressAvailableProductsSeeMore}  >
                         {
-                            availableCategoriesEndPoint.map(categoryInfo => (
+                            categoriesData.map(categoryInfo => (
                                 <AvailableCategoryCard key={categoryInfo.id} {...categoryInfo} />
                             ))
                         }
                     </Container>
                     <Devider />
-                    <Container title="Most Viewed Products" seeMore style={styles.categoriesCon}  >
+                    <Container title="Most Viewed Products" seeMore style={styles.categoriesCon} onPressSeeMore={onPressPopularProductsSeeMore}  >
                         {
-                            mostViewedProducts.map(productInfo => (
-                                <ProductCard key={productInfo.id} {...productInfo} parentScreen="HomeStack" />
+                            productsData.map((productInfo, index) => (
+                                <ProductCard key={index} {...productInfo} parentScreen="HomeStack" />
                             ))
                         }
                     </Container>

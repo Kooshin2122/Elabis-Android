@@ -5,9 +5,13 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import { ImageViewer } from '../../_main/components';
 import { Devider } from '../../../../components';
+import { fetchGetAuthData, fetchPostAuthData } from '../../../../API';
+import { useAppContext } from '../../../../context';
 
-const ImagePicker = () => {
+const ImagePicker = ({ profilePic = null }) => {
+    const { userData, setUserData } = useAppContext();
     const [selectedImage, setSelectedImage] = useState(null);
+    //
     const pickImageAsync = async () => {
         let result = await ImagePickers.launchImageLibraryAsync({
             mediaTypes: ImagePickers.MediaTypeOptions.Images,
@@ -16,29 +20,40 @@ const ImagePicker = () => {
             quality: 1,
         });
         if (!result.canceled) {
-            console.log('------', result.assets[0].uri);
+            // console.log('------', result.assets[0]);
             setSelectedImage(result.assets[0].uri);
+            //
+            const imageFile = result.assets[0];
+            const imageData = imageFile.uri.split('/');
+            const image = imageData[imageData.length - 1];
+            //
+            // console.log('name ------> ', image);
+            // console.log('uri ------>', imageFile.uri);
+            // console.log('type -----> ', imageFile.uri.slice(-4));
+            // formData--------------------------------------------->
+            const formData = new FormData();
+            formData.append('profile_picture', {
+                name: image,
+                uri: imageFile.uri,
+                type: `image/${imageFile.uri.slice(-4)}`
+            });
+            // post profile image; -------------------------------------------->
+            const res = await fetchPostAuthData('buyer/user/update', formData);
+            // console.log('profile update response ------------->', res);
+            await fetchGetAuthData("buyer/user/view", setUserData);
         } else {
-            alert('You did not select any image.');
+            alert('You did not select any image');
         }
     };
-
-    const pickImage = () => {
-        // make sure if the user is login (if is not login navigate login screen)
-        // else pick image
-        pickImageAsync()
-
-    }
+    //
     return (
         <View style={styles.container}>
             <Devider />
-            <TouchableOpacity onPress={pickImage} activeOpacity={0.6} >
-                <ImageViewer
-                    image={selectedImage}
-                />
+            <TouchableOpacity onPress={pickImageAsync} activeOpacity={0.6} >
+                <ImageViewer />
             </TouchableOpacity>
             <Devider />
-            <TouchableOpacity onPress={pickImage} style={styles.changeBtn} activeOpacity={0.6} >
+            <TouchableOpacity onPress={pickImageAsync} style={styles.changeBtn} activeOpacity={0.6} >
                 <Text style={styles.changeImageTxt}>
                     Change Image
                 </Text>

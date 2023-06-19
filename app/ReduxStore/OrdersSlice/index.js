@@ -9,9 +9,11 @@ const initialState = {
     },
     deliveryAddress: {
         country: null,
-        city: null,
-        village: null,
-        addressDescription: null
+        title: null,
+        state: null,
+        region: null,
+        landmark: null,
+        additional_information: null
     },
     paymentInfo: {
         serviceName: '',

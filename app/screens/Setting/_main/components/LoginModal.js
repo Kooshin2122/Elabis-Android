@@ -3,12 +3,19 @@ import React from 'react';
 import Octicons from 'react-native-vector-icons/Octicons';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Devider } from '../../../../components';
+import { useAppContext } from '../../../../context';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
-
+import { removeData } from '../../../../utils/localStorage/AsyncStorage';
+//
 const LoginModal = ({ modalVisible, changeModalVisible = () => { } }) => {
     //
-    const onLogout = () => {
+    const { isUserLogin, setIsUserLogin, setUserData } = useAppContext();
+    //
+    const onLogout = async () => {
         // log out user
+        await removeData("userInfo");
+        await setIsUserLogin(false);
+        await setUserData(null)
         // -------- Code here --------------
         changeModalVisible(false)
     }

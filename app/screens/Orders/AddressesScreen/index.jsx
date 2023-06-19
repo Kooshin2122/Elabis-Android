@@ -1,41 +1,80 @@
 //
-import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/core';
+import React, { useCallback, useEffect, useState } from 'react';
 import AddressCard from './components/AddressCard';
-import { allAddressesAPIendPoint } from './services';
-import { Devider, SubHeader } from '../../../components';
-import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/core';
+import { CustomButton, Devider, ListEmptyComponent, LoadingIndicator, LoadingModal, SubHeader } from '../../../components';
+import { Dimensions, FlatList, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useDispatch } from 'react-redux';
+import { fetchGetAuthData } from '../../../API';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
 import { changePersonalInfo, changeDeliveryAddress } from '../../../ReduxStore/OrdersSlice';
+import { readData, storeData } from '../../../utils/localStorage/AsyncStorage';
 //
 const AddressesScreen = () => {
-    const { navigate } = useNavigation();
     const dispatch = useDispatch();
+    const { navigate } = useNavigation();
+    const [addresses, setAddresses] = useState();
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState({ id: null });
     //
-    const changeDefaultAddress = () => {
-        navigate('CheckOut')
+    const changeDefaultAddress = async () => {
+        navigate('CheckOut');
         if (selectedAddress.id) {
-            dispatch(changePersonalInfo({ fullName: selectedAddress.fullName, phoneNumber: selectedAddress.phoneNumber, email: selectedAddress.email }))
-            dispatch(changeDeliveryAddress({ country: selectedAddress.country, city: selectedAddress.city, village: selectedAddress.village, addressDescription: selectedAddress.addressDescription, }))
+            const addressInfo = { id: selectedAddress.id, title: selectedAddress.title, state: selectedAddress.state, region: selectedAddress.region, landmark: selectedAddress.landmark, additional_information: selectedAddress.additional_information, }
+            dispatch(changeDeliveryAddress(addressInfo));
+            await storeData("DefaultAddress", addressInfo);
         }
     }
     //
+    const getAddressesAsync = async () => {
+        const res = await fetchGetAuthData("buyer/address/view", setAddresses, setIsLoading);
+        // await console.log("res-------------->", res.data);
+        if (res?.status == "successful")
+            setAddresses(res.data)
+    }
+    //
+    useFocusEffect(useCallback(() => {
+        getAddressesAsync();
+    }, []));
+    //
     return (
         <SafeAreaView style={styles.container} >
+            {isLoading && <LoadingModal />}
             <SubHeader title="Addresses" />
             <ScrollView style={styles.scrollCon} showsVerticalScrollIndicator={false}>
                 <Devider />
-                <View style={styles.titileContainer}>
-                    <Text style={styles.title}>
-                        please select your default shipping address
-                    </Text>
+                <View style={styles.head}>
+                    <View style={styles.titileContainer}>
+                        <Text style={styles.title}>
+                            Select your default address
+                        </Text>
+                    </View>
+                    <Pressable onPress={() => navigate("AddressFormScreen")} style={styles.addAddressBtn}>
+                        <Fontisto
+                            name="plus-a"
+                            size={16} color="#ffffff"
+                        />
+                        <Text style={styles.addAddressBtnTxt}>
+                            Add New One
+                        </Text>
+                    </Pressable>
                 </View>
                 <Devider />
-                {
+                {/* {
                     allAddressesAPIendPoint.map((item) => <AddressCard key={item.id} {...item} selectAddress={selectedAddress} changeSelectAddress={setSelectedAddress} />)
-                }
+                } */}
+                <FlatList
+                    data={addresses}
+                    scrollEnabled={false}
+                    keyExtractor={(item) => item.id}
+                    ListEmptyComponent={() => (
+                        <ListEmptyComponent message="No Addresses Found Please Add New Address" >
+                            <CustomButton title="Add New Address" clickHandler={() => navigate("AddressFormScreen")} />
+                        </ListEmptyComponent>
+                    )}
+                    renderItem={({ item }) => <AddressCard key={item.id} {...item} selectAddress={selectedAddress} changeSelectAddress={setSelectedAddress} />}
+                />
                 <Devider />
             </ScrollView>
             <View style={styles.controlsCon}>
@@ -61,22 +100,45 @@ const styles = StyleSheet.create({
         paddingHorizontal: LAY_OUT.paddingX
     },
     titileContainer: {
+        flex: 1,
         padding: '3%',
         borderRadius: 5,
         borderWidth: 0.7,
         borderColor: COLORS.gray_color
     },
     title: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '300',
         textAlign: 'center',
         letterSpacing: 0.8,
+    },
+    addAddressBtn: {
+        flex: 0.6,
+        columnGap: 4,
+        padding: '3%',
+        borderRadius: 5,
+        borderWidth: 0.7,
+        flexDirection: "row",
+        alignItems: "center",
+        borderColor: COLORS.primary_color,
+        backgroundColor: COLORS.primary_color,
+    },
+    addAddressBtnTxt: {
+        fontSize: 14,
+        fontWeight: "500",
+        letterSpacing: 0.4,
+        color: "#ffffff"
     },
     controlsCon: {
         padding: '4%',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
         backgroundColor: COLORS.bg_tertiary
+    },
+    head: {
+        columnGap: 10,
+        flexDirection: "row",
+        alignItems: "center",
     }
 
 })

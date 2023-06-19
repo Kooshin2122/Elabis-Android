@@ -1,32 +1,32 @@
 //
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { changeSelectSubCategory } from '../../../../ReduxStore/ProductScreenSlice';
 
-const CategoriesCard = ({ id, categoryName, categoryImageUrl }) => {
+const CategoriesCard = ({ id, name, icon }) => {
     const dispatch = useDispatch();
+    const { navigate } = useNavigation();
     const { selectSubCategory } = useSelector((state) => state.productsSlice);
-    const { navigate } = useNavigation()
+    //
     const onSelectCategory = () => {
-        // Navigate prducts screen
         navigate('ProductsScreen')
-        dispatch(changeSelectSubCategory(categoryName))
+        dispatch(changeSelectSubCategory({ id: id, name: name }))
     }
-
+    //
     return (
         <TouchableOpacity onPress={onSelectCategory} style={styles.container} activeOpacity={0.6}>
             <View style={styles.imageContainer}>
                 <Image
                     style={styles.image}
                     resizeMode="contain"
-                    source={categoryImageUrl}
+                    source={{ uri: `https://sweyn.co.uk/storage/images/catgeories/${icon}` }}
                 />
             </View>
             <Text style={styles.catName}>
-                {categoryName}
+                {name}
             </Text>
         </TouchableOpacity>
     )

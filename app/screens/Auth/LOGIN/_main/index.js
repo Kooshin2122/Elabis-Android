@@ -1,161 +1,213 @@
-import React, { useRef } from 'react';
-import * as yup from 'yup';
+//
 import { Formik } from 'formik';
-import { useNavigation } from '@react-navigation/core'
-import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
-import loginImage from '../../../../../assets/images/AUTH-IMAGES/login.png';
-import { SubHeader, CustomInput, Devider, CustomButton } from '../../../../components';
-import { Image, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-
+import React, { useState } from 'react';
+import { TextInput } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/core';
+import Octicons from 'react-native-vector-icons/Octicons';
+import { Image, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { AuthHeader, CustomButton, Devider, LoadingModal, PaperTextInput } from '../../../../components';
+import { fetchPostAuthData, fetchPostData } from '../../../../API';
+import { formDataGenerator } from '../../../../utils';
+import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
+import { storeData, readData } from '../../../../utils/localStorage/AsyncStorage';
+import { useAppContext } from '../../../../context';
+//
 const LoginScreen = () => {
-    const { navigate } = useNavigation()
-    // Formik and yup validation data
-    const loginInfo = { phoneNumber: '', password: '' }
-    const loginVerificationSchema = yup.object().shape({
-        phoneNumber: yup.string().required("Please Enter Your Phone Number").min(7),
-        password: yup.string().required("Please Enter Your Password").min(3),
-    })
-    // on submit method
-    const onLogin = (values) => {
-        console.log('----------', values);
+    const { navigate } = useNavigation();
+    const [loading, setLoading] = useState(false);
+    const [resError, setResError] = useState(false);
+    const [eyeToggle, setEyeToggle] = useState(false);
+    const { setIsUserLogin, setUserData } = useAppContext();
+    //
+    const loginInfo = { email: '', password: '' }
+    //
+    const onLogin = async (values) => {
+        setResError(false)
+        const formData = await formDataGenerator(values);
+        // Fetch request;
+        const data = await fetchPostData('buyer/user/signin', formData, setLoading, setResError);
+        // await console.log('data', data);
+        if (data?.message == 'Unauthorized') {
+            setResError("incorrect email or passowrd")
+            return 1;
+        }
+        if (data?.email) {
+            setResError(data.email);
+            return 1;
+        }
+        // Store Data
+        await storeData("userInfo", data);
+        const result = await readData("userInfo");
+        // await console.log('result', result);
+        if (result.access_token) {
+            setIsUserLogin(true)
+            setUserData(result.user)
+            const createCartRes = await fetchPostAuthData("buyer/cart/create");
+            console.log("createCartRes---------------------->", createCartRes);
+            navigate('SettingStack');
+            return
+        }
+        setResError("Error happen please try again");
     }
-    // 
-    const feildTwo = useRef()
-    // jsx
+    //
     return (
         <SafeAreaView style={styles.container}>
-            <SubHeader title="Login" />
+            {loading && <LoadingModal />}
             <KeyboardAvoidingView
+                enabled
+                style={{ flex: 1 }}
                 keyboardVerticalOffset={15}
                 behavior={Platform.OS == 'ios' ? 'padding' : null}
-                style={{ flex: 1 }}
-                enabled
             >
                 <ScrollView style={styles.scrollCon}>
-                    <View style={{ width: '80%', height: 200, marginLeft: '10%' }}>
-                        <Image
-                            source={loginImage}
-                            style={{ width: '100%', height: '100%' }}
-                            resizeMode="cover"
-                        />
-                    </View>
-                    <Devider />
-                    <View style={styles.formCon}>
-                        <Text style={styles.title}>
-                            LOG-IN
+                    <AuthHeader />
+                    <Devider height={25} />
+                    <Formik
+                        onSubmit={onLogin}
+                        initialValues={loginInfo}
+                    // validationSchema={loginVerificationSchema}
+                    >
+                        {({ handleChange, handleBlur, handleSubmit, values, errors }) => {
+                            return (
+                                <View style={styles.formCon}>
+                                    <Text style={styles.loginTitle}>
+                                        LOGIN
+                                    </Text>
+                                    <Devider />
+                                    {/* <PaperTextInput
+                                        error={resError}
+                                        label="Mobile Number"
+                                        keyboardType="numeric"
+                                        placeholder="xx-x-xxx-xxx"
+                                        value={values.phoneNumber}
+                                        onChangeText={handleChange("phoneNumber")}
+                                    /> */}
+                                    <PaperTextInput
+                                        label="Email"
+                                        error={resError}
+                                        placeholder="Email"
+                                        value={values.email}
+                                        keyboardType="email-address"
+                                        onChangeText={handleChange("email")}
+                                    />
+                                    <PaperTextInput
+                                        label="Password"
+                                        error={resError}
+                                        placeholder="Password"
+                                        value={values.password}
+                                        onChangeText={handleChange("password")}
+                                        secureTextEntry={eyeToggle ? false : true}
+                                        right={<TextInput.Icon onPress={() => setEyeToggle(!eyeToggle)} icon={eyeToggle ? "eye" : "eye-off"} />}
+                                    />
+                                    {
+                                        resError &&
+                                        <View style={styles.errorCon}>
+                                            <Octicons name="stop" size={20} color="red" />
+                                            <Text style={styles.errorText}>
+                                                {resError}
+                                            </Text>
+                                        </View>
+                                    }
+                                    <Text onPress={() => navigate('ResetPassword')} style={styles.forgotPasswordTxt}>
+                                        Forgot Password?
+                                    </Text>
+                                    <CustomButton clickHandler={handleSubmit} title="LOGIN" />
+                                </View>
+                            )
+                        }}
+                    </Formik>
+                    <Devider height={20} />
+                    <View style={styles.signUpCon}>
+                        <Text style={styles.signUpTxt1}>
+                            New to Sport-On?
                         </Text>
-                        <Formik
-                            initialValues={loginInfo}
-                            validationSchema={loginVerificationSchema}
-                            onSubmit={onLogin}
-                        >
-                            {({ handleChange, handleBlur, handleSubmit, values, errors }) => {
-                                return (
-                                    <View style={{ paddingBottom: '10%' }}>
-                                        <CustomInput
-                                            name='phoneNumber'
-                                            label='Phone Number'
-                                            value={values.phoneNumber}
-                                            keyboardType="numeric"
-                                            placeholder="252 XX X XX XX XX"
-                                            onChangeText={handleChange}
-                                            onSubmitEditing={() => feildTwo.current.focus()}
-                                        />
-                                        <CustomInput
-                                            name='password'
-                                            label='Password'
-                                            reference={feildTwo}
-                                            value={values.password}
-                                            showEyeIcon={true}
-                                            secureTextEntry={true}
-                                            returnKeyType="done"
-                                            placeholder="Enter Your Password"
-                                            onChangeText={handleChange}
-                                        />
-                                        {
-                                            (errors.phoneNumber || errors.password) &&
-                                            <View style={[styles.errorCon]}>
-                                                <Text style={[styles.errorsTxt, { display: errors.phoneNumber ? 'flex' : 'none' }]}>{errors.phoneNumber}</Text>
-                                                <Text style={[styles.errorsTxt, { display: errors.password ? 'flex' : 'none' }]}>{errors.password}</Text>
-                                            </View>
-                                        }
-                                        <Devider />
-                                        {/* Controls */}
-                                        <Pressable onPress={() => navigate('ForgotPassword')}>
-                                            <Text style={styles.forgotPasswordText}>
-                                                Forgot Password
-                                            </Text>
-                                        </Pressable>
-                                        <Devider />
-                                        <CustomButton title="LOGIN" clickHandler={handleSubmit} />
-                                        <Devider />
-                                        <Pressable onPress={() => navigate('SignUpStack')} style={{ marginBottom: '5%' }}>
-                                            <Text style={styles.signUpBtnTxt}>
-                                                Create New Account
-                                            </Text>
-                                        </Pressable>
-                                        {/* <CustomButton style={styles.signUpBtn} title="CREATE NEW ACCOUNT" textColor={COLORS.primary_color} clickHandler={() => navigate('SignUpStack')} /> */}
-                                    </View>
-                                )
-                            }}
-                        </Formik>
+                        <Text onPress={() => navigate('SignUpScreen')} style={styles.signUpTxt2}>
+                            Sign Up Now
+                        </Text>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>
     )
 }
-
+//
 export default LoginScreen;
-
+//
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.bg_primary
+        backgroundColor: COLORS.bg_primary,
+        // paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
     },
     scrollCon: {
-        flex: 1,
-        paddingVertical: LAY_OUT.paddingY,
-        // backgroundColor: COLORS.bg_secondary
+        padding: '4%',
     },
     formCon: {
         minHeight: 200,
-        paddingVertical: LAY_OUT.padding,
-        paddingHorizontal: '4%'
-        // backgroundColor: 'blue',
+        padding: '4%',
+        paddingBottom: '6%',
+        borderRadius: 10,
+        borderWidth: 0.8,
+        borderColor: COLORS.light_green_color
     },
-    title: {
-        fontSize: 18,
-        fontWeight: '500',
-        textAlign: 'center',
-        letterSpacing: 1
-    },
-    forgotPasswordText: {
-        fontSize: 17,
-        textAlign: 'right',
-        // textDecorationLine: 1,
-        letterSpacing: 2,
-        color: COLORS.primary_color,
-    },
-    signUpBtnTxt: {
-        fontSize: 17,
-        textAlign: 'center',
-        // textDecorationLine: 1,
-        letterSpacing: 1,
-        color: COLORS.primary_color,
-    },
-    signUpBtn: {
-        marginTop: '5%',
-        backgroundColor: COLORS.bg_primary
+    loginTitle: {
+        fontSize: 22,
+        fontWeight: '600',
+        letterSpacing: 0.8,
+        color: COLORS.black800
     },
     errorCon: {
-        paddingHorizontal: '2%',
-        paddingVertical: '3%',
-        backgroundColor: '#fbd5d5',
-        borderRadius: 3
+        columnGap: 5,
+        marginLeft: '1%',
+        marginBottom: '5%',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
-    errorsTxt: {
-        fontSize: 14,
-        color: 'red'
+    errorText: {
+        fontSize: 16,
+        fontWeight: '500',
+        letterSpacing: 0.5,
+        marginLeft: '1%',
+        color: "red"
+    },
+    forgotPasswordTxt: {
+        fontSize: 16,
+        fontWeight: '500',
+        letterSpacing: 0.5,
+        marginLeft: '1%',
+        marginBottom: '7%',
+        color: COLORS.black800
+    },
+    signUpCon: {
+        columnGap: 15,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    signUpTxt1: {
+        fontSize: 15,
+        fontWeight: '500',
+        letterSpacing: 0.3,
+        color: COLORS.black800
+    },
+    signUpTxt2: {
+        fontSize: 16,
+        fontWeight: '700',
+        letterSpacing: 0.3,
+        color: COLORS.primary_color
+    },
+    text: {
+        fontSize: 16,
+        fontWeight: '500',
+        textAlign: 'center',
+        color: COLORS.black800
+    },
+    mediaCon: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        columnGap: 30
     },
 })
+//
+

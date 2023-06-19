@@ -1,19 +1,24 @@
+//
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // Screens
-import LoginStack from './LOGIN';
-import SignUpStack from './SIGN-UP';
-// global variables
+import WelcomeScreen from './_main';
+import LoginStack from './Login';
+import OTPstack from './OTP';
+import SignUpScreen from './SignUp';
+//
 const Stack = createNativeStackNavigator();
-// SignUp Stack;
+//
 const AuthStack = () => {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
             <Stack.Screen name="LoginStack" component={LoginStack} />
-            <Stack.Screen name="SignUpStack" component={SignUpStack} />
+            <Stack.Screen name="OTPstack" component={OTPstack} />
+            <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
         </Stack.Navigator>
     )
 }
-// export module
+//
 export default AuthStack;
-
+//

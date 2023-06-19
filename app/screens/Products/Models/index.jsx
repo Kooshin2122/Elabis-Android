@@ -12,8 +12,8 @@ const ModelsScreen = ({ route }) => {
     const { navigate } = useNavigation();
     const { selectYear } = useSelector((state) => state.productsSlice);
     const { id, modelName, modelImageUrl } = route?.params?.selectModalInfo;
-    const navigateShopsScreen = () => {
-        navigate('ShopsScreen')
+    const navigateProductsScreen = () => {
+        navigate('ProductsScreen')
     }
 
     return (
@@ -44,7 +44,7 @@ const ModelsScreen = ({ route }) => {
                 <Text>
                     {`${modelName} ( ${selectYear} )`}
                 </Text>
-                <Pressable onPress={navigateShopsScreen} style={styles.nextBtn}>
+                <Pressable onPress={navigateProductsScreen} style={styles.nextBtn}>
                     <Text style={{ color: '#fff', fontSize: 16, letterSpacing: 1 }}>
                         NEXT
                     </Text>

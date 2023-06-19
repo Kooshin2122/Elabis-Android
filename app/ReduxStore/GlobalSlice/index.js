@@ -2,7 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 // Initial States
 const initialState = {
-    isUserLogin: false,
+    isUserLogin: true,
     shouldRenderTabBar: true,
 }
 // Main Slice

@@ -1,14 +1,19 @@
 //
 import React, { useState } from 'react';
+import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 //
-const SelectableCategoryCon = ({ categoryName }) => {
+const SelectableCategoryCon = ({ categoryName, changeSelectedItems = () => { } }) => {
     //
     const [selectCategory, setSelectCategory] = useState(false)
     const onSelectCategory = () => {
         setSelectCategory(!selectCategory)
+        if (selectCategory == false)
+            return changeSelectedItems(oldArray => [...oldArray, categoryName])
+        changeSelectedItems(oldArray => {
+            return oldArray.filter(i => i !== categoryName)
+        })
     }
     //
     return (

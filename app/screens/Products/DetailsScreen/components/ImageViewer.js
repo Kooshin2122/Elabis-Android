@@ -1,30 +1,33 @@
 //
 import React, { useEffect, useState } from 'react';
+import { fetchGetData } from '../../../../API';
 import { SubHeader } from '../../../../components';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import { Dimensions, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
+//
 const { width, height } = Dimensions.get('screen');
-
-const ImageViewer = ({ image }) => {
-    const [selectImage, setSelectImage] = useState(image)
+//
+const ImageViewer = ({ UPID }) => {
+    const [images, setImages] = useState([]);
+    const [selectImage, setSelectImage] = useState();
+    const getImagesAsync = async () => {
+        const res = await fetchGetData(`buyer/products/images/${UPID}`);
+        setImages(res.data);
+        setSelectImage(res.data[0])
+    }
+    //
     useEffect(() => {
-        setSelectImage(image)
-    }, [image])
-    const images = [
-        { id: 1, imageUrl: image },
-        { id: 2, imageUrl: require('../../../../../assets/images/ProductsImages/img1-1.png') },
-        { id: 3, imageUrl: require('../../../../../assets/images/ProductsImages/img1-2.png'), },
-        { id: 4, imageUrl: require('../../../../../assets/images/ProductsImages/img1-3.png'), },
-    ]
+        getImagesAsync();
+    }, [UPID])
+    //
     return (
         <View style={styles.container}>
             {/* main image */}
             <View style={styles.mainImage}>
                 <Image
-                    source={selectImage}
                     resizeMode="cover"
                     style={styles.imageStyle}
+                    source={{ uri: `https://sweyn.co.uk/storage/images/${selectImage}` }}
                 />
             </View>
             {/* small images */}
@@ -32,16 +35,35 @@ const ImageViewer = ({ image }) => {
                 <FlatList
                     horizontal
                     data={images}
-                    renderItem={({ item }) => <SubImageViewer key={item.id} {...item} changeMainImage={setSelectImage} style={{ borderColor: selectImage == item.imageUrl ? COLORS.primary_color : COLORS.gray_color }} />}
                     showsHorizontalScrollIndicator={false}
+                    renderItem={({ item, index }) => {
+                        return (
+                            <SubImageViewer key={item.id} index={index} item={item} images={images} changeMainImage={setSelectImage} style={{ borderColor: selectImage == item ? COLORS.primary_color : COLORS.gray_color }} />
+                        )
+                    }}
                 />
             </View>
         </View>
     )
 }
-
+//
 export default ImageViewer;
-
+//
+const SubImageViewer = ({ item, index, images, style = {}, changeMainImage = () => { } }) => {
+    const onSelectSubImage = () => {
+        changeMainImage(images[index])
+    }
+    return (
+        <Pressable onPress={onSelectSubImage} style={[styles.subImage, { ...style }]}>
+            <Image
+                resizeMode="contain"
+                style={{ width: '80%', height: '80%' }}
+                source={{ uri: `https://sweyn.co.uk/storage/images/${item}` }}
+            />
+        </Pressable>
+    )
+}
+//
 const styles = StyleSheet.create({
     container: {
         width: '100%',
@@ -76,19 +98,5 @@ const styles = StyleSheet.create({
     }
 })
 
-const SubImageViewer = ({ id, imageUrl, style = {}, changeMainImage = () => { } }) => {
-    const onSelectSubImage = () => {
-        changeMainImage(imageUrl)
-    }
-    return (
-        <Pressable onPress={onSelectSubImage} style={[styles.subImage, { ...style }]}>
-            <Image
-                source={imageUrl}
-                resizeMode="contain"
-                style={{ width: '80%', height: '80%' }}
-            />
-        </Pressable>
-    )
-}
 
 

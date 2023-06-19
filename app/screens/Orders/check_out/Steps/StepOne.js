@@ -84,7 +84,7 @@ const StepOne = ({ changeCurrentPosition = () => { } }) => {
                             <Pressable onPress={handleSubmit} style={styles.nextBtnCon}>
                                 <Text style={styles.nextBtnTxt}>
                                     Next
-                                    </Text>
+                                </Text>
                             </Pressable>
                         </View>
                     )

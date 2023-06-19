@@ -8,6 +8,7 @@ import FilteringScreen from './FilteringScreen';
 import BrandsScreen from './BrandsScreen';
 import ModelsScreen from './Models';
 import ShopsScreen from './Shop';
+import ShopProductsScreen from './ShopProducts';
 //
 const Stack = createNativeStackNavigator();
 //
@@ -21,6 +22,7 @@ const ProductStack = () => {
             <Stack.Screen name="BrandsScreen" component={BrandsScreen} />
             <Stack.Screen name="ModelsScreen" component={ModelsScreen} />
             <Stack.Screen name="ShopsScreen" component={ShopsScreen} />
+            <Stack.Screen name="ShopProductsScreen" component={ShopProductsScreen} />
         </Stack.Navigator>
     )
 }

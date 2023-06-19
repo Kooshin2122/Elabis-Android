@@ -46,7 +46,7 @@ const PamentCards = ({ id, serviceName, companyName, imageUrl, expand = false, c
                     </Text>
                     <Text style={styles.companyName}>
                         ({companyName})
-                </Text>
+                    </Text>
                 </View>
                 <AntDesign name="checksquare" size={23} color={expand ? '#000' : COLORS.gray_color} />
             </View>
@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
     imageCon: {
         width: 110,
         height: 55
-        // height: '100%',
     },
     header: {
         flexDirection: 'row',

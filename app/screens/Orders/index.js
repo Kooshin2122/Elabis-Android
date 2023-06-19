@@ -5,6 +5,7 @@ import OrdersScreen from './_main';
 import CheckOutScreen from './check_out';
 import MapScreen from './Map';
 import AddressesScreen from './AddressesScreen';
+import AddressFormScreen from './AddressFormScreen';
 //
 const Stack = createNativeStackNavigator();
 //
@@ -12,9 +13,10 @@ const OrdersStack = () => {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Orders" component={OrdersScreen} />
-            <Stack.Screen name="CheckOut" component={CheckOutScreen} />
             <Stack.Screen name="Map" component={MapScreen} />
+            <Stack.Screen name="CheckOut" component={CheckOutScreen} />
             <Stack.Screen name="AddressesScreen" component={AddressesScreen} />
+            <Stack.Screen name="AddressFormScreen" component={AddressFormScreen} />
         </Stack.Navigator>
     )
 }

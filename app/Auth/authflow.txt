@@ -1,0 +1,23 @@
+Base URL
+https://sweyn.co.uk/v1/
+
+end points 
+	
+for seller
+post	seller/user/signin	 
+post 	seller/user/signup
+post 	seller/user/resetpassword
+
+for buyer
+post  buyer/user/signin
+post  buyer/user/signup
+post  buyer/user/resetpassword
+
+payload for signup
+	name,email,password,phone_number(length 10)
+
+payload for signin
+	email,password
+
+payload for resetpassword
+	email

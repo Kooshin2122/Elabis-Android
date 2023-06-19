@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { fetchGetData } from '../../../../API';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import CategoriesCard from './CategoriesCard';
 //
 const CategoriesContainer = ({ subCategoryName, categories = [] }) => {
-
+    //
     return (
         <View style={styles.container}>
             <Text style={styles.subCategoryName}>

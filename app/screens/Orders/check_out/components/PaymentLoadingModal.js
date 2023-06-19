@@ -15,7 +15,7 @@ const PaymentLoadingModal = ({ modalVisible, changeModalVisible = () => { } }) =
             dispatch(showPaymentLoadingModal())
             dispatch(showPaymentSuccessfullModal())
             // dispatch(showPaymentErrorModal())
-        }, 3000)
+        }, 7000)
     }
     useEffect(() => {
         onLoading()
@@ -23,13 +23,13 @@ const PaymentLoadingModal = ({ modalVisible, changeModalVisible = () => { } }) =
     //
     return (
         <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={modalVisible}
         >
             <Pressable style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <ActivityIndicator size={Platform.OS == 'ios' ? 50 : 50} />
+                    <ActivityIndicator size={Platform.OS == 'ios' ? "large" : 50} />
                     <Devider height={7} />
                     {/* Content Container */}
                     <View style={styles.contentCon}>
@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: "#00000097",
     },
     modalView: {
         width: '87%',

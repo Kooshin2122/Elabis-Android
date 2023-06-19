@@ -2,7 +2,7 @@ import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 
 const LoadingIndicator = ({ message }) => {
   return (
-    <View style={style.root}>
+    <View style={style.root} accessibilityViewIsModal >
       <ActivityIndicator size="large" color="#ffffff" />
       {!!message && <Text style={style.message}>{message}</Text>}
     </View>

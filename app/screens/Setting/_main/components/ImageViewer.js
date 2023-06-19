@@ -3,16 +3,18 @@ import React from 'react';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-
+import { useAppContext } from '../../../../context';
+//
 const ImageViewer = ({ image = null }) => {
+    const { userData } = useAppContext();
     return (
         <View style={styles.imageContainer}>
             {
-                image ?
+                userData ?
                     <Image
                         resizeMode="cover"
-                        source={{ uri: image }}
                         style={{ width: '100%', height: '100%' }}
+                        source={{ uri: `https://sweyn.co.uk/storage/images/avatar/${userData.profile_picture}` }}
                     />
                     :
                     <FontAwesome5 name="user-alt" size={50} />

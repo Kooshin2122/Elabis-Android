@@ -1,11 +1,12 @@
 //
-import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/core';
+import React, { useCallback, useEffect, useState } from 'react';
 import { COLORS } from '../../../Theme/GLOBAL_STYLES';
+import { useNavigation } from '@react-navigation/core';
+import { useSelector, useDispatch } from 'react-redux';
 import StepIndicator from 'react-native-step-indicator';
+import { useFocusEffect } from '@react-navigation/core';
 import { Devider, ModalContainer, SubHeader } from '../../../components';
 import { Button, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
 // Steps --------------------------->
 import { StepOne, StepTwo, StepThree, StepFour } from './Steps';
 import { PaymentLoadingModal, PaymentResponseModal } from './components';
@@ -39,28 +40,19 @@ const CheckOutScreen = () => {
     const { getParent } = useNavigation()
     const [currentPosition, setCurrentPosition] = useState(0);
     const { paymentLoadingModal, paymentSuccessfullModal, paymentErrorModal } = useSelector(state => state.ordersSlice);
-    // Hide Bottom Tabs when you are in sub screen
-    useEffect(() => {
-        getParent().setOptions({ tabBarStyle: { display: 'none' } })
-        return () => {
-            getParent().setOptions({
-                tabBarStyle: {
-                    display: 'flex',
-                    borderTopColor: 'rgba(0, 0, 0, .2)',
-                    paddingTop: Platform.OS === 'android' ? 15 : 10,
-                    paddingBottom: Platform.OS === 'android' ? 15 : 30,
-                    height: Platform.OS === 'android' ? 70 : 90,
-                }
-            })
-        }
-    }, [])
     //
     const onPageChange = (position) => {
         // if (position > currentPosition)
         //     alert('Please Fill The Form then click next button')
         // else
         setCurrentPosition(position)
-    }
+    };
+    //
+    useFocusEffect(
+        useCallback(() => {
+            // I am using these fuctions to refresh step two and it's important
+        }, [])
+    );
     //
     return (
         <SafeAreaView style={styles.container}>
@@ -90,9 +82,9 @@ const CheckOutScreen = () => {
             </KeyboardAvoidingView>
             {
                 paymentLoadingModal &&
-                <ModalContainer>
-                    <PaymentLoadingModal />
-                </ModalContainer>
+                <PaymentLoadingModal />
+                // <ModalContainer>
+                // </ModalContainer>
             }
             {
                 paymentSuccessfullModal &&

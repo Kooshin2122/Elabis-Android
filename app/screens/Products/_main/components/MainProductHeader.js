@@ -9,17 +9,17 @@ const MainProductHeader = () => {
     const { activeTab } = useSelector((state) => state.productsSlice);
     // 
     const onSelectTab = () => {
-        dispatch(changeActiveTab())
+        dispatch(changeActiveTab(!activeTab))
     }
     //
     return (
         <View style={styles.contianer}>
-            <TouchableOpacity activeOpacity={0.6} onPress={onSelectTab} style={[styles.tabCon, { borderColor: activeTab ? COLORS.primary_color : COLORS.gray_color, borderBottomWidth: activeTab ? 0.7 : 0.5 }]}>
+            <TouchableOpacity activeOpacity={0.6} onPress={onSelectTab} style={[styles.tabCon, { borderColor: activeTab ? COLORS.primary_color : COLORS.gray_color, borderBottomWidth: activeTab ? 1.5 : 0.1 }]}>
                 <Text style={[styles.tabText, { color: activeTab ? '#000' : 'gray' }]}>
                     Categories
                 </Text>
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.6} onPress={onSelectTab} style={[styles.tabCon, { borderColor: !activeTab ? COLORS.primary_color : COLORS.gray_color, borderBottomWidth: !activeTab ? 0.7 : 0.5 }]}>
+            <TouchableOpacity activeOpacity={0.6} onPress={onSelectTab} style={[styles.tabCon, { borderColor: !activeTab ? COLORS.primary_color : COLORS.gray_color, borderBottomWidth: !activeTab ? 1.5 : 0.1 }]}>
                 <Text style={[styles.tabText, { color: !activeTab ? '#000' : 'gray' }]}>
                     Brands
                 </Text>

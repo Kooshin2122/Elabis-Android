@@ -3,20 +3,16 @@ import React, { useEffect, useState } from 'react';
 import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
 import { SubHeader, Devider } from '../../../components';
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { SelectedItemsCard, TabBox } from './components';
-import { useNavigation } from '@react-navigation/core';
 import FilteringMaterialTopTabs from './tabs';
+import { useNavigation } from '@react-navigation/core';
+import { SelectedItemsCard, TabBox } from './components';
 
-const FilteringScreen = () => {
+const FilteringScreen = ({ route }) => {
     const { getParent } = useNavigation();
-    const [selectTab, setSelectTab] = useState('Category')
-    // Hide bottom tabs 
+    const { tabName, selectItem } = route.params;
+    // Hiding Bottom Tab Navigation
     useEffect(() => {
-        getParent().setOptions({
-            tabBarStyle: {
-                display: 'none',
-            }
-        })
+        getParent().setOptions({ tabBarStyle: { display: 'none' } })
         return () => {
             getParent().setOptions({
                 tabBarStyle: {
@@ -28,12 +24,12 @@ const FilteringScreen = () => {
                 }
             })
         }
-    }, [])
+    }, []);
     //
     return (
         <SafeAreaView style={styles.container}>
             <SubHeader title="Filter" />
-            <FilteringMaterialTopTabs />
+            <FilteringMaterialTopTabs activeTab={tabName ? tabName : 'Category'} />
             {/* Control Section */}
             <View style={styles.controlsContainer}>
                 <Pressable>

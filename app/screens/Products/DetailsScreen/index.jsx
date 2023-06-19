@@ -1,46 +1,82 @@
 //
 import React, { useEffect, useState } from 'react';
-import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
-import { SubHeader, Devider, Container } from '../../../components';
-import { Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { sliceText } from '../../../utils';
+import { formDataGenerator, sliceText } from '../../../utils';
 import { ImageViewer } from './components';
 import { useNavigation } from '@react-navigation/core';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { SubHeader, Devider, Container, LoadingModal } from '../../../components';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import { Dimensions, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { fetchGetData, fetchPostAuthData } from '../../../API';
+import { useAppContext } from '../../../context';
+import { readData } from '../../../utils/localStorage/AsyncStorage';
+//
 const { width, height } = Dimensions.get('screen');
-
+//
 const ProductDetailsScreen = ({ route }) => {
-    const { getParent } = useNavigation();
-    const [scrollPossition, setScrollPossition] = useState()
-    const { productName, productPrice, productBrandName, productImageUrl, parentScreen } = route.params;
+    const { navigate } = useNavigation();
+    const [loading, setLoading] = useState();
+    const [counter, setCounter] = useState(1);
+    const [productData, setProductData] = useState();
+    //
+    const { UPID, parentScreen } = route.params;
+    const [scrollPossition, setScrollPossition] = useState();
+    //
+    const decreasement = () => {
+        if (counter <= 1)
+            return
+        setCounter(counter - 1)
+    }
+    const onIncreasement = () => {
+        setCounter(counter + 1)
+    }
+    //
+    const getSignleProductDataAsync = async () => {
+        const response = await fetchGetData(`buyer/products/view/${UPID}`, setLoading)
+        setProductData(response.data[0])
+        // console.log("response-----", response);
+    }
     // Hiding Bottom Tab Navigation
     useEffect(() => {
-        getParent().setOptions({ tabBarStyle: { display: 'none' } })
-        return () => {
-            getParent().setOptions({
-                tabBarStyle: {
-                    display: 'flex',
-                    borderTopColor: 'rgba(0, 0, 0, .2)',
-                    paddingTop: Platform.OS === 'android' ? 15 : 10,
-                    paddingBottom: Platform.OS === 'android' ? 15 : 30,
-                    height: Platform.OS === 'android' ? 70 : 90,
-                }
-            })
-        }
+        getSignleProductDataAsync()
     }, [])
+    //
+    const addToCart = async () => {
+        const token = await readData("userInfo");
+        const cartData = {
+            UPID: productData.UPID,
+            quantity: counter,
+        }
+        const formData = formDataGenerator(cartData);
+        // check if the user login
+        if (token.token_type == false) {
+            navigate("AuthStack")
+            return
+        }
+        const res = await fetchPostAuthData("buyer/cart/product/add", formData, setLoading);
+        console.log("response is --------->", res);
+        //
+        if (res.status == "added successfully")
+            navigate("OrdersStack")
+        else if (res.status == "A open Cart is not avaliable") {
+            const creatCart = await fetchPostAuthData("buyer/cart/create",)
+            const response = await fetchPostAuthData("buyer/cart/product/add", formData, setLoading)
+        }
+    }
     //
     return (
         <SafeAreaView style={styles.container}>
-            {scrollPossition > 0.5 ? <SubHeader title="Product Details" backTo={parentScreen} /> : <DetailsHeader backTo={parentScreen} />}
+            {loading && <LoadingModal />}
+            {/* {scrollPossition > 0.5 ? <SubHeader title="Product Details" backTo={parentScreen} /> : <DetailsHeader backTo={parentScreen} />} */}
+            <SubHeader title="Product Details" backTo={parentScreen} />
             <ScrollView onScroll={e => setScrollPossition(e.nativeEvent.contentOffset.y)} scrollEventThrottle={16} showsVerticalScrollIndicator={false} >
-                <ImageViewer image={productImageUrl} />
+                <ImageViewer UPID={productData?.UPID} />
                 <Devider />
                 <View style={styles.contentContainer}>
                     <Text style={styles.proName}>
-                        {sliceText(productName, 67)}
+                        {sliceText(productData?.name, 67)}
                     </Text>
                     <Devider height={10} />
                     {/* Product Details */}
@@ -49,7 +85,7 @@ const ProductDetailsScreen = ({ route }) => {
                             Product Details
                         </Text>
                         <Text style={{ fontSize: 16, fontWeight: '300', letterSpacing: 0.5, color: COLORS.black_color }}>
-                            The Honda Inner Rear View Mirror, Mirror Stay Comp Day Night Nh1L 76430Semk01Za offered by Honda is of industrial-grade quality and is
+                            {productData?.description}
                         </Text>
                     </View>
                     <Devider height={10} />
@@ -59,24 +95,24 @@ const ProductDetailsScreen = ({ route }) => {
                             Item Info
                         </Text>
                         <ItemContainer title="Item Type" value='Mirror' />
-                        <ItemContainer title="Brand" value={productBrandName} />
-                        <ItemContainer title="Category" value='Body Parts' />
-                        <ItemContainer title="Available Quantities" value='300' />
+                        <ItemContainer title="Brand" value={productData?.brand?.name} />
+                        <ItemContainer title="Category" value={productData?.category?.name} />
+                        <ItemContainer title="Available Quantities" value={productData?.quantity_avaliable} />
                     </View>
                     <Devider />
                     {/* Controls */}
                     <View style={styles.contorllsContainer}>
                         <Text>Quantity</Text>
                         <View style={styles.quantityControls}>
-                            <View style={styles.box}>
+                            <Pressable onPress={decreasement} style={styles.box}>
                                 <AntDesign name="minus" size={25} />
-                            </View>
+                            </Pressable>
                             <Text style={styles.counterTxt}>
-                                1
+                                {counter}
                             </Text>
-                            <View style={styles.box}>
+                            <Pressable onPress={onIncreasement} style={styles.box}>
                                 <AntDesign name="plus" size={25} />
-                            </View>
+                            </Pressable>
                         </View>
                         <Devider />
                         <View style={styles.paymentsControls}>
@@ -87,14 +123,14 @@ const ProductDetailsScreen = ({ route }) => {
                                 <FontAwesome name="money" size={20} color='#fff' style={{ marginLeft: 10 }} />
                             </View>
                             <Text style={styles.price}>
-                                $ {productPrice}
+                                $ {productData?.price * counter}
                             </Text>
-                            <View style={styles.btn}>
+                            <Pressable onPress={addToCart} style={styles.btn}>
                                 <Text style={styles.priceTxt}>
                                     Add Cart
                                 </Text>
                                 <MaterialCommunityIcons name="cart-check" size={20} color='#fff' style={{ marginLeft: 10 }} />
-                            </View>
+                            </Pressable>
                         </View>
                     </View>
                 </View>
@@ -239,3 +275,15 @@ const ItemContainer = ({ title, value }) => {
     )
 }
 
+// getParent().setOptions({ tabBarStyle: { display: 'none' } })
+// return () => {
+//     getParent().setOptions({
+//         tabBarStyle: {
+//             display: 'flex',
+//             borderTopColor: 'rgba(0, 0, 0, .2)',
+//             paddingTop: Platform.OS === 'android' ? 15 : 10,
+//             paddingBottom: Platform.OS === 'android' ? 15 : 30,
+//             height: Platform.OS === 'android' ? 70 : 90,
+//         }
+//     })
+// }

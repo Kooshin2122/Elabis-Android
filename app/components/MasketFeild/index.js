@@ -21,9 +21,9 @@ const MasketFeild = ({ name = '', value = '', label = '', mask = [], reference, 
                     value={value}
                     ref={reference}
                     returnKeyType="next"
-                    keyboardType='numbers-and-punctuation'
                     style={styles.textFeild}
                     placeholder={placeholder}
+                    keyboardType="decimal-pad"
                     onSubmitEditing={onSubmitEditing}
                     onChangeText={onChangeText(name)}
                 />
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 17,
         letterSpacing: 2,
-        fontWeight: '300',
+        // fontWeight: '300',
     },
     textFeildCon: {
         paddingRight: '3%',

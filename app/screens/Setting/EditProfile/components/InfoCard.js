@@ -4,9 +4,10 @@ import { useNavigation } from '@react-navigation/core';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
+import { sliceText } from '../../../../utils';
 
 const InfoCard = ({ label, value }) => {
-    const { navigate } = useNavigation()
+    const { navigate } = useNavigation();
     const onEditInfo = () => {
         navigate('UserInfoForm')
     }
@@ -17,7 +18,7 @@ const InfoCard = ({ label, value }) => {
             </Text>
             <View style={LAY_OUT.flex_row}>
                 <Text style={styles.value}>
-                    {value}
+                    {sliceText(value, 20)}
                 </Text>
                 <AntDesign name="right" size={23} color={COLORS.gray_color} />
             </View>

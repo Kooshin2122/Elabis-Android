@@ -3,29 +3,41 @@ import React from 'react';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 //
+import { useDispatch } from 'react-redux';
 import { sliceText } from '../../../../utils';
 import { useNavigation } from '@react-navigation/core';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { changeActiveTab, changeSelectBrand, changeSelectSubCategory } from '../../../../ReduxStore/ProductScreenSlice';
 //
-const { width } = Dimensions.get('screen')
+const { width } = Dimensions.get('screen');
 //
 const FilterBox = ({ title = 'Category', selectItem = 'Select Item' }) => {
+    const dispatch = useDispatch();
     const { navigate } = useNavigation();
-
-    const navigateFilteringScreen = () => {
-        navigate('FilteringScreen')
+    //
+    const navigateMainProductsScreen = () => {
+        if (title == "Shop") {
+            navigate('ShopsScreen');
+            return
+        }
+        navigate('MainProductsScreen');
+        title == "Category"
+            ?
+            dispatch(changeActiveTab(true))
+            :
+            dispatch(changeActiveTab(false))
     }
-
+    //
     return (
-        <Pressable style={styles.container} onPress={navigateFilteringScreen}>
+        <Pressable style={styles.container} onPress={navigateMainProductsScreen}>
             <Text style={styles.titleText}>
                 {title}
             </Text>
             <View style={LAY_OUT.flex_row}>
                 <Text style={styles.selectItemText}>
-                    {sliceText(selectItem, 5)}
+                    {sliceText(selectItem, 10)}
                 </Text>
-                <AntDesign name="down" size={18} style={styles.selectItemText} color='gray' />
+                <MaterialCommunityIcons name="select-place" size={18} style={styles.selectItemText} color='gray' />
             </View>
         </Pressable>
     )
@@ -35,16 +47,18 @@ export default FilterBox;
 
 const styles = StyleSheet.create({
     container: {
-        width: width / 4,
+        flex: 1,
         paddingHorizontal: '2%',
         borderRightWidth: 0.7,
         borderColor: COLORS.gray_color
     },
     titleText: {
+        fontSize: 12,
         fontWeight: '300',
         letterSpacing: 0.6
     },
     selectItemText: {
+        fontSize: 12,
         fontWeight: '500',
         textTransform: 'uppercase'
     }

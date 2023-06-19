@@ -1,39 +1,45 @@
 //
-import React, { useRef } from 'react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
+import React, { useRef } from 'react';
 import { useNavigation } from '@react-navigation/core'
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import signUpImage from '../../../../../assets/images/AUTH-IMAGES/sign-up.png';
 import { SubHeader, CustomInput, Devider, CustomButton } from '../../../../components';
 import { Image, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { formDataGenerator } from '../../../../utils';
+// import { https } from '../../../../API';
 
 const SignUpScreen = () => {
     const { navigate } = useNavigation()
     // Formik and yup validation data
-    const signUpInfo = { fullName: '', phoneNumber: '', password: '' }
+    const signUpInfo = { name: '', email: '', phone_number: '', password: '' }
     const signUpVerificationSchema = yup.object().shape({
-        fullName: yup.string().required("Full-Name is required").min(3),
-        phoneNumber: yup.string().required("Phone Number is required").min(7),
+        name: yup.string().required("Full-Name is required").min(3),
+        phone_number: yup.string().required("Phone Number is required").min(10),
         password: yup.string().required("Password is required").min(3),
     })
     // on submit method
-    const onSignUp = (values) => {
-        // console.log('---------- Sign-Up', values);
-        navigate('SignUpStack', {
-            screen: "OTP",
-            params: {
-                userInfo: {
-                    fullName: values.fullName,
-                    phoneNumber: values.phoneNumber,
-                    password: values.password,
-                }
-            }
-        })
+    const onSignUp = async (values) => {
+        const formData = await formDataGenerator(values)
+        // const res = await https.post("buyer/user/signup", formData)
+        console.log("Response", res);
+        // navigate('SignUpStack', {j
+        //     screen: "OTP",
+        //     params: {
+        //         userInfo: {
+        //             name: values.name,
+        //             email: values.email,
+        //             phone_number: values.phone_number,
+        //             password: values.password,
+        //         }
+        //     }
+        // })
     }
     // 
     const feildTwo = useRef()
     const feildThree = useRef()
+    const feildFour = useRef()
     // jsx
     return (
         <SafeAreaView style={styles.container}>
@@ -45,17 +51,15 @@ const SignUpScreen = () => {
                 enabled
             >
                 <ScrollView style={styles.scrollCon}>
-                    <View style={{ width: '100%', height: 200, borderWidth: 0.5, borderColor: COLORS.primary_color }}>
-                        <Image
-                            source={signUpImage}
-                            style={{ width: '100%', height: '100%' }}
-                            resizeMode="cover"
-                        />
-                    </View>
+                    <Text style={styles.title}>
+                        Create Account
+                    </Text>
+                    <Devider height={25} />
                     <View style={styles.formCon}>
                         <Text style={styles.title}>
                             SIGN-UP
                         </Text>
+                        <Devider height={25} />
                         <Formik
                             initialValues={signUpInfo}
                             validationSchema={signUpVerificationSchema}
@@ -63,28 +67,38 @@ const SignUpScreen = () => {
                         >
                             {({ handleChange, handleBlur, handleSubmit, values, errors }) => {
                                 return (
-                                    <View style={{ paddingBottom: '10%' }}>
+                                    <View style={{ paddingBottom: '3%' }}>
                                         <CustomInput
-                                            name='fullName'
+                                            name='name'
                                             label='Full Name'
-                                            value={values.fullName}
+                                            value={values.name}
                                             placeholder="Enter Your Full Name"
                                             onChangeText={handleChange}
                                             onSubmitEditing={() => feildTwo.current.focus()}
                                         />
                                         <CustomInput
-                                            name='phoneNumber'
-                                            label='Phone Number'
-                                            value={values.phoneNumber}
+                                            name='email'
+                                            label='Email'
+                                            value={values.email}
                                             reference={feildTwo}
-                                            placeholder="252 XX X XX XX XX"
+                                            required=" (optional)"
+                                            placeholder="Example@gmail.com"
                                             onChangeText={handleChange}
                                             onSubmitEditing={() => feildThree.current.focus()}
                                         />
                                         <CustomInput
+                                            name='phone_number'
+                                            label='Phone Number'
+                                            value={values.phone_number}
+                                            reference={feildThree}
+                                            placeholder="252 XX X XX XX XX"
+                                            onChangeText={handleChange}
+                                            onSubmitEditing={() => feildFour.current.focus()}
+                                        />
+                                        <CustomInput
                                             name='password'
                                             label='Password'
-                                            reference={feildThree}
+                                            reference={feildFour}
                                             value={values.password}
                                             showEyeIcon={true}
                                             secureTextEntry={true}
@@ -93,27 +107,32 @@ const SignUpScreen = () => {
                                             onChangeText={handleChange}
                                         />
                                         {
-                                            (errors.phoneNumber || errors.password) &&
+                                            (errors.phone_number || errors.password) &&
                                             <View style={[styles.errorCon]}>
-                                                <Text style={[styles.errorsTxt, { display: errors.fullName ? 'flex' : 'none' }]}>{errors.fullName}</Text>
-                                                <Text style={[styles.errorsTxt, { display: errors.phoneNumber ? 'flex' : 'none' }]}>{errors.phoneNumber}</Text>
+                                                <Text style={[styles.errorsTxt, { display: errors.name ? 'flex' : 'none' }]}>{errors.name}</Text>
+                                                <Text style={[styles.errorsTxt, { display: errors.phone_number ? 'flex' : 'none' }]}>{errors.phone_number}</Text>
                                                 <Text style={[styles.errorsTxt, { display: errors.password ? 'flex' : 'none' }]}>{errors.password}</Text>
                                             </View>
                                         }
                                         <Devider />
                                         {/* Controls */}
                                         <CustomButton title="NEXT" clickHandler={handleSubmit} />
-                                        <Devider />
-                                        <Pressable onPress={() => navigate('LoginStack')} style={{ marginBottom: '5%' }}>
-                                            <Text style={styles.forgotPasswordText}>
-                                                all ready have an account
-                                            </Text>
-                                        </Pressable>
                                         {/* <CustomButton style={styles.signUpBtn} title="ALL READY HAVE AN ACCOUNT" textColor={COLORS.primary_color} clickHandler={() => navigate('LoginStack')} /> */}
                                     </View>
                                 )
                             }}
                         </Formik>
+                    </View>
+                    <Devider />
+                    <View style={{ flexDirection: 'row', columnGap: 7, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={styles.forgotPasswordText}>
+                            allready have an account
+                        </Text>
+                        <Pressable onPress={() => navigate('LoginStack')}>
+                            <Text style={styles.btnText}>
+                                Login Now
+                            </Text>
+                        </Pressable>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -130,26 +149,33 @@ const styles = StyleSheet.create({
     },
     scrollCon: {
         flex: 1,
+        padding: '3%',
         paddingVertical: LAY_OUT.paddingY,
-        // backgroundColor: COLORS.bg_secondary
     },
     formCon: {
-        minHeight: 200,
-        paddingVertical: LAY_OUT.padding,
-        paddingHorizontal: '4%'
-        // backgroundColor: 'blue',
+        padding: '5%',
+        minHeight: 180,
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: COLORS.gray_color,
+        backgroundColor: COLORS.bg_primary,
     },
     title: {
-        fontSize: 18,
+        fontSize: 25,
         fontWeight: '500',
-        textAlign: 'center',
-        letterSpacing: 1
+        letterSpacing: 0.5
     },
     forgotPasswordText: {
         fontSize: 17,
         textAlign: 'center',
-        // textDecorationLine: 1,
         letterSpacing: 1,
+        color: COLORS.black_color,
+    },
+    btnText: {
+        fontSize: 17,
+        fontWeight: '500',
+        textAlign: 'center',
+        letterSpacing: 0.5,
         color: COLORS.primary_color,
     },
     signUpBtn: {

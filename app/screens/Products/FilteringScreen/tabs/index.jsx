@@ -4,9 +4,8 @@ import BrandsTab from './BrandsTab';
 import ModelsTab from './ModelsTab';
 import YearsTab from './YearsTab';
 //
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { View, Text } from 'react-native';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 //
 const Tab = createMaterialTopTabNavigator();
 //
@@ -15,7 +14,7 @@ function FilteringMaterialTopTabs({ activeTab = 'Category' }) {
         <Tab.Navigator
             initialRouteName={activeTab}
             screenOptions={{
-                // tabBarBadge: () => (<Badge />),
+                swipeEnabled: false,
                 tabBarStyle: {
                     elevation: 1,
                 },
@@ -37,12 +36,12 @@ function FilteringMaterialTopTabs({ activeTab = 'Category' }) {
 
 export default FilteringMaterialTopTabs;
 
-export function Badge() {
-    return (
-        <View style={{ width: 18, height: 18, backgroundColor: 'red', borderRadius: 40 }} >
-            <Text style={{ fontSize: 9, }}>
-                10
-            </Text>
-        </View>
-    )
-}
+// export function Badge() {
+//     return (
+//         <View style={{ width: 18, height: 18, backgroundColor: 'red', borderRadius: 40 }} >
+//             <Text style={{ fontSize: 9, }}>
+//                 10
+//             </Text>
+//         </View>
+//     )
+// }

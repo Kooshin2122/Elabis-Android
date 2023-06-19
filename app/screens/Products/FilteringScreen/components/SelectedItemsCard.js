@@ -1,14 +1,18 @@
 //
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeSelectSubCategory } from '../../../../ReduxStore/ProductScreenSlice';
 //
-const SelectedItemsCard = ({ item }) => {
+const { width, height } = Dimensions.get('screen')
+const SelectedItemsCard = ({ item = 'All', changeSelectedItems = () => { } }) => {
     return (
         <View style={styles.container}>
-            <Text>SelectedItemsCard</Text>
-            <AntDesign name="close" size={18} />
+            <Text style={styles.itemName}>
+                {item}
+            </Text>
         </View>
     )
 }
@@ -19,12 +23,16 @@ const styles = StyleSheet.create({
     container: {
         columnGap: 10,
         borderRadius: 40,
-        marginRight: '3%',
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: '2%',
-        paddingHorizontal: '4%',
+        marginRight: 10,
+        height: height / 27,
+        paddingHorizontal: width / 40,
         backgroundColor: COLORS.light_green_color,
+    },
+    itemName: {
+        fontSize: 10,
+        fontWeight: 500
     }
 })
 //

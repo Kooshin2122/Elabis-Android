@@ -5,7 +5,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import SelectableCategoryCon from './SelectableCategoryCon';
 //
-const SubCategoryCon = ({ title, categories = [] }) => {
+const SubCategoryCon = ({ title, categories = [], changeSelectedItems = () => { } }) => {
     //
     const [activeSubCategory, setActiveSubCategory] = useState(true)
     const changeActibeSubCategoty = () => {
@@ -23,7 +23,7 @@ const SubCategoryCon = ({ title, categories = [] }) => {
                 <View style={[styles.categoriesCon]}>
                     {
                         categories.map((item) => (
-                            <SelectableCategoryCon key={item.categoryName} {...item} />
+                            <SelectableCategoryCon key={item.categoryName} {...item} changeSelectedItems={changeSelectedItems} />
                         ))
                     }
                 </View>

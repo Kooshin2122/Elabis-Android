@@ -1,13 +1,15 @@
 import React from 'react';
+import Devider from '../Devider';
 import { sliceText } from '../../utils';
 import { useNavigation } from '@react-navigation/core';
 import { COLORS, LAY_OUT } from '../../Theme/GLOBAL_STYLES';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Dimensions, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 //
 const { height } = Dimensions.get('screen');
 //
-const ProductCard = ({ productName, productPrice, productBrandName, productImageUrl, parentScreen = null }) => {
+const ProductCard = ({ UPID, shop_id, name, brand, price, photo, rating, quantity_avaliable, productName, productPrice, productBrandName, productImageUrl, parentScreen = null }) => {
     const { navigate } = useNavigation();
     //
     const navigateDetailsScreen = () => {
@@ -15,38 +17,45 @@ const ProductCard = ({ productName, productPrice, productBrandName, productImage
             screen: 'DetailsScreen',
             initial: false,
             params: {
-                productName,
-                productPrice,
-                productImageUrl,
-                productBrandName,
+                UPID,
                 parentScreen
             }
-        })
+        });
     }
     //
     return (
-        <Pressable onPress={navigateDetailsScreen} style={styles.container}>
-            <View style={styles.imageContainer}>
-                <Image
-                    style={styles.image}
-                    resizeMode="contain"
-                    source={productImageUrl}
-                />
-            </View>
-            <View style={styles.contentContainer}>
-                {/* Product Name */}
-                <Text style={styles.proName}>
-                    {sliceText(productName, 40)}
-                </Text>
-                {/* product Brand Name */}
-                <Text style={styles.proBrandName}>
-                    Brand : {productBrandName}
-                </Text>
-            </View>
+        <View style={styles.container}>
+            <Pressable onPress={navigateDetailsScreen}>
+                <View style={styles.imageContainer}>
+                    <Image
+                        resizeMode="cover"
+                        style={styles.image}
+                        source={{ uri: `https://sweyn.co.uk/storage/images/${photo}` }}
+                    />
+                </View>
+                <View style={styles.contentContainer}>
+                    {/* Product Name */}
+                    <Text style={styles.proName}>
+                        {sliceText(name, 40)}
+                    </Text>
+                    {/* product Brand Name */}
+                    <Devider height={5} />
+                    <Text style={styles.proBrandName}>
+                        Brand : {brand?.name}
+                    </Text>
+                    <View style={LAY_OUT.flex_row}>
+                        <Text style={styles.proBrandName}>
+                            Quantity : {quantity_avaliable}
+                        </Text>
+                        <Text style={[styles.proBrandName, { letterSpacing: 2, fontWeight: "bold", color: "orange" }]}>
+                            {rating}
+                            <AntDesign name="star" size={12} color="orange" />
+                        </Text>
+                    </View>
+                </View>
+            </Pressable>
+            <Devider height={10} />
             <View style={styles.controlsCon}>
-                <Text style={styles.proPrice}>
-                    ${productPrice}
-                </Text>
                 <View style={[LAY_OUT.flex_row, { alignSelf: 'flex-end' }]}>
                     <Pressable style={styles.iconCon}>
                         <MaterialCommunityIcons name="cards-heart-outline" size={18} />
@@ -55,23 +64,29 @@ const ProductCard = ({ productName, productPrice, productBrandName, productImage
                         <MaterialCommunityIcons name="cart-plus" size={18} />
                     </Pressable>
                 </View>
+                <Text style={styles.proPrice}>
+                    ${price}
+                </Text>
             </View>
-        </Pressable>
+        </View>
+
     )
 }
-
+//
 export default ProductCard;
-
+//
 const styles = StyleSheet.create({
     container: {
-        width: '48%',
-        height: 220,
+        minHeight: 200,
+        width: '46%',
         padding: '2%',
         borderRadius: 7,
-        justifyContent: 'space-between',
         borderWidth: 0.5,
         marginBottom: '4%',
-        borderColor: COLORS.gray_color
+        marginHorizontal: "2%",
+        borderColor: COLORS.gray_color,
+        justifyContent: 'space-between',
+        backgroundColor: COLORS.bg_primary,
     },
     imageContainer: {
         height: 110,
@@ -81,23 +96,30 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.bg_tertiary
     },
     image: {
-        width: '80%',
-        height: '80%'
+        width: '100%',
+        height: '100%',
+        borderRadius: 7,
     },
     contentContainer: {
-        // marginTop: '3%'
+        marginTop: '7%'
     },
     proName: {
-        fontSize: 13,
-        fontWeight: '500',
-        textTransform: 'uppercase'
+        fontSize: 14,
+        fontWeight: "bold",
+        letterSpacing: 0.8,
+        color: COLORS.black_color,
+        textTransform: 'uppercase',
     },
     proBrandName: {
+        fontSize: 12,
         fontWeight: '300'
     },
     controlsCon: {
+        paddingTop: "5%",
         flexDirection: 'row',
         alignItems: 'center',
+        borderTopWidth: 0.5,
+        borderColor: COLORS.gray_color,
         justifyContent: 'space-between',
     },
     iconCon: {
@@ -107,8 +129,9 @@ const styles = StyleSheet.create({
         borderColor: COLORS.gray_color,
     },
     proPrice: {
-        fontSize: 20,
-        fontWeight: '400',
-        alignSelf: 'flex-end'
+        fontSize: 16,
+        fontWeight: "bold",
+        alignSelf: 'flex-end',
+        color: COLORS.primary_color
     },
 })

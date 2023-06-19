@@ -4,26 +4,29 @@ import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 //Redux tool kit
 import { useDispatch, useSelector } from 'react-redux';
-import { changeSelectYear } from '../../../../ReduxStore/ProductScreenSlice';
+import { changeSelectBrand } from '../../../../ReduxStore/ProductScreenSlice';
 
 const MonufactorYearCard = ({ year }) => {
     const dispatch = useDispatch()
-    const { selectYear } = useSelector(state => state.productsSlice)
-
+    const { selectBrand } = useSelector(state => state.productsSlice);
+    //
     const onSelectYear = () => {
-        dispatch(changeSelectYear(year))
+        // dispatch(changeSelectBrand({ ...selectBrand, year: year }))
     }
-
-    const isActive = useMemo(() => {
-        return selectYear == year
-    }, [selectYear])
+    //
+    // const isActive = useMemo(() => {
+    //     return selectBrand.year == year
+    // }, [selectBrand.year])
 
     return (
-        <TouchableOpacity onPress={onSelectYear} style={[styles.container, { borderColor: isActive ? COLORS.primary_color : COLORS.gray_color, }]} activeOpacity={0.6}>
-            <Text style={styles.textSize}>
-                {year}
-            </Text>
-        </TouchableOpacity>
+        <View>
+
+        </View>
+        // <TouchableOpacity onPress={onSelectYear} style={[styles.container, { borderColor: isActive ? COLORS.primary_color : COLORS.gray_color, }]} activeOpacity={0.6}>
+        //     <Text style={styles.textSize}>
+        //         {year}
+        //     </Text>
+        // </TouchableOpacity>
     )
 }
 

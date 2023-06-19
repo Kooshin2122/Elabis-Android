@@ -31,3 +31,11 @@ export const getServiceMask = (companyName) => {
             mask: ['(', /[6-7]/, /[1]/, ')', ' ', /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]
         }
 }
+
+export const formDataGenerator = (obj = {}) => {
+    const formData = new FormData();
+    Object.keys(obj).map((key) => {
+        formData.append(key, obj[key])
+    })
+    return formData;
+}

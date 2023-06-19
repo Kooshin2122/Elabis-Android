@@ -5,18 +5,28 @@ import { Dimensions, Image, Pressable, StyleSheet, Text, TouchableOpacity, View 
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { sliceText } from '../../../../utils';
+import { formDataGenerator, sliceText } from '../../../../utils';
+import { fetchPostAuthData } from '../../../../API';
 
 const { width, height } = Dimensions.get('screen');
 
-const BasketCard = ({ id, productName, brandName, price, quantity, discountPercentage, category, imageUrl }) => {
+const BasketCard = ({ id, UPID, name, brand, category, quantity, quantity_avaliable, photo, price, reloadData = () => { } }) => {
+    //
+    const onRemoveCart = async () => {
+        const cartInfo = { UPID: UPID };
+        const formData = await formDataGenerator(cartInfo);
+        const res = await fetchPostAuthData("buyer/cart/product/remove", formData);
+        console.log("onRemoveCart", res);
+        reloadData();
+    }
+    //
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
                 <Image
-                    source={imageUrl}
                     resizeMode='contain'
                     style={styles.img}
+                    source={{ uri: `https://sweyn.co.uk/storage/images/${photo}` }}
                 />
             </View>
             {/* Content Container ------------------------------------------------- */}
@@ -24,46 +34,41 @@ const BasketCard = ({ id, productName, brandName, price, quantity, discountPerce
                 {/* Section One --------------------------------------------------- */}
                 <View style={styles.sectionOne}>
                     <Text style={styles.proName}>
-                        {sliceText(productName, 18)}
+                        {sliceText(name, 18)}
                     </Text>
-                    <Pressable style={styles.cartRemoveCon}>
+                    <Pressable onPress={onRemoveCart} style={styles.cartRemoveCon}>
                         <MaterialCommunityIcons name="cart-remove" size={18} color="#f7847f" />
                     </Pressable>
                 </View>
                 {/* Section Two --------------------------------------------------- */}
                 <View style={styles.sectionTwo}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', overflow: 'hidden' }}>
+                    <Text style={styles.itemInfo}>
+                        Brand: {sliceText(brand?.name, 18)}
+                    </Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: "wrap", overflow: 'hidden' }}>
                         <Text style={styles.itemInfo}>
-                            Category: {sliceText(category, 6)}
-                        </Text>
-                        <Text style={[styles.itemInfo, { marginHorizontal: '2%' }]} >
-                            ||
-                        </Text>
-                        <Text style={styles.itemInfo}>
-                            Quantities: {quantity}
+                            Available Quantities: {quantity_avaliable}
                         </Text>
                     </View>
-                    <Text style={styles.itemInfo}>
-                        Brand: {sliceText(brandName, 18)}
-                    </Text>
+
                 </View>
                 {/* Section Three --------------------------------------------------- */}
                 <View style={styles.sectionThree}>
                     <Text style={styles.oldPrice}>
-                        ${price}
+                        ${price * quantity + 5}
                     </Text>
                     <View style={styles.discountCon}>
                         <Text style={{ color: '#ffffff', fontSize: 12, fontWeight: '500' }}>
-                            {discountPercentage}
+                            20%
                         </Text>
                     </View>
                     <Text style={styles.price}>
-                        ${price}
+                        ${price * quantity}
                     </Text>
                     <View style={styles.counterCo}>
                         <AntDesign name="left" size={20} />
                         <Text style={styles.counterText}>
-                            5
+                            {quantity}
                         </Text>
                         <AntDesign name="right" size={20} />
                     </View>

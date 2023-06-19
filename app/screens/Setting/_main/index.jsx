@@ -1,15 +1,34 @@
 //
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
+import { useAppContext } from '../../../context';
+import { fetchGetAuthData } from '../../../API';
+import { useFocusEffect } from '@react-navigation/core';
 import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
+import { readData } from '../../../utils/localStorage/AsyncStorage';
 import { ImageViewer, LoginModal, SettingCards } from './components';
 import { Devider, Header, LoadingIndicator, ModalContainer } from '../../../components';
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-
-const SettingScreen = ({ isUserLogin = true }) => {
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+//
+const SettingScreen = ({ route }) => {
+    //
     const { navigate } = useNavigation();
+    const [notifToggle, setNotifToggle] = useState(false);
     const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
-    const [notifToggle, setNotifToggle] = useState(false)
+    const { userData, isUserLogin, setIsUserLogin, setUserData } = useAppContext();
+    //
+    const getTokenAsync = async () => {
+        const res = await readData('userInfo');
+        if (res) {
+            setIsUserLogin(true);
+            fetchGetAuthData("buyer/user/view", setUserData);
+        }
+    }
+    //
+    useEffect(() => {
+        getTokenAsync();
+    }, [])
+    //
     return (
         <SafeAreaView style={styles.container}>
             <Header label="Settings" />
@@ -18,22 +37,22 @@ const SettingScreen = ({ isUserLogin = true }) => {
                 <Devider height={23} />
                 {/* Profile Container */}
                 <View style={styles.profileContainer}>
-                    <ImageViewer image={isUserLogin && 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8&w=1000&q=80'} />
+                    <ImageViewer />
                     <Devider />
                     {
                         isUserLogin ?
-                            <View>
+                            <View style={{ alignItems: "center" }}>
                                 <Text style={styles.userName}>
-                                    Abdirahman Abdirashid
+                                    {userData?.name}
                                 </Text>
-                                <Pressable onPress={() => navigate('EditProfile')}>
+                                <TouchableOpacity onPress={() => navigate('EditProfile')} style={styles.editBtn} activeOpacity={0.6} >
                                     <Text style={styles.editBtnTxt}>
                                         Edit Profile
                                     </Text>
-                                </Pressable>
+                                </TouchableOpacity>
                             </View>
                             :
-                            <Pressable style={styles.loginBtn}>
+                            <Pressable onPress={() => navigate('AuthStack')} style={styles.loginBtn}>
                                 <Text style={styles.loginBtnTxt}>
                                     sign-in
                                 </Text>
@@ -94,20 +113,24 @@ const styles = StyleSheet.create({
     },
     userName: {
         fontSize: 18,
-        fontWeight: '400',
+        fontWeight: '500',
         textAlign: 'center',
         letterSpacing: 0.7,
+    },
+    editBtn: {
+        marginTop: '3%',
+        paddingVertical: '2.5%',
+        paddingHorizontal: '5%',
+        borderWidth: 1,
+        borderRadius: 7,
+        borderColor: COLORS.primary_color
     },
     editBtnTxt: {
-        fontSize: 18,
-        color: 'gray',
-        marginTop: '3%',
+        fontSize: 14,
         fontWeight: '500',
         letterSpacing: 0.7,
-        textAlign: 'center',
-    },
-    settingCardsContainer: {
-
-    },
+        textAlign: "center",
+        color: COLORS.primary_color,
+    }
     // ----------
 })

@@ -25,7 +25,7 @@ const PaymentResponseModal = ({ iconName, title, discription, modalVisible, chan
         >
             <Pressable onPress={onCloseModal} style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Octicons name={iconName} size={50} color={iconName == 'check-circle' ? 'green' : 'red'} />
+                    <Octicons name={iconName} size={50} color={iconName == 'check-circle' ? COLORS.primary_color : 'red'} />
                     <Devider height={7} />
                     {/* Content Container */}
                     <View style={styles.contentCon}>

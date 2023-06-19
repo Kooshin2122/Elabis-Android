@@ -36,9 +36,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: LAY_OUT.padding,
         justifyContent: 'space-between',
-        borderBottomWidth: 1.2,
+        borderBottomWidth: 0.6,
         backgroundColor: COLORS.bg_primary,
-        borderBottomColor: COLORS.bg_tertiary
+        borderBottomColor: COLORS.gray_color
     },
     iconCon: {
         flex: 0.1,

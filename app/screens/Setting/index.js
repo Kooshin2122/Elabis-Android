@@ -6,6 +6,7 @@ import EditProfile from './EditProfile';
 import UserInfoForm from './UserInfoForm';
 import HelpeCenterScreen from './helpCenter';
 import PrivacyAndPolocyScreen from './privacyAndPolocy';
+import ChangePassword from './ChangePassword';
 
 //
 const Stack = createNativeStackNavigator();
@@ -17,6 +18,7 @@ const SettingStack = () => {
             <Stack.Screen name="EditProfile" component={EditProfile} />
             <Stack.Screen name="UserInfoForm" component={UserInfoForm} />
             <Stack.Screen name="HelpCenter" component={HelpeCenterScreen} />
+            <Stack.Screen name="ChangePassword" component={ChangePassword} />
             <Stack.Screen name="PrivacyAndPolocy" component={PrivacyAndPolocyScreen} />
         </Stack.Navigator>
     )
