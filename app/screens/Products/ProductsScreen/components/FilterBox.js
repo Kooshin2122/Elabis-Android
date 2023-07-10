@@ -17,15 +17,19 @@ const FilterBox = ({ title = 'Category', selectItem = 'Select Item' }) => {
     //
     const navigateMainProductsScreen = () => {
         if (title == "Shop") {
-            navigate('ShopsScreen');
+            navigate('MainProductsScreen', {
+                screen: "Shops"
+            })
             return
         }
-        navigate('MainProductsScreen');
-        title == "Category"
-            ?
-            dispatch(changeActiveTab(true))
+        title == "Category" ?
+            navigate('MainProductsScreen', {
+                screen: "Categories"
+            })
             :
-            dispatch(changeActiveTab(false))
+            navigate('MainProductsScreen', {
+                screen: "Brands"
+            });
     }
     //
     return (

@@ -1,16 +1,16 @@
 //
 import React, { useEffect, useState } from 'react';
 import { formDataGenerator, sliceText } from '../../../utils';
-import { ImageViewer } from './components';
 import { useNavigation } from '@react-navigation/core';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { SubHeader, Devider, Container, LoadingModal } from '../../../components';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Dimensions, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ImageCarousel, ProductDetailCard } from './components';
+import { SubHeader, Devider, Container, LoadingModal, PaperTextInput, CustomButton } from '../../../components';
+import { Dimensions, KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { fetchGetData, fetchPostAuthData } from '../../../API';
 import { useAppContext } from '../../../context';
+import { getDistance, } from "geolib"
 import { readData } from '../../../utils/localStorage/AsyncStorage';
 //
 const { width, height } = Dimensions.get('screen');
@@ -18,11 +18,14 @@ const { width, height } = Dimensions.get('screen');
 const ProductDetailsScreen = ({ route }) => {
     const { navigate } = useNavigation();
     const [loading, setLoading] = useState();
+    const [images, setImages] = useState([]);
     const [counter, setCounter] = useState(1);
+    const [distance, setDistance] = useState(0);
+    const [shopData, setShopData] = useState([]);
     const [productData, setProductData] = useState();
+    const { userLocation, setUserLocation, } = useAppContext();
     //
     const { UPID, parentScreen } = route.params;
-    const [scrollPossition, setScrollPossition] = useState();
     //
     const decreasement = () => {
         if (counter <= 1)
@@ -30,13 +33,30 @@ const ProductDetailsScreen = ({ route }) => {
         setCounter(counter - 1)
     }
     const onIncreasement = () => {
+        if (counter > productData?.quantity_avaliable)
+            return
         setCounter(counter + 1)
     }
     //
+    const calculateDistance = (shopLocation = {}) => {
+        const userLoc = {
+            latitude: userLocation?.coords.latitude,
+            longitude: userLocation?.coords.longitude,
+        }
+        let dis = getDistance(userLoc, shopLocation);
+        setDistance(dis)
+    }
+    //
     const getSignleProductDataAsync = async () => {
-        const response = await fetchGetData(`buyer/products/view/${UPID}`, setLoading)
-        setProductData(response.data[0])
-        // console.log("response-----", response);
+        setLoading(true);
+        const response = await fetchGetData(`buyer/products/view/${UPID}`)
+        setProductData(response.data[0]);
+        setImages(response.images);
+        const shopRes = await fetchGetData(`buyer/shop/view/${response.data[0]?.shop_id}`);
+        setShopData(shopRes.data);
+        setLoading(false);
+        const shopLocation = { latitude: shopRes?.data.latitude, longitude: shopRes?.data.longitude }
+        calculateDistance(shopLocation);
     }
     // Hiding Bottom Tab Navigation
     useEffect(() => {
@@ -45,22 +65,23 @@ const ProductDetailsScreen = ({ route }) => {
     //
     const addToCart = async () => {
         const token = await readData("userInfo");
+        // check if the user login
+        if (token == null) {
+            navigate("AuthStack")
+            return
+        }
+        //
         const cartData = {
             UPID: productData.UPID,
             quantity: counter,
         }
+        //
         const formData = formDataGenerator(cartData);
-        // check if the user login
-        if (token.token_type == false) {
-            navigate("AuthStack")
-            return
-        }
         const res = await fetchPostAuthData("buyer/cart/product/add", formData, setLoading);
-        console.log("response is --------->", res);
         //
         if (res.status == "added successfully")
             navigate("OrdersStack")
-        else if (res.status == "A open Cart is not avaliable") {
+        else if (res?.status == "A open Cart is not avaliable") {
             const creatCart = await fetchPostAuthData("buyer/cart/create",)
             const response = await fetchPostAuthData("buyer/cart/product/add", formData, setLoading)
         }
@@ -69,75 +90,93 @@ const ProductDetailsScreen = ({ route }) => {
     return (
         <SafeAreaView style={styles.container}>
             {loading && <LoadingModal />}
-            {/* {scrollPossition > 0.5 ? <SubHeader title="Product Details" backTo={parentScreen} /> : <DetailsHeader backTo={parentScreen} />} */}
             <SubHeader title="Product Details" backTo={parentScreen} />
-            <ScrollView onScroll={e => setScrollPossition(e.nativeEvent.contentOffset.y)} scrollEventThrottle={16} showsVerticalScrollIndicator={false} >
-                <ImageViewer UPID={productData?.UPID} />
-                <Devider />
-                <View style={styles.contentContainer}>
-                    <Text style={styles.proName}>
-                        {sliceText(productData?.name, 67)}
-                    </Text>
-                    <Devider height={10} />
-                    {/* Product Details */}
-                    <View>
-                        <Text style={styles.title}>
-                            Product Details
-                        </Text>
-                        <Text style={{ fontSize: 16, fontWeight: '300', letterSpacing: 0.5, color: COLORS.black_color }}>
-                            {productData?.description}
-                        </Text>
-                    </View>
-                    <Devider height={10} />
-                    {/* item information */}
-                    <View >
-                        <Text style={styles.title}>
-                            Item Info
-                        </Text>
-                        <ItemContainer title="Item Type" value='Mirror' />
-                        <ItemContainer title="Brand" value={productData?.brand?.name} />
-                        <ItemContainer title="Category" value={productData?.category?.name} />
-                        <ItemContainer title="Available Quantities" value={productData?.quantity_avaliable} />
-                    </View>
-                    <Devider />
-                    {/* Controls */}
-                    <View style={styles.contorllsContainer}>
-                        <Text>Quantity</Text>
-                        <View style={styles.quantityControls}>
-                            <Pressable onPress={decreasement} style={styles.box}>
-                                <AntDesign name="minus" size={25} />
-                            </Pressable>
-                            <Text style={styles.counterTxt}>
-                                {counter}
+            <KeyboardAvoidingView
+                enabled
+                style={{ flex: 1 }}
+                keyboardVerticalOffset={15}
+                behavior={Platform.OS == 'ios' ? 'padding' : null}
+            >
+                <ScrollView stickyHeaderIndices={[0]} showsVerticalScrollIndicator={false} >
+                    {/* image Carousel */}
+                    <ImageCarousel images={images} />
+                    <View style={styles.contentContainer}>
+                        <Devider />
+                        <ProductDetailCard
+                            distance={distance}
+                            name={shopData?.name}
+                            addToCart={addToCart}
+                            email={shopData?.email}
+                            UPID={productData?.UPID}
+                            photo={shopData?.photos}
+                            landmark={shopData?.landmark}
+                            phone_number={shopData?.phone_number}
+                        />
+                        <Devider height={10} />
+                        {/* item information */}
+                        <View style={styles.itemInfoMainContainer} >
+                            <Text style={styles.title}>
+                                Item Info
                             </Text>
-                            <Pressable onPress={onIncreasement} style={styles.box}>
-                                <AntDesign name="plus" size={25} />
-                            </Pressable>
+                            <ItemContainer title="Item Type" value={productData?.productcategory.name} />
+                            <ItemContainer title="Brand" value={productData?.brand?.name} />
+                            <ItemContainer title="Category" value={productData?.category?.name} />
+                            <ItemContainer title="Single Price" value={`$${productData?.price}`} />
+                            <ItemContainer title="Available Quantities" value={productData?.quantity_avaliable} />
                         </View>
                         <Devider />
-                        <View style={styles.paymentsControls}>
-                            <View style={styles.btn}>
-                                <Text style={styles.priceTxt}>
-                                    Pay Now
-                                </Text>
-                                <FontAwesome name="money" size={20} color='#fff' style={{ marginLeft: 10 }} />
-                            </View>
-                            <Text style={styles.price}>
-                                $ {productData?.price * counter}
+                        {/* Product Details */}
+                        <View style={styles.itemInfoMainContainer}>
+                            <Text style={styles.title}>
+                                Product Details
                             </Text>
-                            <Pressable onPress={addToCart} style={styles.btn}>
-                                <Text style={styles.priceTxt}>
-                                    Add Cart
-                                </Text>
-                                <MaterialCommunityIcons name="cart-check" size={20} color='#fff' style={{ marginLeft: 10 }} />
-                            </Pressable>
+                            <Text style={{ fontSize: 14, fontWeight: '400', letterSpacing: 0.5, color: "gray" }}>
+                                {productData?.description}
+                            </Text>
                         </View>
+                        <Devider />
+                        {/* Controls */}
+                        <View style={styles.contorllsContainer}>
+                            <View style={styles.contorllsHead}>
+                                <View>
+                                    <Text style={styles.counterTxt}>
+                                        {counter}
+                                    </Text>
+                                    <Text style={styles.subTitle}>Quantity</Text>
+                                </View>
+                                <View>
+                                    <Text style={styles.totalPrice}>
+                                        ${productData?.price * counter}
+                                    </Text>
+                                    <Text style={styles.subTitle}>Total Price</Text>
+                                </View>
+                            </View>
+                            <Devider />
+                            <View style={styles.quantityControls}>
+                                <Pressable onPress={decreasement} style={[styles.box, { borderRightWidth: 1, }]}>
+                                    <AntDesign name="minus" size={25} />
+                                </Pressable>
+                                <View style={styles.counterView}>
+                                    <Text style={[styles.counterTxt, { textAlign: "center", fontSize: 22 }]}>
+                                        {counter}
+                                    </Text>
+                                </View>
+                                <Pressable onPress={onIncreasement} style={styles.box}>
+                                    <AntDesign name="plus" size={25} />
+                                </Pressable>
+                            </View>
+                            <Devider />
+                            <CustomButton
+                                title="Add On Cart"
+                                clickHandler={addToCart}
+                            />
+                        </View>
+                        <Devider />
+                        <Devider />
+                        <Devider />
                     </View>
-                </View>
-                <Devider />
-                <Devider />
-                <Devider />
-            </ScrollView>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     )
 }
@@ -168,6 +207,11 @@ const styles = StyleSheet.create({
         // backgroundColor: COLORS.black_color
     },
     contentContainer: {
+        zIndex: 1000,
+        paddingTop: "1%",
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
+        backgroundColor: COLORS.bg_primary,
         paddingHorizontal: LAY_OUT.paddingX,
     },
     proName: {
@@ -181,37 +225,66 @@ const styles = StyleSheet.create({
         marginBottom: 5, letterSpacing: 1,
         color: COLORS.black_color,
     },
+    itemInfoMainContainer: {
+        padding: "4%",
+        borderRadius: 7,
+        borderWidth: 0.7,
+        borderColor: COLORS.gray_color
+    },
     itemContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingVertical: '3%',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
         borderBottomColor: COLORS.gray_color,
     },
     contorllsContainer: {
-        alignItems: 'center',
+        padding: "4%",
+        borderRadius: 7,
+        borderWidth: 0.7,
+        borderColor: COLORS.gray_color,
+    },
+    contorllsHead: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between"
     },
     quantityControls: {
-        width: '50%',
+        width: '100%',
         flexDirection: 'row',
-        alignItems: 'flex-end',
-        // backgroundColor: 'blue'
-    },
-    box: {
-        flex: 1,
-        padding: '5%',
-        borderWidth: 1,
+        alignItems: "center",
+        borderWidth: 0.7,
         borderRadius: 5,
         borderColor: COLORS.gray_color,
+    },
+    box: {
+        padding: '4%',
+        borderLeftWidth: 0.7,
+        borderRadius: 5,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderColor: COLORS.gray_color,
+    },
+    counterView: {
+        flex: 1,
+        alignItems: "center",
     },
     counterTxt: {
-        flex: 2,
-        fontSize: 35,
-        fontWeight: '500',
-        textAlign: 'center',
+        fontSize: 20,
+        fontWeight: '700',
+        color: COLORS.primary_color
+    },
+    totalPrice: {
+        fontSize: 20,
+        fontWeight: '700',
+        textAlign: "right",
+        color: COLORS.primary_color
+    },
+    subTitle: {
+        fontSize: 14,
+        color: "gray",
+        fontWeight: "400",
     },
     paymentsControls: {
         width: '100%',
@@ -238,37 +311,15 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     }
 })
-
-
-const DetailsHeader = ({ backTo }) => {
-    const navigation = useNavigation()
-    const backToPreviousScreen = () => {
-        if (backTo)
-            navigation.navigate('Home')
-        navigation.goBack()
-        backTo = null
-    }
-
-    return (
-        <View style={styles.headerContainer}>
-            <TouchableOpacity activeOpacity={0.7} onPress={backToPreviousScreen} style={styles.iconCon}>
-                <AntDesign name="left" size={18} color="#fff" />
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.goBack()} style={styles.iconCon}>
-                <AntDesign name="hearto" size={18} color="#fff" />
-            </TouchableOpacity>
-        </View>
-    )
-}
-
+//
 const ItemContainer = ({ title, value }) => {
     const navigation = useNavigation()
     return (
         <View style={styles.itemContainer}>
-            <Text style={{ fontWeight: '300', fontSize: 18 }}>
+            <Text style={{ fontWeight: '300', fontSize: 15, color: "gray" }}>
                 {title}
             </Text>
-            <Text style={{ fontWeight: '300', fontSize: 18 }}>
+            <Text style={{ fontWeight: '400', fontSize: 15, color: "#394043" }}>
                 {value}
             </Text>
         </View>
@@ -287,3 +338,34 @@ const ItemContainer = ({ title, value }) => {
 //         }
 //     })
 // }
+
+{/* <Text>Quantity</Text>
+                        <View style={styles.quantityControls}>
+                            <Pressable onPress={decreasement} style={styles.box}>
+                                <AntDesign name="minus" size={25} />
+                            </Pressable>
+                            <Text style={styles.counterTxt}>
+                                {counter}
+                            </Text>
+                            <Pressable onPress={onIncreasement} style={styles.box}>
+                                <AntDesign name="plus" size={25} />
+                            </Pressable>
+                        </View>
+                        <Devider />
+                        <View style={styles.paymentsControls}>
+                            <View style={styles.btn}>
+                                <Text style={styles.priceTxt}>
+                                    Pay Now
+                                </Text>
+                                <FontAwesome name="money" size={20} color='#fff' style={{ marginLeft: 10 }} />
+                            </View>
+                            <Text style={styles.price}>
+                                $ {productData?.price * counter}
+                            </Text>
+                            <Pressable onPress={addToCart} style={styles.btn}>
+                                <Text style={styles.priceTxt}>
+                                    Add Cart
+                                </Text>
+                                <MaterialCommunityIcons name="cart-check" size={20} color='#fff' style={{ marginLeft: 10 }} />
+                            </Pressable>
+                        </View> */}

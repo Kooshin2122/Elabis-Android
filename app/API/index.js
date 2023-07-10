@@ -11,25 +11,30 @@ export const httpsRequest = axios.create({
     },
 })
 //
-export const fetchPostData = async (endPoint, formData, setLoading = () => { }, setError = () => { }) => {
+export const fetchPostData = async (endPoint, formData, setError = () => { }) => {
     try {
-        await setLoading(true);
         const res = await fetch(`https://sweyn.co.uk/v1/${endPoint}`, {
             method: "post",
             body: formData,
             headers: { 'Content-Type': 'multipart/form-data' },
         });
         const data = await res.json();
-        await setLoading(false);
         return data;
     } catch (error) {
         console.log('error happen in the fetch method', error);
-        await setLoading(false);
+        setError(error);
     }
 };
 //
 export const fetchPostAuthData = async (endPoint, formData, setLoading = () => { }, setError = () => { }) => {
-    const { token_type, access_token } = await readData("userInfo");
+    //
+    const isUserLogin = await readData("userInfo");
+    const { token_type, access_token } = isUserLogin;
+    if (isUserLogin == false) {
+        setLoading(false);
+        return
+    }
+    //
     try {
         setLoading(true);
         const res = await fetch(`https://sweyn.co.uk/v1/${endPoint}`, {
@@ -41,6 +46,7 @@ export const fetchPostAuthData = async (endPoint, formData, setLoading = () => {
             },
         });
         setLoading(false);
+        // console.log(data);
         const data = await res.json();
         return data;
     } catch (error) {
@@ -65,7 +71,10 @@ export const fetchGetData = async (endPoint = "", setLoading = () => { }, setDat
 }
 //
 export const fetchGetAuthData = async (endPoint = "", setData = () => { }, setLoading = () => { },) => {
-    const { token_type, access_token } = await readData("userInfo");
+    //
+    const isUserLogin = await readData("userInfo");
+    const { token_type, access_token } = isUserLogin;
+    //
     try {
         setLoading(true);
         const res = await fetch(`https://sweyn.co.uk/v1/${endPoint}`, {

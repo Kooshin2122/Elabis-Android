@@ -14,23 +14,23 @@ import { changeSelectBrand, changeSelectSubCategory } from '../../../ReduxStore/
 //
 const ProductsScreen = () => {
     //
+    const [refresh, setRefresh] = useState(true);
     const [loading, setLoading] = useState(false);
-    // const [refresh, setRefresh] = useState(true);
     const [productsData, setProductsData] = useState();
     const { selectSubCategory, selectBrand, } = useSelector((state) => state.productsSlice)
     //
     const getProductsDataAsync = async () => {
-        // setRefresh(true);
         setLoading(true);
+        setRefresh(false);
         const filterData = {
             brand: selectBrand?.id,
-            subcategory: selectSubCategory?.id,
+            productcategory: selectSubCategory?.id,
         }
         const formData = formDataGenerator(filterData);
-        // console.log("Payload", formData);
-        const response = await fetchPostData("buyer/products/search", formData,)
+        // console.log("Payload", formData, selectSubCategory?.name);
+        const response = await fetchPostData("buyer/products/search", formData)
+        // console.log("productsData", response);
         setProductsData(response.data)
-        // setRefresh(false);
         setLoading(false);
 
     }
@@ -61,14 +61,10 @@ const ProductsScreen = () => {
                     keyExtractor={(item) => item.UPID}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.productsCon}
-                    renderItem={({ item }) => <ProductCard {...item} />}
-                    refreshControl={<RefreshControl onRefresh={getProductsDataAsync} />}
+                    renderItem={({ item }) => <ProductCard {...item} reloadScreen={getProductsDataAsync} />}
+                    refreshControl={<RefreshControl refreshing={refresh} onRefresh={getProductsDataAsync} />}
                     ListHeaderComponent={() => <ResutlView productsData={productsData} reloadScreen={getProductsDataAsync} />}
-                    ListEmptyComponent={() => (
-                        <ListEmptyComponent title="Sorry" message={emptyListMessage} >
-
-                        </ListEmptyComponent>
-                    )}
+                    ListEmptyComponent={() => <ListEmptyComponent title="Sorry" message={emptyListMessage} />}
                 />
             </View>
         </SafeAreaView>

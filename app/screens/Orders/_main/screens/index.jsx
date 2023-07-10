@@ -1,11 +1,9 @@
 //
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-//
 import Basket from './Basket';
 import OnProcess from './OnProcess';
 import Completed from './Completed';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
-
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 //
 const Tab = createMaterialTopTabNavigator();
 //
@@ -13,6 +11,7 @@ function MaterialTopTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
+        lazy: true,
         tabBarStyle: {
           elevation: 1,
         },

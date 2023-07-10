@@ -1,42 +1,69 @@
 //
+import { fetchGetData } from '../../../API';
+import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { specialOffersEndPoint } from './services';
 import { useNavigation } from '@react-navigation/core';
 import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
-import { changeActiveTab } from '../../../ReduxStore/ProductScreenSlice';
-import { HomeHeader, SpecialCards, AvailableCategoryCard, HomeSkeleton } from './components';
-import { Devider, MyStatusBar, Container, PopularBrandsCard, ProductCard, LoadingIndicator, LoadingModal } from '../../../components';
-import { StyleSheet, Text, View, SafeAreaView, ImageBackground, ScrollView, Button, FlatList, RefreshControl } from 'react-native';
-import { availableCategoriesEndPoint, mostViewedProducts, popularBrandsEndPoint, specialOffersEndPoint } from './services';
-import { fetchGetData } from '../../../API';
+import { HomeHeader, SpecialCards, AvailableCategoryCard, } from './components';
+import { StyleSheet, View, SafeAreaView, ScrollView, FlatList, RefreshControl, Text } from 'react-native';
+import { Devider, MyStatusBar, Container, PopularBrandsCard, ProductCard, LoadingModal } from '../../../components';
+import { useAppContext } from '../../../context';
 //
 const HomeScreen = () => {
     //
-    const dispatch = useDispatch();
     const { navigate } = useNavigation();
+    const [refresh, setRefresh] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState(null);
     const [productsData, setProductsData] = useState([]);
     const [categoriesData, setCategoriesData] = useState([]);
+    const { userLocation, setUserLocation } = useAppContext();
     const [populaBrandsData, setPopulaBrandsData] = useState([]);
     //
     const getHomeDataAsync = async () => {
+        setRefresh(false);
         const response = await fetchGetData("buyer/user/dashboard", setLoading);
         setProductsData(response.products);
         setCategoriesData(response.categories);
         setPopulaBrandsData(response.popular_brands);
     };
     //
+    const getPermisionAsync = async () => {
+        try {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+            }
+            let location = await Location.getCurrentPositionAsync({});
+            setUserLocation(location);
+        } catch (error) {
+            console.log("error happen when getting permision in the expo");
+        }
+    }
+    //
     useEffect(() => {
         getHomeDataAsync();
+        getPermisionAsync();
     }, [])
     //
     const onPressPopularBrandsSeeMore = () => {
-        navigate('ProductStack')
-        dispatch(changeActiveTab(false))
+        navigate("ProductStack", {
+            screen: "MainProductsScreen",
+            params: {
+                screen: "Brands"
+            }
+        })
+        // dispatch(changeActiveTab(false))
     }
     const onPressAvailableProductsSeeMore = () => {
-        navigate('ProductStack')
-        dispatch(changeActiveTab(true))
+        navigate("ProductStack", {
+            screen: "MainProductsScreen",
+            params: {
+                screen: "Categories"
+            }
+        })
     }
     const onPressPopularProductsSeeMore = () => {
         navigate('ProductStack', {
@@ -50,7 +77,7 @@ const HomeScreen = () => {
             {loading && <LoadingModal />}
             <HomeHeader />
             <ScrollView
-                refreshControl={<RefreshControl onRefresh={getHomeDataAsync} />}
+                refreshControl={<RefreshControl refreshing={refresh} onRefresh={getHomeDataAsync} />}
                 style={styles.scrollCon} showsVerticalScrollIndicator={false}
             >
                 <Devider />
@@ -94,9 +121,9 @@ const HomeScreen = () => {
         </SafeAreaView>
     )
 }
-
+//
 export default HomeScreen;
-
+//
 const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
@@ -122,3 +149,4 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     }
 })
+//

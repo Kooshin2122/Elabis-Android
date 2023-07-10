@@ -1,5 +1,5 @@
 //
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { sliceText } from '../../../../utils';
 import { useNavigation } from '@react-navigation/core';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
@@ -7,15 +7,48 @@ import { Dimensions, Image, Pressable, StyleSheet, Text, TouchableOpacity, View 
 
 const { width, height } = Dimensions.get('screen');
 
-const ProductStatusCard = ({ id, productName, brandName, price, quantity, category, imageUrl }) => {
+const ProductStatusCard = ({ id, name, price, status, quantity, photo }) => {
+    //
     const { navigate } = useNavigation();
+    const [orderStatus, setOrderStatus] = useState(1);
+    //
+    const getStatusType = (status) => {
+        switch (status) {
+            case 1:
+                setOrderStatus("Custumer request for the products")
+                break;
+            case 2:
+                setOrderStatus("Seller accepted the products")
+                break;
+            case 3:
+                setOrderStatus("Agent allocated to the delivery")
+                break;
+            case 4:
+                setOrderStatus("Agent collected the product from the seller")
+                break;
+            case -2:
+                setOrderStatus("Seller rejected the products")
+                break;
+            case -1:
+                setOrderStatus("All Agents rejected for deliveryr")
+                break;
+            default:
+                setOrderStatus("Pendding")
+                break;
+        }
+    }
+    //
+    useEffect(() => {
+        getStatusType(status);
+    }, [])
+    //
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
                 <Image
-                    source={imageUrl}
-                    resizeMode='contain'
                     style={styles.img}
+                    resizeMode='contain'
+                    source={{ uri: `https://sweyn.co.uk/storage/images/products/${photo}` }}
                 />
             </View>
             {/* Content Container ------------------------------------------------- */}
@@ -23,25 +56,16 @@ const ProductStatusCard = ({ id, productName, brandName, price, quantity, catego
                 {/* Section One --------------------------------------------------- */}
                 <View style={styles.sectionOne}>
                     <Text style={styles.proName}>
-                        {sliceText(productName, 20)}
+                        {sliceText(name, 20)}
                     </Text>
                 </View>
                 {/* Section Two --------------------------------------------------- */}
                 <View style={styles.sectionTwo}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', overflow: 'hidden' }}>
                         <Text style={styles.itemInfo}>
-                            Category: {sliceText(category, 6)}
-                        </Text>
-                        <Text style={[styles.itemInfo, { marginHorizontal: '2%' }]} >
-                            ||
-                        </Text>
-                        <Text style={styles.itemInfo}>
-                            Quantities: {quantity}
+                            status: {orderStatus}
                         </Text>
                     </View>
-                    <Text style={styles.itemInfo}>
-                        Brand: {sliceText(brandName, 18)}
-                    </Text>
                 </View>
                 {/* Section Three --------------------------------------------------- */}
                 <View style={styles.sectionThree}>
@@ -53,11 +77,6 @@ const ProductStatusCard = ({ id, productName, brandName, price, quantity, catego
                             In Delivery
                         </Text>
                     </View>
-                    <Pressable onPress={() => navigate('Map')} style={styles.trackOrder}>
-                        <Text style={{ color: '#ffffff', fontSize: 12, fontWeight: '500' }}>
-                            Track Order
-                        </Text>
-                    </Pressable>
                 </View>
             </View>
         </View>

@@ -4,7 +4,7 @@ import { ListEmptyComponent, LoadingModal, ProductCard, SubHeader } from '../../
 import { COLORS } from '../../../Theme/GLOBAL_STYLES';
 import { FlatList, RefreshControl, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { formDataGenerator } from '../../../utils';
-import { fetchPostAuthData } from '../../../API';
+import { fetchPostAuthData, fetchPostData } from '../../../API';
 //
 const ShopProductsScreen = ({ route }) => {
     const { USID, name } = route.params;
@@ -14,7 +14,9 @@ const ShopProductsScreen = ({ route }) => {
     const getThisShopProductsAsync = async () => {
         const data = { USID: USID };
         const formData = await formDataGenerator(data);
-        const response = await fetchPostAuthData("buyer/shop/products", formData, setLoading);
+        setLoading(true);
+        const response = await fetchPostData("buyer/shop/products", formData);
+        setLoading(false);
         setShopProducts(response.data);
         // console.log("response-------->", response.data);
     };
@@ -38,21 +40,10 @@ const ShopProductsScreen = ({ route }) => {
                 renderItem={({ item }) => <ProductCard {...item} />}
                 refreshControl={<RefreshControl onRefresh={getThisShopProductsAsync} />}
                 ListHeaderComponent={() => (
-                    <View style={styles.resultCon}>
-                        <Text style={styles.resultTxt}>
-                            {name} products
-                        </Text>
-                        <View style={styles.proLenghtCon}>
-                            <Text style={styles.resutCounter}>
-                                {shopProducts?.length}
-                            </Text>
-                        </View>
-                    </View>
+                    <ListHeader name={name} shopProducts={shopProducts} />
                 )}
                 ListEmptyComponent={() => (
-                    <ListEmptyComponent title="Sorry" message={"Helo"} >
-
-                    </ListEmptyComponent>
+                    <ListEmptyComponent title="Sorry" message={"Helo"} />
                 )}
             />
         </SafeAreaView>
@@ -60,6 +51,21 @@ const ShopProductsScreen = ({ route }) => {
 }
 //
 export default ShopProductsScreen;
+//
+const ListHeader = ({ name, shopProducts }) => {
+    return (
+        <View style={styles.resultCon}>
+            <Text style={styles.resultTxt}>
+                {name} products
+                </Text>
+            <View style={styles.proLenghtCon}>
+                <Text style={styles.resutCounter}>
+                    {shopProducts?.length}
+                </Text>
+            </View>
+        </View>
+    )
+}
 //
 const styles = StyleSheet.create({
     container: {

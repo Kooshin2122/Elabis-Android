@@ -11,7 +11,9 @@ const ShopsScreen = ({ navigation }) => {
     const [shopsData, setShopsData] = useState([]);
     //
     const getShopsDataAsync = async () => {
+        // console.log("Shops");
         const response = await fetchGetData("buyer/shop/view", setLoading);
+        console.log(response.data);
         setShopsData(response.data);
         // console.log("response----------->", response.data);
     };
@@ -22,7 +24,7 @@ const ShopsScreen = ({ navigation }) => {
     //
     return (
         <SafeAreaView style={styles.container}>
-            <SubHeader title="SHOPS" />
+            {/* <SubHeader title="SHOPS" /> */}
             {loading && <LoadingModal />}
             <FlatList
                 data={shopsData}

@@ -15,7 +15,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.Elabis",
+      "config": {
+        "googleMapsApiKey": "AIzaSyBHB6AZMc3WTBqQQ4_D0V5jXKPj9J-rinU"
+      }
     },
     "android": {
       "adaptiveIcon": {

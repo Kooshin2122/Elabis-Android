@@ -37,14 +37,15 @@ const styles = StyleSheet.create({
         // borderWidth: 0.3
     },
     Title: {
-        fontSize: 16,
-        fontWeight: '400',
+        fontSize: 14,
+        fontWeight: '600',
         letterSpacing: 0.5,
         textTransform: 'uppercase',
     },
     seeMoreTxt: {
         fontSize: 14,
-        fontWeight: '500',
-        textTransform: 'capitalize',
+        fontWeight: '600',
+        textTransform: 'uppercase',
+        color: COLORS.primary_color
     }
 })

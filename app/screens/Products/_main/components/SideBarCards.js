@@ -4,16 +4,24 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { changeSelectCategory } from '../../../../ReduxStore/ProductScreenSlice'
 import { fetchGetData } from '../../../../API';
+import { useAppContext } from '../../../../context';
 
-const SideBarCards = ({ id, name, icon, changeSellectSubCategoryData = () => { } }) => {
+const SideBarCards = ({ id, name, icon, setSubCatLoading = () => { } }) => {
     const dispatch = useDispatch();
-    const { selectCategory } = useSelector(state => state.productsSlice)
+    const { setSubCategoriesData } = useAppContext();
+    const { selectCategory } = useSelector(state => state.productsSlice);
     // Main Function
     const onSelectCategory = async () => {
-        changeSellectSubCategoryData([]);
-        dispatch(changeSelectCategory({ id: id, name: name }))
-        const subCategoryRes = await fetchGetData(`buyer/category/view/main/${id}`);
-        changeSellectSubCategoryData(subCategoryRes.data);
+        try {
+            setSubCategoriesData([]);
+            dispatch(changeSelectCategory({ id: id, name: name }));
+            setSubCatLoading(true);
+            const subCategoryRes = await fetchGetData(`buyer/category/view/main/${id}`);
+            setSubCatLoading(false);
+            setSubCategoriesData(subCategoryRes.data);
+        } catch (error) {
+            setSubCatLoading(false);
+        }
     }
     //
     useEffect(() => {
@@ -21,7 +29,7 @@ const SideBarCards = ({ id, name, icon, changeSellectSubCategoryData = () => { }
     // get active category
     const activeCategory = useMemo(() => {
         return selectCategory.name == name;
-    }, [selectCategory])
+    }, [selectCategory]);
     // JSX
     return (
         <Pressable onPress={onSelectCategory} style={styles.container}>

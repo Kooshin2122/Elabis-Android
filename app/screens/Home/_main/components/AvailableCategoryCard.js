@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/core';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { changeActiveTab, changeSelectCategory } from '../../../../ReduxStore/ProductScreenSlice';
+import { fetchGetData } from '../../../../API';
+import { useAppContext } from '../../../../context';
 //
 const { width, height } = Dimensions.get('screen');
 //
@@ -12,11 +14,18 @@ const AvailableCategoryCard = ({ id, name, icon, categoryName, categoryImageUrl 
     //
     const dispatch = useDispatch();
     const { navigate } = useNavigation();
+    const { setSubCategoriesData } = useAppContext();
     //
-    const navigateProductsScreen = () => {
-        navigate('ProductStack')
-        dispatch(changeActiveTab(true));
-        dispatch(changeSelectCategory({ id: id, name: name }))
+    const navigateProductsScreen = async () => {
+        dispatch(changeSelectCategory({ id: id, name: name }));
+        const subCategoryRes = await fetchGetData(`buyer/category/view/main/${id}`);
+        setSubCategoriesData(subCategoryRes.data);
+        navigate("ProductStack", {
+            screen: "MainProductsScreen",
+            params: {
+                screen: "Categories"
+            }
+        })
     }
     //
     return (
@@ -25,7 +34,7 @@ const AvailableCategoryCard = ({ id, name, icon, categoryName, categoryImageUrl 
                 <Image
                     style={styles.image}
                     resizeMode="contain"
-                    source={{ uri: `https://sweyn.co.uk/storage/images/categories/${icon}` }}
+                    source={{ uri: `https://sweyn.co.uk/storage/images/catgeories/${icon}` }}
                 />
             </View>
             <Text style={styles.itemName}>

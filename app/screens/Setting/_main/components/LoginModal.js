@@ -14,8 +14,10 @@ const LoginModal = ({ modalVisible, changeModalVisible = () => { } }) => {
     const onLogout = async () => {
         // log out user
         await removeData("userInfo");
+        await removeData("DefaultAddress");
+        await removeData("wishListProducts");
         await setIsUserLogin(false);
-        await setUserData(null)
+        await setUserData(null);
         // -------- Code here --------------
         changeModalVisible(false)
     }

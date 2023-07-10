@@ -3,20 +3,35 @@ import React from 'react';
 import Devider from '../Devider';
 import { COLORS } from '../../Theme/GLOBAL_STYLES';
 import img from '../../../assets/images/notFound.png';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 //
-const ListEmptyComponent = ({ title = "Opps!", message = 'message', children }) => {
+const ListEmptyComponent = ({ title = "Opps!", message = 'message', exclamationIcon = false, children }) => {
     return (
         <View style={styles.container}>
             {/* Image Container */}
             <View style={styles.imageCon}>
-                <Image
-                    source={img}
-                    resizeMode="cover"
-                    style={{ width: '100%', height: '100%' }}
-                />
+                {
+                    exclamationIcon ?
+                        <View>
+                            <AntDesign
+                                size={120}
+                                name="exclamationcircleo"
+                                color={COLORS.primary_color}
+                            />
+                            <Devider />
+                        </View>
+                        :
+                        <MaterialIcons
+                            size={150}
+                            name="youtube-searched-for"
+                            color={COLORS.primary_color}
+                        />
+
+                }
             </View>
-            <Devider />
+            {/* <Devider /> */}
             <Text style={styles.titleTxt}>
                 {title}
             </Text>
@@ -42,20 +57,20 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     imageCon: {
-        height: 200,
-        width: 250,
+        // height: 200,
+        // width: 250,
         alignItems: 'center',
         justifyContent: 'center',
     },
     titleTxt: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
         letterSpacing: 0.3,
         textAlign: "center",
         color: COLORS.primary_color
     },
     messageTxt: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '400',
         letterSpacing: 0.5,
         textAlign: "center",

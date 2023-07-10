@@ -2,28 +2,22 @@
 import React, { useEffect } from 'react';
 import { Devider } from '../../../../components';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
+import { useNavigation } from '@react-navigation/core';
 import Octicons from 'react-native-vector-icons/Octicons';
 import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { showPaymentErrorModal, showPaymentLoadingModal, showPaymentSuccessfullModal } from '../../../../ReduxStore/OrdersSlice';
 
-const PaymentResponseModal = ({ iconName, title, discription, modalVisible, changeModalVisible = () => { } }) => {
-    const dispatch = useDispatch();
+const PaymentResponseModal = ({ iconName, title, discription, isVisible, changeModalVisible = () => { } }) => {
+    const { navigate } = useNavigation();
     //
     const onCloseModal = () => {
-        if (iconName == 'stop')
-            dispatch(showPaymentErrorModal())
-        else
-            dispatch(showPaymentSuccessfullModal())
+        changeModalVisible(false);
     }
     //
     return (
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-        >
-            <Pressable onPress={onCloseModal} style={styles.centeredView}>
+        <View style={styles.container}>
+            <Pressable style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <Octicons name={iconName} size={50} color={iconName == 'check-circle' ? COLORS.primary_color : 'red'} />
                     <Devider height={7} />
@@ -36,26 +30,45 @@ const PaymentResponseModal = ({ iconName, title, discription, modalVisible, chan
                             {discription}
                         </Text>
                     </View>
+                    <Devider />
+                    {/* controls */}
+                    <View style={styles.controlsCon}>
+                        <Pressable onPress={onCloseModal} style={styles.cancelBtn}>
+                            <Text style={styles.buttonTxt}>Close</Text>
+                        </Pressable>
+                        <Pressable onPress={() => navigate("Orders", { screen: "On-Process", initial: false })} style={styles.ViewOrderBtn}>
+                            <Text style={styles.buttonTxt}>View Order</Text>
+                        </Pressable>
+                    </View>
                 </View>
             </Pressable>
-        </Modal>
+        </View>
+        // </Modal>
     )
 }
 
 export default PaymentResponseModal;
 
 const styles = StyleSheet.create({
+    container: {
+        top: 0,
+        height: "100%",
+        width: "100%",
+        zIndex: 1000,
+        position: "absolute",
+    },
     centeredView: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: "#00000097",
     },
     modalView: {
         width: '87%',
         borderRadius: 7,
         alignItems: 'center',
         paddingTop: '5%',
-        paddingBottom: '7%',
+        paddingBottom: '1%',
         paddingHorizontal: '5%',
         backgroundColor: 'white',
     },
@@ -77,20 +90,29 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between'
     },
-    button: {
+    ViewOrderBtn: {
         width: '50%',
-        padding: '3%',
+        padding: '4%',
         borderTopWidth: 0.7,
+        alignItems: "center",
         borderColor: COLORS.gray_color
     },
     cancelBtn: {
+        width: '50%',
+        padding: '4%',
+        borderTopWidth: 0.7,
         borderRightWidth: 0.7,
+        alignItems: "center",
         borderColor: COLORS.gray_color
     },
     buttonTxt: {
-        fontSize: 18,
+        fontSize: 13,
+        color: '#137cf3',
+        fontWeight: "600",
+        letterSpacing: 0.7,
         textAlign: 'center',
-        color: '#137cf3'
-    }
+        textTransform: "uppercase",
+    },
+
 })
 

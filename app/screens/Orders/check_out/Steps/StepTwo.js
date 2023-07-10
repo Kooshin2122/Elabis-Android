@@ -1,6 +1,7 @@
 //
 import * as yup from 'yup';
 import AddressView from '../components/AddressView';
+import { useNavigation } from '@react-navigation/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/core';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -14,6 +15,7 @@ import { CustomButton, CustomInput, Devider, LoadingModal } from '../../../../co
 const StepTwo = ({ changeCurrentPosition = () => { } }) => {
     //
     const dispatch = useDispatch();
+    const { navigate } = useNavigation();
     const [loading, setLoading] = useState(false);
     const [deliveyAdd, setdeliveyAdd] = useState(null);
     const { deliveryAddress } = useSelector((state) => state.ordersSlice)
@@ -33,6 +35,10 @@ const StepTwo = ({ changeCurrentPosition = () => { } }) => {
         changeCurrentPosition(2)
         dispatch(changeDeliveryAddress(deliveyAdd))
     }
+    //
+    const navigateAddressFormScreen = () => {
+        navigate("AddressesScreen");
+    }
     // ---------------------------------------->
     return (
         <View style={styles.container}>
@@ -47,26 +53,31 @@ const StepTwo = ({ changeCurrentPosition = () => { } }) => {
                 </View>
             </View>
             {
-                deliveyAdd &&
-                <View>
-                    <Text style={styles.desc}>
-                        This is your address that the delivery guy will pick up you order to your location. keep it correct information.
+                deliveyAdd ?
+                    <View>
+                        <Text style={styles.desc}>
+                            This is your address that the delivery guy will pick up you order to your location. keep it correct information.
                     </Text>
-                    <Devider />
-                    <AddressView {...deliveyAdd} selectAddress={deliveyAdd.id} />
-                    <Devider />
-                    <Pressable onPress={onNext} style={styles.nextBtnCon}>
-                        <Text style={styles.nextBtnTxt}>Next</Text>
-                    </Pressable>
-                </View>
+                        <Devider />
+                        <AddressView {...deliveyAdd} selectAddress={deliveyAdd.id} />
+                        <Devider />
+                        <Pressable onPress={onNext} style={styles.nextBtnCon}>
+                            <Text style={styles.nextBtnTxt}>Next</Text>
+                        </Pressable>
+                    </View>
+                    :
+                    <View style={styles.emptyAddressCard}>
+                        <Devider />
+                        <Text style={styles.desc}>
+                            Please provide your address that the delivery guy will pick up you order to your location. keep it correct information.
+                         </Text>
+                        <Devider />
+                        <Pressable onPress={navigateAddressFormScreen} style={styles.nextBtnCon}>
+                            <Text style={styles.nextBtnTxt}>Add New Address</Text>
+                        </Pressable>
+                        <Devider />
+                    </View>
             }
-            {/* <Text style={styles.desc}>
-                Please provide your address that the delivery guy will pick up you order to your location. keep it correct information.
-                </Text>
-            <Devider />
-            <Pressable onPress={onNext} style={styles.nextBtnCon}>
-                <Text style={styles.nextBtnTxt}>Add New Address</Text>
-            </Pressable> */}
         </View>
     )
 }
@@ -112,6 +123,12 @@ const styles = StyleSheet.create({
     },
     addressCard: {
         padding: "3%",
+        borderWidth: 0.9,
+        borderColor: COLORS.gray_color
+    },
+    emptyAddressCard: {
+        padding: "4%",
+        borderRadius: 7,
         borderWidth: 0.9,
         borderColor: COLORS.gray_color
     }

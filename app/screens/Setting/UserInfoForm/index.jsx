@@ -10,21 +10,29 @@ import { CustomInput, Devider, LoadingModal, SubHeader } from '../../../componen
 import { KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useAppContext } from '../../../context';
 //
-const UserInfoForm = () => {
+const UserInfoForm = ({ route }) => {
     //
     const { navigate } = useNavigation();
     const [loading, setLoading] = useState(false);
     const { userData, setUserData, } = useAppContext();
+    const parentScreen = route?.params?.parentScreen;
     const formData = { name: userData.name, phone_number: userData.phone_number, email: userData.email }
     // main function;
     const onSaveData = async (values) => {
         const formData = await formDataGenerator(values);
         // UPDATE USER BASIC INFO DATA
         const res = await fetchPostAuthData('buyer/user/update', formData, setLoading);
-        console.log("response --------->", res);
+        // console.log("response --------->", res);
         // GET USER INFO 
         await fetchGetAuthData("buyer/user/view", setUserData);
-        navigate('EditProfile')
+        parentScreen ?
+            navigate("OrdersStack", {
+                initial: false,
+                screen: parentScreen,
+            })
+            :
+            navigate('EditProfile')
+
     }
     //
     return (

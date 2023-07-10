@@ -9,7 +9,7 @@ import { formDataGenerator } from '../../../../utils';
 import { fetchPostAuthData } from '../../../../API';
 import { useNavigation, useFocusEffect } from '@react-navigation/core';
 //
-const AddressCard = ({ id, UAID, title, state, region, landmark, additional_information, selectAddress, changeSelectAddress = () => { } }) => {
+const AddressCard = ({ id, UAID, title, state, region, landmark, additional_information, selectAddress, changeSelectAddress = () => { }, reloadScreen = () => { } }) => {
     const { navigate } = useNavigation();
     const [loading, setLoading] = useState(false);
     const addressInformation = { id, UAID, title, state, region, landmark, additional_information };
@@ -35,6 +35,7 @@ const AddressCard = ({ id, UAID, title, state, region, landmark, additional_info
         const res = await fetchPostAuthData("buyer/address/delete", formData, setLoading);
         console.log("STATUS", res);
         navigate("AddressesScreen");
+        reloadScreen();
     }
     //
     return (

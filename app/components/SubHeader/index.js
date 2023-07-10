@@ -8,9 +8,11 @@ const SubHeader = ({ title = 'Title', backTo = null }) => {
     const navigation = useNavigation()
 
     const backToPreviousScreen = () => {
-        if (backTo)
-            navigation.navigate('Home')
-        navigation.goBack()
+        if (backTo == "OrdersStack")
+            navigation.navigate("OrdersStack");
+        else if (backTo)
+            navigation.navigate("Home")
+        navigation.goBack();
         backTo = null
     }
 

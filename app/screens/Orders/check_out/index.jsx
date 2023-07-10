@@ -36,14 +36,15 @@ const customStyles = {
     currentStepLabelColor: COLORS.primary_color
 }
 // ------------------------------------>
-const CheckOutScreen = () => {
-    const { getParent } = useNavigation()
+const CheckOutScreen = ({ route }) => {
+    const { getParent } = useNavigation();
+    const cartTotal = route?.params?.cartTotal;
     const [currentPosition, setCurrentPosition] = useState(0);
     const { paymentLoadingModal, paymentSuccessfullModal, paymentErrorModal } = useSelector(state => state.ordersSlice);
     //
     const onPageChange = (position) => {
-        // if (position > currentPosition)
-        //     alert('Please Fill The Form then click next button')
+        if (position > currentPosition)
+            return
         // else
         setCurrentPosition(position)
     };
@@ -76,7 +77,7 @@ const CheckOutScreen = () => {
                     {currentPosition == 0 && <StepOne changeCurrentPosition={setCurrentPosition} />}
                     {currentPosition == 1 && <StepTwo changeCurrentPosition={setCurrentPosition} />}
                     {currentPosition == 2 && <StepThree changeCurrentPosition={setCurrentPosition} />}
-                    {currentPosition == 3 && <StepFour changeCurrentPosition={setCurrentPosition} />}
+                    {currentPosition == 3 && <StepFour cartTotal={cartTotal} changeCurrentPosition={setCurrentPosition} />}
                     <Devider />
                 </ScrollView>
             </KeyboardAvoidingView>

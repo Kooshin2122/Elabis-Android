@@ -1,20 +1,24 @@
 import React from 'react'
 import { COLORS, LAY_OUT } from '../../Theme/GLOBAL_STYLES';
 import { useNavigation } from '@react-navigation/core';
+import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 //
-const Header = ({ icon1 = null, label = 'screen', icon2 = 'search1', icon3 = 'hearto' }) => {
-    const navigation = useNavigation()
+const Header = ({ icon1 = null, label = 'screen', icon2 = 'bell', icon3 = 'shopping-cart' }) => {
+    //
+    const navigation = useNavigation();
+    //
     const goBack = () => {
         navigation.goBack()
     }
-    const goWishList = () => {
-        navigation.navigate('WishListStack')
+    const goToNavigations = () => {
+        navigation.navigate('Notifications')
     }
-    const goSearch = () => {
-        navigation.navigate('Search')
+    const goToCart = () => {
+        navigation.navigate('OrdersStack')
     }
+    //
     return (
         <View style={styles.container}>
             <View style={LAY_OUT.flex_row}>
@@ -34,15 +38,15 @@ const Header = ({ icon1 = null, label = 'screen', icon2 = 'search1', icon3 = 'he
                 {
                     icon2
                     &&
-                    <TouchableOpacity onPress={goSearch}>
-                        <AntDesign name={icon2} size={23} style={{ marginRight: "2%" }} />
+                    <TouchableOpacity onPress={goToNavigations}>
+                        <Feather name={icon2} size={20} style={{ marginRight: "2%" }} />
                     </TouchableOpacity>
                 }
                 {
                     icon3
                     &&
-                    <TouchableOpacity onPress={goWishList}>
-                        <AntDesign name={icon3} size={23} style={{ marginRight: "2%" }} />
+                    <TouchableOpacity onPress={goToCart}>
+                        <Feather name={icon3} size={20} style={{ marginRight: "2%" }} />
                     </TouchableOpacity>
                 }
             </View>
@@ -63,8 +67,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: LAY_OUT.paddingX,
     },
     labelTxt: {
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: '500',
+        letterSpacing: 0.7,
+        color: COLORS.black_color,
         textTransform: 'capitalize'
     }
 })

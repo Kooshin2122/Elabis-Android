@@ -1,16 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Devider from '../Devider';
-import { sliceText } from '../../utils';
+import { formDataGenerator, sliceText } from '../../utils';
 import { useNavigation } from '@react-navigation/core';
 import { COLORS, LAY_OUT } from '../../Theme/GLOBAL_STYLES';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { Dimensions, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { fetchPostAuthData } from '../../API';
+import { readData, removeData, storeData } from '../../utils/localStorage/AsyncStorage';
 //
 const { height } = Dimensions.get('screen');
 //
-const ProductCard = ({ UPID, shop_id, name, brand, price, photo, rating, quantity_avaliable, productName, productPrice, productBrandName, productImageUrl, parentScreen = null }) => {
+const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, quantity_avaliable, parentScreen = null, reloadScreen = () => { } }) => {
     const { navigate } = useNavigation();
+    const [cartLoading, setCartLoading] = useState(false);
+    const [isInWishList, setIsInWishList] = useState(false);
+    const [heartLoading, setHeartLoading] = useState(false);
     //
     const navigateDetailsScreen = () => {
         navigate('ProductStack', {
@@ -23,12 +28,79 @@ const ProductCard = ({ UPID, shop_id, name, brand, price, photo, rating, quantit
         });
     }
     //
+    const onAddToCart = async () => {
+
+    }
+    //
+    const storeWishListProductsAsync = async () => {
+        //
+        const productToBeSaved = UPID
+        const existingProducts = await readData("wishListProducts");
+        console.log("existingProducts---------->", existingProducts);
+        //
+        let newProduct = [productToBeSaved]
+        if (existingProducts) {
+            const check = existingProducts.find(element => element === productToBeSaved);
+            check ? newProduct = existingProducts : newProduct = [...existingProducts, productToBeSaved];
+        }
+        // Store Data
+        await storeData("wishListProducts", newProduct);
+        // await removeData("wishListProducts");
+    }
+    const removeWishListProductAsync = async () => {
+        //
+        const productToBeSaved = UPID
+        const existingProducts = await readData("wishListProducts");
+        console.log("existingProducts---------->", existingProducts);
+        //
+        let newProducts = [];
+        if (existingProducts) {
+            const products = existingProducts.filter(element => element !== productToBeSaved);
+            newProducts = products;
+            console.log("newProducts---------->", newProducts);
+        }
+        // // Store Data
+        // await storeData("wishListProducts", newProduct);
+        // // await removeData("wishListProducts");
+    }
+    //
+    const onAddToWishList = async () => {
+        const payload = { UPID };
+        const formData = await formDataGenerator(payload);
+        storeWishListProductsAsync();
+        setIsInWishList(true);
+        const res = await readData("userInfo");
+        if (res) {
+            const result = await fetchPostAuthData("buyer/wishlist/add", formData, setHeartLoading);
+        }
+        else navigate("AuthStack")
+    }
+    //
+    const onRemoveFromWishList = async () => {
+        const payload = { id };
+        const formData = await formDataGenerator(payload);
+
+    }
+    //
+    const checkProductIsInWishListAsync = async () => {
+        const res = await readData("wishListProducts");
+        res?.filter((id) => {
+            if (id == UPID) {
+                setIsInWishList(true)
+            }
+        })
+    }
+    //
+    useEffect(() => {
+        checkProductIsInWishListAsync();
+    }, [])
+    //
     return (
         <View style={styles.container}>
             <Pressable onPress={navigateDetailsScreen}>
                 <View style={styles.imageContainer}>
                     <Image
-                        resizeMode="cover"
+                        resizeMode="contain"
                         style={styles.image}
                         source={{ uri: `https://sweyn.co.uk/storage/images/${photo}` }}
                     />
@@ -36,7 +108,7 @@ const ProductCard = ({ UPID, shop_id, name, brand, price, photo, rating, quantit
                 <View style={styles.contentContainer}>
                     {/* Product Name */}
                     <Text style={styles.proName}>
-                        {sliceText(name, 40)}
+                        {sliceText(name, 15)}
                     </Text>
                     {/* product Brand Name */}
                     <Devider height={5} />
@@ -45,11 +117,11 @@ const ProductCard = ({ UPID, shop_id, name, brand, price, photo, rating, quantit
                     </Text>
                     <View style={LAY_OUT.flex_row}>
                         <Text style={styles.proBrandName}>
-                            Quantity : {quantity_avaliable}
+                            Quantity : {sliceText(quantity_avaliable, 5)}
                         </Text>
                         <Text style={[styles.proBrandName, { letterSpacing: 2, fontWeight: "bold", color: "orange" }]}>
-                            {rating}
                             <AntDesign name="star" size={12} color="orange" />
+                            {rating}.0
                         </Text>
                     </View>
                 </View>
@@ -57,12 +129,25 @@ const ProductCard = ({ UPID, shop_id, name, brand, price, photo, rating, quantit
             <Devider height={10} />
             <View style={styles.controlsCon}>
                 <View style={[LAY_OUT.flex_row, { alignSelf: 'flex-end' }]}>
-                    <Pressable style={styles.iconCon}>
-                        <MaterialCommunityIcons name="cards-heart-outline" size={18} />
-                    </Pressable>
-                    <Pressable style={styles.iconCon}>
-                        <MaterialCommunityIcons name="cart-plus" size={18} />
-                    </Pressable>
+                    {
+                        heartLoading ? <ActivityIndicator size="small" />
+                            :
+                            <Pressable onPress={isInWishList ? onRemoveFromWishList : onAddToWishList} style={styles.iconCon}>
+                                <MaterialCommunityIcons
+                                    size={18}
+                                    color={isInWishList ? COLORS.primary_color : "black"}
+                                    name={isInWishList ? "cards-heart" : "cards-heart-outline"}
+                                />
+                            </Pressable>
+                    }
+                    {
+                        cartLoading ? <ActivityIndicator size="small" />
+                            :
+                            <Pressable onPress={onAddToCart} style={styles.iconCon}>
+                                <MaterialCommunityIcons name="cart-plus" size={18} />
+                            </Pressable>
+                    }
+
                 </View>
                 <Text style={styles.proPrice}>
                     ${price}

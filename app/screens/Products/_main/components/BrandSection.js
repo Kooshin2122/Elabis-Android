@@ -10,30 +10,33 @@ import { fetchGetData } from '../../../../API';
 //
 const BrandSection = () => {
     const dispatch = useDispatch();
+    const [refresh, setRefresh] = useState(true);
     const [loading, setLoading] = useState(false);
     const [brandsData, setBrandsData] = useState([]);
+    const [popularBrandsData, setPopularBrandsData] = useState([]);
     const { activeTab } = useSelector((state) => state.productsSlice);
     // 
     const getBrandsDataAsync = async () => {
+        setRefresh(false);
         const response = await fetchGetData("buyer/brand/view", setLoading);
         setBrandsData(response.data);
-        // console.log("brandresponse", response);
+        setPopularBrandsData(response.popularBrands)
+        // console.log("brandresponse", response.popularBrands);
     }
     useEffect(() => {
         getBrandsDataAsync()
-        // dispatch(changeActiveTab(false))
     }, [])
     //
     return (
         <ScrollView
             style={styles.container}
             showsVerticalScrollIndicator={false}
-            refreshControl={<RefreshControl />}
+            refreshControl={<RefreshControl refreshing={refresh} onRefresh={getBrandsDataAsync} />}
         >
             {loading && <LoadingModal />}
             <Container title="Popular Brands" style={styles.brandsCon}  >
                 {
-                    popularBrandsEndPoint.map(brandInfo => (
+                    popularBrandsData.map(brandInfo => (
                         <PopularBrandsCard key={brandInfo.id} {...brandInfo} />
                     ))
                 }

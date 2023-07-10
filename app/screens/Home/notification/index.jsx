@@ -16,7 +16,7 @@ const NotificationsScreen = () => {
                 <Text style={styles.headerTitle}>
                     Notifigations
                 </Text>
-                <Ionicons onPress={() => navigation.pop()} name="md-close" size={27} />
+                <Ionicons onPress={() => navigation.goBack()} name="md-close" size={27} />
             </View>
             {/* Nafication Cards Container */}
             <ScrollView style={styles.scrollCon}>

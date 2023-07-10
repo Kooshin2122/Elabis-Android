@@ -7,25 +7,12 @@ import { ActivityIndicator, Modal, Platform, Pressable, StyleSheet, Text, View }
 import { useDispatch } from 'react-redux';
 import { showPaymentErrorModal, showPaymentLoadingModal, showPaymentSuccessfullModal } from '../../../../ReduxStore/OrdersSlice';
 
-const PaymentLoadingModal = ({ modalVisible, changeModalVisible = () => { } }) => {
-    const dispatch = useDispatch();
-    //=>{}
-    const onLoading = async () => {
-        setTimeout(() => {
-            dispatch(showPaymentLoadingModal())
-            dispatch(showPaymentSuccessfullModal())
-            // dispatch(showPaymentErrorModal())
-        }, 7000)
-    }
-    useEffect(() => {
-        onLoading()
-    }, [])
+const PaymentLoadingModal = ({ paymentNumber }) => {
     //
     return (
         <Modal
-            animationType="fade"
             transparent={true}
-            visible={modalVisible}
+            animationType="fade"
         >
             <Pressable style={styles.centeredView}>
                 <View style={styles.modalView}>
@@ -37,7 +24,7 @@ const PaymentLoadingModal = ({ modalVisible, changeModalVisible = () => { } }) =
                             Completing payment process
                         </Text>
                         <Text style={styles.subTitle}>
-                            Please check the mobile where this sim card (+252 615 084712) is plugged
+                            Please check the mobile where this sim card {paymentNumber} is plugged
                         </Text>
                     </View>
                 </View>

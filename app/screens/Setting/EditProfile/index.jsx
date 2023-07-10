@@ -30,7 +30,7 @@ const EditProfile = () => {
                     Account Setting
                 </Text>
                 <View style={styles.accountSettingCon}>
-                    <SettingCards label="Add New Address" clickHandler={() => navigate('OrdersStack', { intial: false, screen: "AddressesScreen" })} leftIconName="plus-square" rightIconName="right" />
+                    {/* <SettingCards label="Add New Address" clickHandler={() => navigate('OrdersStack', { intial: false, screen: "AddressesScreen" })} leftIconName="plus-square" rightIconName="right" /> */}
                     <SettingCards label="Change Password" clickHandler={() => navigate('ChangePassword')} leftIconName="unlock" rightIconName="right" />
                 </View>
                 {/* Scroll padding bottom */}

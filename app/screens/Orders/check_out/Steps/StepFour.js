@@ -1,145 +1,194 @@
 //
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import { useSelector, useDispatch } from 'react-redux';
-import { Devider, ModalContainer } from '../../../../components';
+import { Devider, LoadingModal, ModalContainer } from '../../../../components';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { showPaymentLoadingModal } from '../../../../ReduxStore/OrdersSlice';
+import { fetchGetAuthData, fetchPostAuthData } from '../../../../API';
+import { formDataGenerator } from '../../../../utils';
+import PaymentLoadingModal from '../components/PaymentLoadingModal';
+import { PaymentResponseModal } from '../components';
+import { readData } from '../../../../utils/localStorage/AsyncStorage';
 //
-const StepFour = ({ changeCurrentPosition }) => {
+const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
     const dispatch = useDispatch();
     const { navigate } = useNavigation();
+    const [userInfo, setUserInfo] = useState();
+    const [loading, setLoading] = useState(false);
+    const [orderToggle, setOrderToggle] = useState(false);
     const { personalInfo, deliveryAddress, paymentInfo } = useSelector((state) => state.ordersSlice);
-    // On Pay Money 
-    const paymentMethod = () => {
-        // payment Number
-        dispatch(showPaymentLoadingModal());
-        console.log('personalInfo ------------>', personalInfo);
-        console.log('deliveryAddress ------------>', deliveryAddress);
-        console.log('paymentInfo ------------>', paymentInfo);
+    //
+    const getUserInfoAsync = async () => {
+        const res = await fetchGetAuthData("buyer/user/view");
+        setUserInfo(res.data[0]);
+    }
+    //
+    useEffect(() => {
+        getUserInfoAsync();
+    }, [])
+    // On Order Method 
+    const OrderMethod = async () => {
+        setOrderToggle(false);
+        const orderData = { UAID: deliveryAddress.UAID }
+        const formData = await formDataGenerator(orderData);
+        setLoading(true);
+        const res = await fetchPostAuthData("buyer/cart/order", formData,);
+        const results = await fetchPostAuthData("buyer/cart/product/removeall", formData,);
+        console.log("resutl of remove", results);
+        setLoading(false);
+        setOrderToggle(true);
     }
     //
     return (
-        <View style={styles.container}>
-            <Devider />
-            {/* Adress Container */}
-            <View style={styles.addressContainer}>
-                <Text style={styles.checkAddress}>
-                    Check Your Address
+        <View style={styles.mainContainer}>
+            {
+                orderToggle &&
+                <PaymentResponseModal
+                    iconName='check-circle'
+                    title="Completed successfully"
+                    changeModalVisible={setOrderToggle}
+                    discription='Thank you for completed order payment, delivery team ships your order.'
+                />
+            }
+            <View style={styles.container}>
+                {loading && <PaymentLoadingModal paymentNumber={paymentInfo.phoneNumber} />}
+                <Devider />
+                {/* Adress Container */}
+                <View style={styles.addressContainer}>
+                    <Text style={styles.checkAddress}>
+                        Check Your Address
                 </Text>
-                <Devider />
-                {/* personal info */}
-                <View>
-                    <View style={LAY_OUT.flex_row} >
-                        <Text style={styles.title}>
-                            Personal Information
-                        </Text>
-                        <Pressable onPress={() => changeCurrentPosition(0)} >
+                    <Devider />
+                    {/* personal info */}
+                    <View>
+                        <View style={LAY_OUT.flex_row} >
                             <Text style={styles.title}>
-                                Edit
-                            </Text>
-                        </Pressable>
-                    </View>
-                    <Text style={styles.description}>
-                        Name : {personalInfo.fullName},
-                        Phone-Number: {personalInfo.phoneNumber},
-                        Email: {personalInfo.email}
-                    </Text>
-                </View>
-                <Devider />
-                {/* Address Info */}
-                <View>
-                    <View style={LAY_OUT.flex_row} >
-                        <Text style={styles.title}>
-                            {deliveryAddress.title} Address Information
+                                Personal Information
                         </Text>
-                        <Pressable onPress={() => changeCurrentPosition(1)} >
-                            <Text style={styles.title}>
-                                Edit
+                            <Pressable onPress={() => changeCurrentPosition(0)} >
+                                <Text style={styles.title}>
+                                    Edit
                             </Text>
-                        </Pressable>
+                            </Pressable>
+                        </View>
+                        <Text style={styles.description}>
+                            Name : {userInfo?.name},
+                        Phone-Number: {userInfo?.phone_number},
+                        Email: {userInfo?.email}
+                        </Text>
                     </View>
-                    <Text style={styles.description}>
-                        Country : Somalia,
+                    <Devider />
+                    {/* Address Info */}
+                    <View>
+                        <View style={LAY_OUT.flex_row} >
+                            <Text style={styles.title}>
+                                {deliveryAddress.title} Address Information
+                        </Text>
+                            <Pressable onPress={() => changeCurrentPosition(1)} >
+                                <Text style={styles.title}>
+                                    Edit
+                            </Text>
+                            </Pressable>
+                        </View>
+                        <Text style={styles.description}>
+                            Country : Somalia,
                         State:{deliveryAddress.state?.name},
                         Region:{deliveryAddress.region?.name},
                         Near By:{deliveryAddress.landmark},
                         Description:{deliveryAddress.additional_information}
-                    </Text>
-                </View>
-                <Devider />
-                {/* payment Info */}
-                <View>
-                    <View style={LAY_OUT.flex_row} >
-                        <Text style={styles.title}>
-                            Payment Method
                         </Text>
-                        <Pressable onPress={() => changeCurrentPosition(2)} >
+                    </View>
+                    <Devider />
+                    {/* payment Info */}
+                    <View>
+                        <View style={LAY_OUT.flex_row} >
                             <Text style={styles.title}>
-                                Edit
+                                Payment Method
+                        </Text>
+                            <Pressable onPress={() => changeCurrentPosition(2)} >
+                                <Text style={styles.title}>
+                                    Edit
                             </Text>
-                        </Pressable>
-                    </View>
-                    <View style={[LAY_OUT.flex_row, { marginTop: '2%', alignItems: 'flex-start' }]}>
-                        <View style={styles.imageContainer}>
-                            <Image
-                                source={paymentInfo.imageUrl}
-                                resizeMode='cover'
-                                style={{ width: '100%', height: '100%' }}
-                            />
+                            </Pressable>
                         </View>
-                        <View>
-                            <Text style={[styles.description, { alignSelf: 'flex-end' }]}>
-                                {paymentInfo.serviceName}
-                            </Text>
-                            <Text style={styles.description}>
-                                Payment Number : {paymentInfo.phoneNumber}
-                            </Text>
+                        <View style={[LAY_OUT.flex_row, { marginTop: '2%', alignItems: 'flex-start' }]}>
+                            <View style={styles.imageContainer}>
+                                <Image
+                                    source={paymentInfo.imageUrl}
+                                    resizeMode='cover'
+                                    style={{ width: '100%', height: '100%' }}
+                                />
+                            </View>
+                            <View>
+                                <Text style={[styles.description, { alignSelf: 'flex-end' }]}>
+                                    {paymentInfo.serviceName}
+                                </Text>
+                                <Text style={styles.description}>
+                                    Payment Number : {paymentInfo.phoneNumber}
+                                </Text>
+                            </View>
                         </View>
                     </View>
                 </View>
-            </View>
-            <Devider />
-            {/* Address Buttons */}
-            <View style={LAY_OUT.flex_row}>
-                <Pressable style={styles.addressBtn} onPress={() => navigate('AddressesScreen')} >
-                    <Text>Select An Other Address</Text>
-                </Pressable>
-                <Pressable style={styles.addressBtn} onPress={() => navigate("AddressFormScreen")}>
-                    <Text>Add New Address</Text>
-                </Pressable>
-            </View>
-            <Devider />
-            {/* Payment Buttons */}
-            <View style={styles.paymentContainer}>
-                <Text style={styles.checkAddress}>
-                    Payment Process
-                </Text>
                 <Devider />
-                <View style={LAY_OUT.flex_row} >
-                    <Text style={styles.paymentTitle}>
-                        Basket Total
-                    </Text>
-                    <Text style={styles.paymentTitle}>
-                        $10
-                    </Text>
-                </View>
+                {/* Address Buttons */}
                 <View style={LAY_OUT.flex_row}>
-                    <Text style={styles.description}>
-                        Quantity: 5
-                    </Text>
-                    <Text style={styles.description}>
-                        Payment Number : {paymentInfo.phoneNumber}
-                    </Text>
+                    <Pressable style={styles.addressBtn} onPress={() => navigate('AddressesScreen')} >
+                        <Text>Select An Other Address</Text>
+                    </Pressable>
+                    <Pressable style={styles.addressBtn} onPress={() => navigate("AddressFormScreen")}>
+                        <Text>Add New Address</Text>
+                    </Pressable>
                 </View>
                 <Devider />
-                {/* Payment Button */}
-                <Pressable onPress={paymentMethod} style={styles.paymentButton} >
-                    <Text style={styles.paymentButtonTxt} >
-                        Pay $10
+                {/* Payment Buttons */}
+                <View style={styles.paymentContainer}>
+                    <Text style={styles.checkAddress}>
+                        Payment Process
+                </Text>
+                    <Devider />
+                    <View style={[LAY_OUT.flex_row, styles.priceView]} >
+                        <Text style={styles.paymentTitle}>
+                            Basket Total
                     </Text>
-                </Pressable>
+                        <Text style={styles.paymentTitle}>
+                            ${cartTotal}
+                        </Text>
+                    </View>
+                    <View style={[LAY_OUT.flex_row, styles.priceView]} >
+                        <Text style={styles.paymentTitle}>
+                            Delivery Fee
+                    </Text>
+                        <Text style={styles.paymentTitle}>
+                            $2
+                    </Text>
+                    </View>
+                    <View style={[LAY_OUT.flex_row, styles.priceView]} >
+                        <Text style={styles.paymentTitle}>
+                            Total Price
+                    </Text>
+                        <Text style={styles.paymentTitle}>
+                            ${cartTotal + 2}
+                        </Text>
+                    </View>
+                    <View style={[LAY_OUT.flex_row, { marginTop: 10, paddingHorizontal: "2%" }]}>
+                        <Text style={styles.description}>
+                            Quantity: 5
+                    </Text>
+                        <Text style={styles.description}>
+                            Payment Number : {paymentInfo.phoneNumber}
+                        </Text>
+                    </View>
+                    <Devider />
+                    {/* Payment Button */}
+                    <Pressable onPress={OrderMethod} style={styles.paymentButton} >
+                        <Text style={styles.paymentButtonTxt} >
+                            Order Now
+                    </Text>
+                    </Pressable>
+                </View>
             </View>
         </View>
     )
@@ -195,8 +244,8 @@ const styles = StyleSheet.create({
         borderColor: COLORS.gray_color
     },
     paymentTitle: {
-        fontSize: 18,
-        fontWeight: '500',
+        fontSize: 14,
+        fontWeight: '400',
     },
     paymentButton: {
         borderRadius: 5,
@@ -209,5 +258,11 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: '500',
         textTransform: 'uppercase'
+    },
+    priceView: {
+        paddingVertical: "3%",
+        paddingHorizontal: "2%",
+        borderBottomWidth: 0.6,
+        borderColor: COLORS.gray_color,
     }
 })

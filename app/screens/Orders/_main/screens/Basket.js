@@ -1,47 +1,69 @@
 //
-import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { fetchGetAuthData } from '../../../../API';
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import { BasketCards, ServicesCard } from '../components';
-import { Container, Devider, ListEmptyComponent } from '../../../../components';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import { basketProductInfo, paymentServiceCompanies } from '../services';
-import { FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { fetchGetAuthData, fetchPostAuthData } from '../../../../API';
-import { formDataGenerator } from '../../../../utils';
+import { Container, Devider, ListEmptyComponent, LoadingModal } from '../../../../components';
+import { FlatList, Modal, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { readData } from '../../../../utils/localStorage/AsyncStorage';
 //
 const Basket = () => {
     const { navigate } = useNavigation();
     const [refresh, setRefresh] = useState(true);
     const [cartData, setCartData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [cartTotal, setCartTotal] = useState([]);
+    const [cartModal, setCartModal] = useState(false);
     const [cartProducts, setCartProducts] = useState([]);
-    const { isUserLogin } = useSelector(state => state.globalSlice);
+    // const { isUserLogin } = useSelector(state => state.globalSlice);
     //
     const getCartDataAsync = async () => {
-        setLoading(true)
-        setRefresh(true)
-        const response = await fetchGetAuthData("buyer/cart/view");
-        // console.log("response----------", response);
-        if (response.status == "successfull") {
-            setCartData(response.data.cart_details);
-            setCartProducts(response.data.products_in_cart)
+        try {
+            setLoading(true);
+            setRefresh(false);
+            const response = await fetchGetAuthData("buyer/cart/view");
+            setLoading(false);
+            if (response.status == "successfull") {
+                setCartData(response.data.cart_details);
+                setCartTotal(response.data.total_price);
+                setCartProducts(response.data.products_in_cart)
+            }
+        } catch (error) {
+            setLoading(false);
+            if (error == "TypeError: Cannot read property 'token_type' of null") {
+                setCartData([]);
+                setCartTotal(0);
+                setCartProducts([]);
+            }
         }
-        setRefresh(false)
-        setLoading(false)
     }
     //
     useEffect(() => {
         getCartDataAsync();
     }, []);
     //
-    const goCheckOutScreen = () => {
-        // Check if the user is login
-        isUserLogin ? navigate('CheckOut') : navigate('AuthStack')
+    const goCheckOutScreen = async () => {
+        if (cartProducts?.length < 1) {
+            setCartModal(true)
+            return
+        }
+        const isUserLogin = await readData("userInfo");
+        // Check if the user is loging
+        isUserLogin ?
+            navigate('OrdersStack', {
+                initial: false,
+                screen: "CheckOut",
+                params: { cartTotal: cartTotal }
+            })
+            : navigate('AuthStack');
     };
     //
     return (
         <View style={styles.container}>
+            {loading && <LoadingModal />}
             <View style={styles.scrollCon} >
                 <FlatList
                     data={cartProducts}
@@ -51,7 +73,7 @@ const Basket = () => {
                     renderItem={({ item }) => <BasketCards {...item} reloadData={getCartDataAsync} />}
                     refreshControl={<RefreshControl refreshing={refresh} onRefresh={getCartDataAsync} />}
                     ListEmptyComponent={() => (
-                        <ListEmptyComponent title="Sorry" message="There is not product in the cart. Pull up to reload" />
+                        <ListEmptyComponent title="Your Cart Is Empty" message="Looks like you have not added anything to your cart. Go back to the products screen and add some products. or pull-up to reload data" />
                     )}
                     ListFooterComponent={() => (
                         <View>
@@ -74,10 +96,10 @@ const Basket = () => {
                                     </View>
                                     <View style={{ alignItems: 'flex-end' }} >
                                         <Text style={styles.priceTxt}>
-                                            $ 90
+                                            $ {cartTotal}
                                         </Text>
                                         <Text style={styles.subTitle}>
-                                            Quantity: 5
+                                            Quantity: {cartProducts.length}
                                         </Text>
                                     </View>
                                 </View>
@@ -90,6 +112,23 @@ const Basket = () => {
                             </View>
                             <Devider />
                             <Devider />
+                            {
+                                cartModal &&
+                                <Modal
+                                    transparent={true}
+                                >
+                                    <View style={styles.modalContainer}>
+                                        <View style={styles.centeredView}>
+                                            <ListEmptyComponent title="Your Cart Is Empty" message="Looks like you have not added anything to your cart. Go back to the products screen and add some products" />
+                                            <Pressable onPress={() => setCartModal(false)} style={{ borderTopWidth: 0.7, borderColor: "gray", padding: "3%" }}>
+                                                <Text style={{ fontSize: 18, fontWeight: "500", color: "#137cf3", letterSpacing: 0.7, textAlign: "center" }} >
+                                                    OK
+                                                </Text>
+                                            </Pressable>
+                                        </View>
+                                    </View>
+                                </Modal>
+                            }
                         </View>
                     )}
                 />
@@ -97,13 +136,13 @@ const Basket = () => {
         </View>
     )
 }
-
+//
 export default Basket;
-
+//
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.bg_primary,
+        backgroundColor: "#fefefe",
     },
     scrollCon: {
         flex: 1,
@@ -162,5 +201,19 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         letterSpacing: 0.6,
         textTransform: 'uppercase'
+    },
+    modalContainer: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.30)"
+    },
+    centeredView: {
+        height: 330,
+        padding: "4%",
+        borderRadius: 10,
+        paddingBottom: "1%",
+        backgroundColor: COLORS.bg_primary,
     }
 })
+//

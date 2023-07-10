@@ -2,7 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 // Initial States
 const initialState = {
-    activeTab: true,
+    activeTab: "Categories",
     selectCategory: "All",
     selectSubCategory: {
         id: 0,

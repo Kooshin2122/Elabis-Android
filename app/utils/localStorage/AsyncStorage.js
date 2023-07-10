@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const prefixKey = "@MAKAANIK_CUSTOMER_APP";
 //
 export const storeData = async (key, value) => {
-    const jsonValue = JSON.stringify(value)
+    const jsonValue = JSON.stringify(value);
     try {
         await AsyncStorage.setItem(prefixKey + key, jsonValue)
         console.log('succesfully to store');

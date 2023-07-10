@@ -1,31 +1,43 @@
 //
 import React from 'react'
-import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
-import { Dimensions, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import AntDesign from "react-native-vector-icons/AntDesign";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { formDataGenerator, sliceText } from '../../../../utils';
 import { fetchPostAuthData } from '../../../../API';
-
+import { useNavigation } from '@react-navigation/core';
+import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
+import { formDataGenerator, sliceText } from '../../../../utils';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Dimensions, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+//
 const { width, height } = Dimensions.get('screen');
-
+//
 const BasketCard = ({ id, UPID, name, brand, category, quantity, quantity_avaliable, photo, price, reloadData = () => { } }) => {
+    //
+    const { navigate } = useNavigation();
+    //
+    const onViewDetails = () => {
+        navigate('ProductStack', {
+            screen: 'DetailsScreen',
+            initial: false,
+            params: {
+                UPID,
+                parentScreen: "OrdersStack"
+            }
+        });
+    }
     //
     const onRemoveCart = async () => {
         const cartInfo = { UPID: UPID };
         const formData = await formDataGenerator(cartInfo);
         const res = await fetchPostAuthData("buyer/cart/product/remove", formData);
-        console.log("onRemoveCart", res);
+        // console.log("onRemoveCart", res);
         reloadData();
     }
     //
     return (
-        <View style={styles.container}>
+        <Pressable onPress={onViewDetails} style={styles.container}>
             <View style={styles.imageContainer}>
                 <Image
-                    resizeMode='contain'
                     style={styles.img}
+                    resizeMode="contain"
                     source={{ uri: `https://sweyn.co.uk/storage/images/${photo}` }}
                 />
             </View>
@@ -54,27 +66,33 @@ const BasketCard = ({ id, UPID, name, brand, category, quantity, quantity_avalia
                 </View>
                 {/* Section Three --------------------------------------------------- */}
                 <View style={styles.sectionThree}>
-                    <Text style={styles.oldPrice}>
-                        ${price * quantity + 5}
-                    </Text>
-                    <View style={styles.discountCon}>
-                        <Text style={{ color: '#ffffff', fontSize: 12, fontWeight: '500' }}>
-                            20%
+                    <View style={{ alignItems: "center" }}>
+                        <Text style={styles.price}>
+                            ${price}
+                        </Text>
+                        <Text style={styles.subtitleTxt}>
+                            Single Price
                         </Text>
                     </View>
-                    <Text style={styles.price}>
-                        ${price * quantity}
-                    </Text>
-                    <View style={styles.counterCo}>
-                        <AntDesign name="left" size={20} />
-                        <Text style={styles.counterText}>
+                    <View style={{ alignItems: "center" }}>
+                        <Text style={styles.price}>
                             {quantity}
                         </Text>
-                        <AntDesign name="right" size={20} />
+                        <Text style={styles.subtitleTxt}>
+                            Quantity
+                        </Text>
+                    </View>
+                    <View style={{ alignItems: "center" }}>
+                        <Text style={styles.price}>
+                            ${price * quantity}
+                        </Text>
+                        <Text style={styles.subtitleTxt}>
+                            Total Price
+                        </Text>
                     </View>
                 </View>
             </View>
-        </View>
+        </Pressable>
     )
 }
 
@@ -88,9 +106,10 @@ const styles = StyleSheet.create({
         marginBottom: '5%',
         flexDirection: 'row',
         borderColor: COLORS.gray_color,
-        backgroundColor: COLORS.bg_primary
+        backgroundColor: COLORS.bg_primary,
     },
     imageContainer: {
+        height: 100,
         borderRadius: 5,
         width: width / 3.4,
         alignItems: 'center',
@@ -98,8 +117,9 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.bg_tertiary
     },
     img: {
+        height: "100%",
         width: '100%',
-        height: 100
+        borderRadius: 5,
     },
     // Contents ---------------------------------------------
     contentContainer: {
@@ -130,18 +150,22 @@ const styles = StyleSheet.create({
     // Section Two --------------->
     sectionTwo: {
         // marginTop: '2%',
+        paddingBottom: "4%",
+        borderBottomWidth: 0.6,
+        borderColor: COLORS.gray_color
     },
     itemInfo: {
-        fontSize: 12,
-        fontWeight: '300',
-        letterSpacing: 1,
+        fontSize: 11,
+        fontWeight: '400',
+        letterSpacing: 0.7,
+        color: "gray"
     },
     // Section Three --------------->
     sectionThree: {
-        // marginTop: '2%',
+        marginTop: '2%',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: "space-between"
     },
     oldPrice: {
         fontSize: 16,
@@ -150,7 +174,7 @@ const styles = StyleSheet.create({
         textDecorationLine: 'line-through'
     },
     price: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '500'
     },
     discountCon: {
@@ -173,6 +197,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '500',
         marginHorizontal: '3%'
+    },
+    subtitleTxt: {
+        fontSize: 10,
+        color: "gray",
+        letterSpacing: 0.7
     }
 })
 

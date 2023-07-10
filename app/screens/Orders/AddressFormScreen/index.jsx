@@ -2,15 +2,17 @@
 import React, { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import MapView from 'react-native-maps';
 import * as Location from 'expo-location';
+import { formDataGenerator } from '../../../utils';
+import MapView, { Marker } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/core';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { fetchGetData, fetchPostAuthData } from '../../../API';
 import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
 import { Picker } from 'react-native-ui-lib/src/components/picker';
 import { CustomButton, Devider, LoadingIndicator, LoadingModal, PaperTextInput, SubHeader } from '../../../components';
-import { FlatList, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { formDataGenerator } from '../../../utils';
+import { FlatList, KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useAppContext } from '../../../context';
 //
 const formValidation = Yup.object().shape({
     title: Yup.string().required('Required'),
@@ -18,13 +20,13 @@ const formValidation = Yup.object().shape({
 });
 //
 const AddressFormScreen = ({ route }) => {
-    const { navigate } = useNavigation();
     const [states, setStates] = useState([]);
-    const [location, setLocation] = useState();
     const [regions, setRegions] = useState([]);
+    const { navigate, goBack } = useNavigation();
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState(null);
     const addressInformation = route?.params;
+    const { userLocation, setUserLocation } = useAppContext();
     const { status, UAID, id, title, landmark, state, region, additional_information } = addressInformation?.params?.addressInformation ?? "";
     const [statesPlaceholder, setStatesPlaceholder] = useState(state?.name ?? "Select Your State");
     const [regionsPlaceholder, setRegionsPlaceholder] = useState(region?.name ?? "Select Your Region");
@@ -50,24 +52,27 @@ const AddressFormScreen = ({ route }) => {
                 return;
             }
             let location = await Location.getCurrentPositionAsync({});
-            setLocation(location);
+            setUserLocation(location);
+            console.log("User Location is Address Form Screen", userLocation);
         } catch (error) {
             console.log("error happen when getting permision in the expo");
         }
     }
     //
-    useEffect(() => {
-        getPermisionAsync();
-    }, [])
-    //
     const saveAddress = async (values) => {
+        if (userLocation?.coords.latitude == null) {
+            await getPermisionAsync();
+        }
         const address = {
             ...values,
-            latitude: location?.coords.latitude,
-            longitude: location?.coords.longitude,
+            latitude: userLocation?.coords.latitude,
+            longitude: userLocation?.coords.longitude,
         }
+        console.log("address------>", address);
         const formData = await formDataGenerator(address);
-        const res = await fetchPostAuthData("buyer/address/add", formData, setLoading);
+        setLoading(true);
+        const res = await fetchPostAuthData("buyer/address/add", formData);
+        setLoading(false);
         if (res?.status == "Added Successfully") {
             navigate("AddressesScreen")
             return
@@ -77,11 +82,13 @@ const AddressFormScreen = ({ route }) => {
         const address = {
             UAID: UAID,
             ...values,
-            latitude: location?.coords.latitude,
-            longitude: location?.coords.longitude,
+            latitude: userLocation?.coords.latitude,
+            longitude: userLocation?.coords.longitude,
         }
         const formData = await formDataGenerator(address);
-        const res = await fetchPostAuthData("buyer/address/update", formData, setLoading);
+        setLoading(true);
+        const res = await fetchPostAuthData("buyer/address/update", formData);
+        setLoading(false);
         if (res?.status == "Updated successfully") {
             navigate("AddressesScreen")
             return
@@ -89,8 +96,8 @@ const AddressFormScreen = ({ route }) => {
     }
     //
     return (
-        <SafeAreaView style={styles.container}>
-            <SubHeader title="Add New Address" />
+        <View style={styles.container}>
+            {/* <SubHeader title="Add New Address" /> */}
             {/* {loading && <LoadingModal />} */}
             <KeyboardAvoidingView
                 enabled
@@ -99,13 +106,33 @@ const AddressFormScreen = ({ route }) => {
                 behavior={Platform.OS == 'ios' ? 'padding' : null}
             >
                 <ScrollView stickyHeaderIndices={[0]} style={styles.scrollCon} showsVerticalScrollIndicator={false}>
-                    <MapView
-                        style={styles.map}
-                        initialRegion={{
-                            latitude: location?.coords.latitude,
-                            longitude: location?.coords.longitude,
-                        }}
-                    />
+                    <View>
+                        <MapView
+                            style={styles.map}
+                            mapType="satellite"
+                            zoomEnabled
+                            showsUserLocation={true}
+                            region={{
+                                latitudeDelta: 0.0922,
+                                longitudeDelta: 0.0421,
+                                latitude: userLocation?.coords.latitude,
+                                longitude: userLocation?.coords.longitude,
+                            }}
+                        >
+                            <Marker
+                                title="Maker"
+                                coordinate={{
+                                    latitudeDelta: 0.0922,
+                                    longitudeDelta: 0.0421,
+                                    latitude: userLocation?.coords.latitude,
+                                    longitude: userLocation?.coords.longitude,
+                                }}
+                            />
+                        </MapView>
+                        <Pressable onPress={() => goBack()} style={styles.backBtnIconCon}>
+                            <AntDesign name="left" size={23} color="#ffffff" />
+                        </Pressable>
+                    </View>
                     <Formik
                         initialValues={addressInfo}
                         validationSchema={formValidation}
@@ -199,7 +226,7 @@ const AddressFormScreen = ({ route }) => {
                     </Formik>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </SafeAreaView>
+        </View>
     )
 }
 //
@@ -213,8 +240,21 @@ const styles = StyleSheet.create({
     scrollCon: {
         flex: 1,
     },
+    backBtnIconCon: {
+        top: 50,
+        left: "6%",
+        zIndex: 1000,
+        position: "absolute",
+        alignItems: "center",
+        borderRadius: 6,
+        padding: "2%",
+        paddingLeft: "1%",
+        paddingRight: "3%",
+        justifyContent: "center",
+        backgroundColor: "rgba(33, 32, 32, 0.45)",
+    },
     map: {
-        height: 400,
+        height: 550,
         width: "100%",
         borderRadius: 7
     },

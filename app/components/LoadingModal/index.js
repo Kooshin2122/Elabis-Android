@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     centeredView: {
         width: width,
         justifyContent: "flex-start",
-        backgroundColor: "rgba(255, 255, 255, 0.5)",
+        backgroundColor: "rgba(255, 255, 255, 0.82)",
         height: height - StatusBar.currentHeight * 4,
     },
 });

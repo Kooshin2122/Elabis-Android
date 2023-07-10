@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import AddressCard from './components/AddressCard';
 import { useNavigation, useFocusEffect } from '@react-navigation/core';
 import { CustomButton, Devider, ListEmptyComponent, LoadingIndicator, LoadingModal, SubHeader } from '../../../components';
-import { Dimensions, FlatList, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, FlatList, Pressable, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { fetchGetAuthData } from '../../../API';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -13,15 +13,15 @@ import { readData, storeData } from '../../../utils/localStorage/AsyncStorage';
 //
 const AddressesScreen = () => {
     const dispatch = useDispatch();
-    const { navigate } = useNavigation();
+    const { navigate, goBack } = useNavigation();
     const [addresses, setAddresses] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState({ id: null });
     //
     const changeDefaultAddress = async () => {
-        navigate('CheckOut');
+        goBack();
         if (selectedAddress.id) {
-            const addressInfo = { id: selectedAddress.id, title: selectedAddress.title, state: selectedAddress.state, region: selectedAddress.region, landmark: selectedAddress.landmark, additional_information: selectedAddress.additional_information, }
+            const addressInfo = { UAID: selectedAddress.UAID, id: selectedAddress.id, title: selectedAddress.title, state: selectedAddress.state, region: selectedAddress.region, landmark: selectedAddress.landmark, additional_information: selectedAddress.additional_information, }
             dispatch(changeDeliveryAddress(addressInfo));
             await storeData("DefaultAddress", addressInfo);
         }
@@ -42,7 +42,7 @@ const AddressesScreen = () => {
         <SafeAreaView style={styles.container} >
             {isLoading && <LoadingModal />}
             <SubHeader title="Addresses" />
-            <ScrollView style={styles.scrollCon} showsVerticalScrollIndicator={false}>
+            <ScrollView refreshControl={<RefreshControl onRefresh={getAddressesAsync} />} style={styles.scrollCon} showsVerticalScrollIndicator={false}>
                 <Devider />
                 <View style={styles.head}>
                     <View style={styles.titileContainer}>
@@ -73,7 +73,7 @@ const AddressesScreen = () => {
                             <CustomButton title="Add New Address" clickHandler={() => navigate("AddressFormScreen")} />
                         </ListEmptyComponent>
                     )}
-                    renderItem={({ item }) => <AddressCard key={item.id} {...item} selectAddress={selectedAddress} changeSelectAddress={setSelectedAddress} />}
+                    renderItem={({ item }) => <AddressCard key={item.id} {...item} selectAddress={selectedAddress} changeSelectAddress={setSelectedAddress} reloadScreen={getAddressesAsync} />}
                 />
                 <Devider />
             </ScrollView>

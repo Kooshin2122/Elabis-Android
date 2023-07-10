@@ -1,11 +1,12 @@
+//
 import React from 'react';
 import { useNavigation } from '@react-navigation/core';
-import logo from '../../../../../assets/images/logo-1.png';
+import logo from '../../../../../assets/images/logo.png';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { LAY_OUT, COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
+//
 const HomeHeader = () => {
     const { navigate } = useNavigation();
     return (
@@ -29,9 +30,9 @@ const HomeHeader = () => {
         </View>
     )
 }
-
-export default HomeHeader
-
+//
+export default HomeHeader;
+//
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',

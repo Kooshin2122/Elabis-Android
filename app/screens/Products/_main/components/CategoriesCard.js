@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { changeSelectSubCategory } from '../../../../ReduxStore/ProductScreenSlice';
-
+//
 const CategoriesCard = ({ id, name, icon }) => {
     const dispatch = useDispatch();
     const { navigate } = useNavigation();
@@ -21,7 +21,7 @@ const CategoriesCard = ({ id, name, icon }) => {
             <View style={styles.imageContainer}>
                 <Image
                     style={styles.image}
-                    resizeMode="contain"
+                    resizeMode="cover"
                     source={{ uri: `https://sweyn.co.uk/storage/images/catgeories/${icon}` }}
                 />
             </View>
@@ -31,9 +31,9 @@ const CategoriesCard = ({ id, name, icon }) => {
         </TouchableOpacity>
     )
 }
-
+//
 export default CategoriesCard;
-
+//
 const styles = StyleSheet.create({
     container: {
         width: '30%',
@@ -43,15 +43,16 @@ const styles = StyleSheet.create({
     imageContainer: {
         width: 55,
         height: 55,
-        borderRadius: 40,
         marginBottom: 2,
+        borderRadius: 40,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: COLORS.bg_tertiary
+        backgroundColor: COLORS.bg_tertiary,
     },
     image: {
-        width: '70%',
-        height: '70%'
+        width: '60%',
+        height: '60%',
+        // borderRadius: 50,
     },
     catName: {
         fontSize: 11,
@@ -59,3 +60,4 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     }
 })
+//

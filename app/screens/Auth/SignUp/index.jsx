@@ -7,7 +7,6 @@ import { Image, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, ScrollV
 import { AuthHeader, CustomButton, Devider, LoadingModal, PaperTextInput } from '../../../components';
 import { fetchPostData, httpsRequest } from '../../../API';
 import { formDataGenerator } from '../../../utils';
-import axios from 'axios';
 import { TextInput } from 'react-native-paper';
 //
 const SignUpScreen = () => {
@@ -18,15 +17,41 @@ const SignUpScreen = () => {
     const signUpInfo = { name: '', email: '', phone_number: '', password: '' };
     //
     const onSignUp = async (values) => {
-        setError(false)
-        const formData = await formDataGenerator(values);
-        // Fetch request;
-        const data = await fetchPostData('buyer/user/signup', formData, setLoading, setError);
-        if (data?.status) {
-            navigate('LoginStack')
-            return 7
+        try {
+            setError(false);
+            const formData = await formDataGenerator(values);
+            // Fetch request;
+            setLoading(true);
+            const data = await fetchPostData('buyer/user/signup', formData, setError);
+            // console.log("data------------", data);
+            setLoading(false);
+            //
+            if (data.status == "account created") {
+                navigate('LoginStack')
+                return
+            }
+            if (data?.name) {
+                alert("jfwduwdw")
+                setError(data?.name[0]);
+                return
+            }
+            if (data?.email) {
+                setError(data?.email[0]);
+                return
+            }
+            if (data?.password) {
+                setError(data?.password[0]);
+                return
+            }
+            if (data?.phone_number) {
+                setError(data?.phone_number[0]);
+                return
+            }
+            //
+        } catch (error) {
+            console.log("error=======", error);
+            setLoading(false);
         }
-        setError(data.email[0])
     }
     //
     return (

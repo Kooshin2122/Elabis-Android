@@ -19,35 +19,50 @@ const LoginScreen = () => {
     const [eyeToggle, setEyeToggle] = useState(false);
     const { setIsUserLogin, setUserData } = useAppContext();
     //
-    const loginInfo = { email: '', password: '' }
+    const loginInfo = { email: '', password: '' };
     //
     const onLogin = async (values) => {
-        setResError(false)
-        const formData = await formDataGenerator(values);
-        // Fetch request;
-        const data = await fetchPostData('buyer/user/signin', formData, setLoading, setResError);
-        // await console.log('data', data);
-        if (data?.message == 'Unauthorized') {
-            setResError("incorrect email or passowrd")
-            return 1;
+        setResError(false);
+        setLoading(true);
+        try {
+            const formData = await formDataGenerator(values);
+            // Fetch request;
+            const data = await fetchPostData('buyer/user/signin', formData, setResError);
+            // await console.log('data------------>', data);
+            if (data?.message == 'Unauthorized') {
+                setResError("incorrect email or passowrd")
+                setLoading(false);
+                return;
+            }
+            if (data?.email) {
+                setResError(data.email);
+                setLoading(false);
+                return;
+            }
+            if (data?.password) {
+                setResError(data.password);
+                setLoading(false);
+                return;
+            }
+            // Store Data
+            await storeData("userInfo", data);
+            const result = await readData("userInfo");
+            // await console.log('result', result);
+            if (result.access_token) {
+                setIsUserLogin(true)
+                setUserData(result.user)
+                const createCartRes = await fetchPostAuthData("buyer/cart/create");
+                // console.log("createCartRes---------------------->", createCartRes);
+                navigate('SettingStack');
+                setLoading(false)
+                return
+            }
+            setResError("Error happen please try again");
+            setLoading(false);
+        } catch (error) {
+            console.log(`error ayaa ka jiro loging screenka --------> ${error}`);
+            setLoading(false)
         }
-        if (data?.email) {
-            setResError(data.email);
-            return 1;
-        }
-        // Store Data
-        await storeData("userInfo", data);
-        const result = await readData("userInfo");
-        // await console.log('result', result);
-        if (result.access_token) {
-            setIsUserLogin(true)
-            setUserData(result.user)
-            const createCartRes = await fetchPostAuthData("buyer/cart/create");
-            console.log("createCartRes---------------------->", createCartRes);
-            navigate('SettingStack');
-            return
-        }
-        setResError("Error happen please try again");
     }
     //
     return (
