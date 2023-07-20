@@ -44,7 +44,7 @@ const OnProcessCard = ({ shop_id, title, status, dateAndTime }) => {
         </View>
     )
 }
-//
+//`
 export default OnProcessCard;
 //
 const styles = StyleSheet.create({

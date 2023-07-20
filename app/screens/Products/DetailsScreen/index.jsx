@@ -6,9 +6,9 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { ImageCarousel, ProductDetailCard } from './components';
-import { SubHeader, Devider, Container, LoadingModal, PaperTextInput, CustomButton } from '../../../components';
-import { Dimensions, KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { fetchGetData, fetchPostAuthData } from '../../../API';
+import { SubHeader, Devider, Container, LoadingModal, PaperTextInput, CustomButton, ProductCard, ListEmptyComponent } from '../../../components';
+import { ActivityIndicator, Dimensions, FlatList, KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { fetchGetData, fetchPostAuthData, fetchPostData } from '../../../API';
 import { useAppContext } from '../../../context';
 import { getDistance, } from "geolib"
 import { readData } from '../../../utils/localStorage/AsyncStorage';
@@ -23,7 +23,9 @@ const ProductDetailsScreen = ({ route }) => {
     const [distance, setDistance] = useState(0);
     const [shopData, setShopData] = useState([]);
     const [productData, setProductData] = useState();
+    const [shopProducts, setShopProducts] = useState([]);
     const { userLocation, setUserLocation, } = useAppContext();
+    const [productsLoading, setProductsLoading] = useState(false);
     //
     const { UPID, parentScreen } = route.params;
     //
@@ -48,15 +50,25 @@ const ProductDetailsScreen = ({ route }) => {
     }
     //
     const getSignleProductDataAsync = async () => {
-        setLoading(true);
-        const response = await fetchGetData(`buyer/products/view/${UPID}`)
-        setProductData(response.data[0]);
-        setImages(response.images);
-        const shopRes = await fetchGetData(`buyer/shop/view/${response.data[0]?.shop_id}`);
-        setShopData(shopRes.data);
-        setLoading(false);
-        const shopLocation = { latitude: shopRes?.data.latitude, longitude: shopRes?.data.longitude }
-        calculateDistance(shopLocation);
+        try {
+            setLoading(true);
+            const response = await fetchGetData(`buyer/products/view/${UPID}`)
+            setProductData(response?.data[0]);
+            setImages(response?.images);
+            setLoading(false);
+            const shopRes = await fetchGetData(`buyer/shop/view/${response.data[0]?.shop_id}`);
+            setShopData(shopRes?.data);
+            const shopId = { USID: shopRes?.data.USID }
+            const formData = await formDataGenerator(shopId);
+            setProductsLoading(true);
+            const products = await fetchPostData("buyer/shop/products", formData);
+            setShopProducts(products?.data)
+            setProductsLoading(false);
+            const shopLocation = { latitude: shopRes?.data.latitude, longitude: shopRes?.data.longitude }
+            calculateDistance(shopLocation);
+        } catch (error) {
+            console.log("Fetch Error Ayaa ka jiro Details Screenks", error);
+        }
     }
     // Hiding Bottom Tab Navigation
     useEffect(() => {
@@ -172,6 +184,24 @@ const ProductDetailsScreen = ({ route }) => {
                             />
                         </View>
                         <Devider />
+                        {productsLoading && <ActivityIndicator size="large" color={COLORS.primary_color} />}
+                        <FlatList
+                            numColumns={2}
+                            data={shopProducts}
+                            scrollEnabled={false}
+                            initialNumToRender={8}
+                            scrollIndicatorInsets={8}
+                            keyExtractor={(item) => item.UPID}
+                            showsVerticalScrollIndicator={false}
+                            contentContainerStyle={styles.productsCon}
+                            renderItem={({ item }) => <ProductCard {...item} />}
+                            ListHeaderComponent={() => (
+                                <ListHeader name={shopData?.name} shopProducts={shopProducts} />
+                            )}
+                            ListEmptyComponent={() => (
+                                <ListEmptyComponent title="Sorry" message={"Helo"} />
+                            )}
+                        />
                         <Devider />
                         <Devider />
                     </View>
@@ -309,7 +339,40 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: '500',
         textAlign: 'center'
-    }
+    },
+    productsCon: {
+        // padding: "3%"
+    },
+    resultCon: {
+        borderRadius: 7,
+        borderWidth: 0.7,
+        paddingLeft: "4%",
+        marginVertical: "3%",
+        flexDirection: "row",
+        alignItems: "center",
+        marginHorizontal: "2%",
+        borderColor: COLORS.gray_color,
+        justifyContent: "space-between",
+    },
+    resultTxt: {
+        fontWeight: "bold",
+        letterSpacing: 0.8,
+        textTransform: "capitalize"
+    },
+    proLenghtCon: {
+        padding: '4%',
+        borderRadius: 7,
+        borderLeftWidth: 0.7,
+        borderColor: COLORS.gray_color,
+        backgroundColor: COLORS.bg_primary
+    },
+    resutCounter: {
+        fontSize: 15,
+        fontWeight: "bold",
+        letterSpacing: 0.3,
+        textTransform: "uppercase",
+        color: COLORS.primary_color
+    },
 })
 //
 const ItemContainer = ({ title, value }) => {
@@ -325,7 +388,20 @@ const ItemContainer = ({ title, value }) => {
         </View>
     )
 }
-
+const ListHeader = ({ name, shopProducts }) => {
+    return (
+        <View style={styles.resultCon}>
+            <Text style={styles.resultTxt}>
+                {name} products
+                </Text>
+            <View style={styles.proLenghtCon}>
+                <Text style={styles.resutCounter}>
+                    {shopProducts?.length}
+                </Text>
+            </View>
+        </View>
+    )
+}
 // getParent().setOptions({ tabBarStyle: { display: 'none' } })
 // return () => {
 //     getParent().setOptions({

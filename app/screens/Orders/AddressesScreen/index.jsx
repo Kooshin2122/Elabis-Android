@@ -28,10 +28,18 @@ const AddressesScreen = () => {
     }
     //
     const getAddressesAsync = async () => {
-        const res = await fetchGetAuthData("buyer/address/view", setAddresses, setIsLoading);
-        // await console.log("res-------------->", res.data);
-        if (res?.status == "successful")
-            setAddresses(res.data)
+        try {
+            setIsLoading(true);
+            const res = await fetchGetAuthData("buyer/address/view", setAddresses);
+            console.log("res-------", res);
+            setIsLoading(false);
+            // await console.log("res-------------->", res.data);
+            if (res?.status == "success")
+                setAddresses(res.data)
+        } catch (error) {
+            setIsLoading(false);
+            console.log(`error happen when getting Address Data in the AddressesScreen `);
+        }
     }
     //
     useFocusEffect(useCallback(() => {

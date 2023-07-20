@@ -51,33 +51,36 @@ const AddressFormScreen = ({ route }) => {
                 setErrorMsg('Permission to access location was denied');
                 return;
             }
-            let location = await Location.getCurrentPositionAsync({});
-            setUserLocation(location);
-            console.log("User Location is Address Form Screen", userLocation);
+            Location.getCurrentPositionAsync().then(location => {
+                console.log("Location-------->", location);
+                setUserLocation(location)
+            }).catch((error) => console.log("error--", error))
         } catch (error) {
             console.log("error happen when getting permision in the expo");
         }
     }
     //
     const saveAddress = async (values) => {
-        if (userLocation?.coords.latitude == null) {
+        if (userLocation?.coords?.latitude == null) {
             await getPermisionAsync();
         }
         const address = {
             ...values,
-            latitude: userLocation?.coords.latitude,
-            longitude: userLocation?.coords.longitude,
+            latitude: userLocation?.coords?.latitude,
+            longitude: userLocation?.coords?.longitude,
         }
         console.log("address------>", address);
         const formData = await formDataGenerator(address);
         setLoading(true);
         const res = await fetchPostAuthData("buyer/address/add", formData);
+        console.log("address------>", res);
         setLoading(false);
-        if (res?.status == "Added Successfully") {
+        if (res?.status == "success") {
             navigate("AddressesScreen")
             return
         }
     }
+    //
     const updateAddress = async (values) => {
         const address = {
             UAID: UAID,
@@ -94,11 +97,10 @@ const AddressFormScreen = ({ route }) => {
             return
         }
     }
-    //
+    // //
     return (
         <View style={styles.container}>
-            {/* <SubHeader title="Add New Address" /> */}
-            {/* {loading && <LoadingModal />} */}
+            <SubHeader title="Add New Address" />
             <KeyboardAvoidingView
                 enabled
                 style={{ flex: 1, }}
@@ -107,28 +109,28 @@ const AddressFormScreen = ({ route }) => {
             >
                 <ScrollView stickyHeaderIndices={[0]} style={styles.scrollCon} showsVerticalScrollIndicator={false}>
                     <View>
-                        <MapView
+                        {/* <MapView
                             style={styles.map}
-                            mapType="satellite"
-                            zoomEnabled
-                            showsUserLocation={true}
-                            region={{
-                                latitudeDelta: 0.0922,
-                                longitudeDelta: 0.0421,
-                                latitude: userLocation?.coords.latitude,
-                                longitude: userLocation?.coords.longitude,
-                            }}
+                        mapType="satellite"
+                        zoomEnabled
+                        showsUserLocation={true}
+                        region={{
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421,
+                            latitude: userLocation?.coords?.latitude,
+                            longitude: userLocation?.coords?.longitude,
+                        }}
                         >
                             <Marker
                                 title="Maker"
                                 coordinate={{
                                     latitudeDelta: 0.0922,
                                     longitudeDelta: 0.0421,
-                                    latitude: userLocation?.coords.latitude,
-                                    longitude: userLocation?.coords.longitude,
+                                    latitude: userLocation?.coords?.latitude,
+                                    longitude: userLocation?.coords?.longitude,
                                 }}
                             />
-                        </MapView>
+                        </MapView> */}
                         <Pressable onPress={() => goBack()} style={styles.backBtnIconCon}>
                             <AntDesign name="left" size={23} color="#ffffff" />
                         </Pressable>
@@ -145,7 +147,7 @@ const AddressFormScreen = ({ route }) => {
                                     <Devider />
                                     <Text style={styles.title}>
                                         Add New Address
-                                    </Text>
+                                     </Text>
                                     <Devider />
                                     <PaperTextInput
                                         value={values.title}
@@ -294,3 +296,5 @@ const styles = StyleSheet.create({
     }
 });
 //
+
+// {/* {loading && <LoadingModal />} */}

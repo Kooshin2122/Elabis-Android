@@ -28,7 +28,7 @@ const LoginScreen = () => {
             const formData = await formDataGenerator(values);
             // Fetch request;
             const data = await fetchPostData('buyer/user/signin', formData, setResError);
-            // await console.log('data------------>', data);
+            await console.log('data------------>', data);
             if (data?.message == 'Unauthorized') {
                 setResError("incorrect email or passowrd")
                 setLoading(false);

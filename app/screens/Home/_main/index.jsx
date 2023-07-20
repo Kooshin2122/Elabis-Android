@@ -22,11 +22,18 @@ const HomeScreen = () => {
     const [populaBrandsData, setPopulaBrandsData] = useState([]);
     //
     const getHomeDataAsync = async () => {
-        setRefresh(false);
-        const response = await fetchGetData("buyer/user/dashboard", setLoading);
-        setProductsData(response.products);
-        setCategoriesData(response.categories);
-        setPopulaBrandsData(response.popular_brands);
+        try {
+            setRefresh(false);
+            setLoading(true);
+            const response = await fetchGetData("buyer/user/dashboard");
+            setLoading(false);
+            // console.log("response----------->", response);
+            setProductsData(response.products);
+            setCategoriesData(response.categories);
+            setPopulaBrandsData(response.popular_brands);
+        } catch (error) {
+            console.log(`Error Happen in the Home Screen Fetching data ----> ${error}`);
+        }
     };
     //
     const getPermisionAsync = async () => {
@@ -36,10 +43,13 @@ const HomeScreen = () => {
                 setErrorMsg('Permission to access location was denied');
                 return;
             }
-            let location = await Location.getCurrentPositionAsync({});
-            setUserLocation(location);
+            Location.getCurrentPositionAsync().then(location => {
+                console.log("Location-------->", location);
+                setUserLocation(location)
+            }).catch((error) => console.log("error--", error))
+            // setUserLocation(location);
         } catch (error) {
-            console.log("error happen when getting permision in the expo");
+            console.log("error happen when getting permision in the expo", error);
         }
     }
     //

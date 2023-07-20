@@ -38,7 +38,7 @@ export default PopularBrandsCard;
 const styles = StyleSheet.create({
     container: {
         height: 65,
-        width: width / 4.6,
+        width: "23%",
         borderWidth: 0.6,
         borderRadius: 5,
         alignItems: 'center',

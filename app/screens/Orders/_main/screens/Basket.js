@@ -25,8 +25,9 @@ const Basket = () => {
             setLoading(true);
             setRefresh(false);
             const response = await fetchGetAuthData("buyer/cart/view");
+            console.log("Response Cart----------->", response);
             setLoading(false);
-            if (response.status == "successfull") {
+            if (response.status == "successful") {
                 setCartData(response.data.cart_details);
                 setCartTotal(response.data.total_price);
                 setCartProducts(response.data.products_in_cart)
