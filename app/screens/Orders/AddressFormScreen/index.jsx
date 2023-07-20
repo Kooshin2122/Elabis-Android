@@ -62,6 +62,7 @@ const AddressFormScreen = ({ route }) => {
     //
     const saveAddress = async (values) => {
         if (userLocation?.coords?.latitude == null) {
+            alert('hello')
             await getPermisionAsync();
         }
         const address = {

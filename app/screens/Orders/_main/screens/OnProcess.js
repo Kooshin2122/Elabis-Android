@@ -11,12 +11,14 @@ import { readData } from '../../../../utils/localStorage/AsyncStorage';
 const OnProcess = () => {
     const { navigate } = useNavigation();
     const [loading, setLoading] = useState(false);
+    const [refresh, setRefresh] = useState(true);
     const [odersData, setOdersData] = useState([]);
     const [isUserLoging, setIsUserLoging] = useState(true);
     //
     const getOrdersDataAsync = async () => {
         try {
             setLoading(true);
+            setRefresh(false);
             const response = await fetchGetAuthData("buyer/cart/order/view");
             const filteredData = response?.data.filter((item) => item.status < 5) ?? [];
             console.log("filteredData------->", filteredData);
@@ -40,7 +42,7 @@ const OnProcess = () => {
     return (
         <ScrollView
             style={styles.container}
-            refreshControl={<RefreshControl onRefresh={getOrdersDataAsync} />}
+            refreshControl={<RefreshControl refreshing={refresh} onRefresh={getOrdersDataAsync} />}
         >
             {loading && <LoadingModal />}
             <Devider />

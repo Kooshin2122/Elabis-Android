@@ -11,8 +11,9 @@ import { readData, removeData, storeData } from '../../utils/localStorage/AsyncS
 //
 const { height } = Dimensions.get('screen');
 //
-const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, quantity_avaliable, parentScreen = null, reloadScreen = () => { } }) => {
+const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, quantity_avaliable, parentScreen = null, hideCart = false, reloadScreen = () => { } }) => {
     const { navigate } = useNavigation();
+    const [isInCart, setIsInCart] = useState(false);
     const [cartLoading, setCartLoading] = useState(false);
     const [isInWishList, setIsInWishList] = useState(false);
     const [heartLoading, setHeartLoading] = useState(false);
@@ -29,14 +30,34 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
     }
     //
     const onAddToCart = async () => {
-
+        const token = await readData("userInfo");
+        // check if the user login
+        if (token == null) {
+            navigate("AuthStack")
+            return
+        }
+        //
+        const cartData = {
+            UPID: UPID,
+            quantity: 1,
+        }
+        //
+        const formData = formDataGenerator(cartData);
+        const res = await fetchPostAuthData("buyer/cart/product/add", formData, setCartLoading);
+        //
+        if (res.status == "added successfully")
+            setIsInCart(true);
+        else if (res?.status == "A open Cart is not avaliable") {
+            const creatCart = await fetchPostAuthData("buyer/cart/create",)
+            const response = await fetchPostAuthData("buyer/cart/product/add", formData, setLoading)
+        }
     }
     //
     const storeWishListProductsAsync = async () => {
         //
         const productToBeSaved = UPID
         const existingProducts = await readData("wishListProducts");
-        console.log("existingProducts---------->", existingProducts);
+        // console.log("existingProducts---------->", existingProducts);
         //
         let newProduct = [productToBeSaved]
         if (existingProducts) {
@@ -51,16 +72,15 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
         //
         const productToBeSaved = UPID
         const existingProducts = await readData("wishListProducts");
-        console.log("existingProducts---------->", existingProducts);
+        // console.log("existingProducts---------->", existingProducts);
         //
-        let newProducts = [];
+        let newProducts = existingProducts;
         if (existingProducts) {
-            const products = existingProducts.filter(element => element !== productToBeSaved);
-            newProducts = products;
+            newProducts = existingProducts.filter(element => element !== productToBeSaved);
             console.log("newProducts---------->", newProducts);
         }
         // // Store Data
-        // await storeData("wishListProducts", newProduct);
+        await storeData("wishListProducts", newProducts);
         // // await removeData("wishListProducts");
     }
     //
@@ -77,9 +97,16 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
     }
     //
     const onRemoveFromWishList = async () => {
-        const payload = { id };
+        const payload = { UPID };
         const formData = await formDataGenerator(payload);
-
+        removeWishListProductAsync();
+        setIsInWishList(false);
+        const res = await readData("userInfo");
+        if (res) {
+            const result = await fetchPostAuthData("buyer/wishlist/remove", formData, setHeartLoading);
+            console.log("Result-------", result);
+        }
+        else navigate("AuthStack");
     }
     //
     const checkProductIsInWishListAsync = async () => {
@@ -93,7 +120,7 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
     //
     useEffect(() => {
         checkProductIsInWishListAsync();
-    }, [])
+    }, []);
     //
     return (
         <View style={styles.container}>
@@ -141,11 +168,20 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
                             </Pressable>
                     }
                     {
-                        cartLoading ? <ActivityIndicator size="small" />
-                            :
-                            <Pressable onPress={onAddToCart} style={styles.iconCon}>
-                                <MaterialCommunityIcons name="cart-plus" size={18} />
-                            </Pressable>
+                        hideCart &&
+                        <View style={styles.iconCon}>
+                            {
+                                cartLoading ? <ActivityIndicator size="small" />
+                                    :
+                                    <Pressable onPress={onAddToCart}>
+                                        <MaterialCommunityIcons
+                                            size={18}
+                                            name="cart-plus"
+                                            color={isInCart ? COLORS.primary_color : "black"}
+                                        />
+                                    </Pressable>
+                            }
+                        </View>
                     }
 
                 </View>

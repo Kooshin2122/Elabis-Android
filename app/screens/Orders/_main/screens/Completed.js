@@ -1,18 +1,78 @@
 //
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Devider } from '../../../../components';
+import React, { useEffect, useState } from 'react';
+import { FlatList, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { fetchGetAuthData } from '../../../../API';
+import { CustomButton, Devider, ListEmptyComponent, LoadingModal } from '../../../../components';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
-import { ProductStatusCard } from '../components';
+import { OnProcessCard, ProductStatusCard } from '../components';
 import { basketProductInfo } from '../services';
 
 const Completed = () => {
-    return (
-        <ScrollView style={styles.container}>
-            <Devider />
-            {
-                basketProductInfo.map((item) => <ProductStatusCard key={item.id} {...item} />)
+    const [loading, setLoading] = useState(false);
+    const [refresh, setRefresh] = useState(true);
+    const [odersData, setOdersData] = useState([]);
+    const [isUserLoging, setIsUserLoging] = useState(true);
+    //
+    const getOrdersDataAsync = async () => {
+        try {
+            setLoading(true);
+            setRefresh(false);
+            const response = await fetchGetAuthData("buyer/cart/order/view");
+            const filteredData = response?.data.filter((item) => item.status > 4) ?? [];
+            console.log("filteredData------->", filteredData);
+            setLoading(false);
+            setOdersData(filteredData);
+            setIsUserLoging(true);
+        } catch (error) {
+            setLoading(false);
+            if (error == "TypeError: Cannot read property 'token_type' of null") {
+                setOdersData([]);
+                setIsUserLoging(false);
             }
+            console.log(`error happened in the On-Process Screen ---> ${error}`);
+        }
+    }
+    //
+    useEffect(() => {
+        getOrdersDataAsync();
+    }, []);
+    //
+    return (
+        <ScrollView
+            style={styles.container}
+            refreshControl={<RefreshControl refreshing={refresh} onRefresh={getOrdersDataAsync} />}
+        >
+            {loading && <LoadingModal />}
+            <Devider />
+            <View style={styles.orderViewCon}>
+                {
+                    isUserLoging ?
+                        <FlatList
+                            data={odersData}
+                            scrollEnabled={false}
+                            renderItem={({ item }) => <OnProcessCard {...item} />}
+                            ListEmptyComponent={() => <ListEmptyComponent title="You did not get completed yet" message="Looks like you have not ordered anything. Go back to the products screen and add order some products. or pull-up to reload data" />}
+                        />
+                        :
+                        <ListEmptyComponent
+                            title="Sign In Please"
+                            exclamationIcon={true}
+                            message="Looks like you have not Signg-In yet. Click this below button to sign-in or sign-up"
+                        >
+                            <CustomButton
+                                title="Sign-In"
+                                clickHandler={() => navigate("AuthStack")}
+                            />
+                        </ListEmptyComponent>
+                }
+                {
+                    odersData.length > 0 &&
+                    <CustomButton
+                        title="Complete"
+                        clickHandler={() => navigate('Map')}
+                    />
+                }
+            </View>
         </ScrollView>
     )
 }
@@ -24,5 +84,11 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: LAY_OUT.padding,
         backgroundColor: COLORS.bg_primary
+    },
+    orderViewCon: {
+        padding: "4%",
+        borderRadius: 7,
+        borderWidth: 0.7,
+        borderColor: COLORS.gray_color
     }
 })

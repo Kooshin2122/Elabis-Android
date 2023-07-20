@@ -31,7 +31,7 @@ const AddressesScreen = () => {
         try {
             setIsLoading(true);
             const res = await fetchGetAuthData("buyer/address/view", setAddresses);
-            console.log("res-------", res);
+            // console.log("res-------", res);
             setIsLoading(false);
             // await console.log("res-------------->", res.data);
             if (res?.status == "success")

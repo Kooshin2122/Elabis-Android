@@ -84,7 +84,7 @@ const ProductDetailsScreen = ({ route }) => {
         }
         //
         const cartData = {
-            UPID: productData.UPID,
+            UPID: productData?.UPID,
             quantity: counter,
         }
         //
@@ -194,7 +194,7 @@ const ProductDetailsScreen = ({ route }) => {
                             keyExtractor={(item) => item.UPID}
                             showsVerticalScrollIndicator={false}
                             contentContainerStyle={styles.productsCon}
-                            renderItem={({ item }) => <ProductCard {...item} />}
+                            renderItem={({ item }) => <ProductCard {...item} hideCart={true} />}
                             ListHeaderComponent={() => (
                                 <ListHeader name={shopData?.name} shopProducts={shopProducts} />
                             )}

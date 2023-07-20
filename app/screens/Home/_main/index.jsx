@@ -43,9 +43,10 @@ const HomeScreen = () => {
                 setErrorMsg('Permission to access location was denied');
                 return;
             }
+            console.log("Status---------", status);
             Location.getCurrentPositionAsync().then(location => {
                 console.log("Location-------->", location);
-                setUserLocation(location)
+                setUserLocation(location);
             }).catch((error) => console.log("error--", error))
             // setUserLocation(location);
         } catch (error) {
