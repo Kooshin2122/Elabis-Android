@@ -19,11 +19,15 @@ const AddressesScreen = () => {
     const [selectedAddress, setSelectedAddress] = useState({ id: null });
     //
     const changeDefaultAddress = async () => {
-        goBack();
+        // goBack();
         if (selectedAddress.id) {
+            navigate('OrdersStack', { initial: false, screen: "CheckOut", })
             const addressInfo = { UAID: selectedAddress.UAID, id: selectedAddress.id, title: selectedAddress.title, state: selectedAddress.state, region: selectedAddress.region, landmark: selectedAddress.landmark, additional_information: selectedAddress.additional_information, }
             dispatch(changeDeliveryAddress(addressInfo));
             await storeData("DefaultAddress", addressInfo);
+        }
+        else {
+            alert("Please Select an Address or Add New One")
         }
     }
     //
@@ -49,7 +53,7 @@ const AddressesScreen = () => {
     return (
         <SafeAreaView style={styles.container} >
             {isLoading && <LoadingModal />}
-            <SubHeader title="Addresses" />
+            <SubHeader title="Addresses" backTo="CheckOut" />
             <ScrollView refreshControl={<RefreshControl onRefresh={getAddressesAsync} />} style={styles.scrollCon} showsVerticalScrollIndicator={false}>
                 <Devider />
                 <View style={styles.head}>

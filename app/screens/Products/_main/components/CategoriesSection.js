@@ -21,7 +21,7 @@ const CategoriesSection = ({ route }) => {
     // get Data 
     const getDataAsync = async () => {
         try {
-            // Fetching Main Categories;
+            // AAAFetching Main Categories;
             setLoading(true);
             const response = await fetchGetData("buyer/category/view");
             setLoading(false);
@@ -37,6 +37,7 @@ const CategoriesSection = ({ route }) => {
         } catch (error) {
             setLoading(false);
             setSubCatLoading(false);
+            console.log("Error Happen When Fetching Categories Data in the products screen Categories Tab");
         }
     };
     //

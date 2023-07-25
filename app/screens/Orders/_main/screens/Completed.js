@@ -4,7 +4,7 @@ import { FlatList, RefreshControl, ScrollView, StyleSheet, Text, View } from 're
 import { fetchGetAuthData } from '../../../../API';
 import { CustomButton, Devider, ListEmptyComponent, LoadingModal } from '../../../../components';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
-import { OnProcessCard, ProductStatusCard } from '../components';
+import { CardsContainer, OnProcessCard, ProductStatusCard } from '../components';
 import { basketProductInfo } from '../services';
 
 const Completed = () => {
@@ -17,12 +17,13 @@ const Completed = () => {
         try {
             setLoading(true);
             setRefresh(false);
-            const response = await fetchGetAuthData("buyer/cart/order/view");
-            const filteredData = response?.data.filter((item) => item.status > 4) ?? [];
-            console.log("filteredData------->", filteredData);
+            const response = await fetchGetAuthData("buyer/cart/order/completed");
+            console.log("filteredData------->", response);
             setLoading(false);
-            setOdersData(filteredData);
-            setIsUserLoging(true);
+            if (response.data) {
+                setOdersData(response?.data);
+                setIsUserLoging(true);
+            }
         } catch (error) {
             setLoading(false);
             if (error == "TypeError: Cannot read property 'token_type' of null") {
@@ -48,10 +49,10 @@ const Completed = () => {
                 {
                     isUserLoging ?
                         <FlatList
-                            data={odersData}
+                            data={Object.values(odersData)}
                             scrollEnabled={false}
-                            renderItem={({ item }) => <OnProcessCard {...item} />}
-                            ListEmptyComponent={() => <ListEmptyComponent title="You did not get completed yet" message="Looks like you have not ordered anything. Go back to the products screen and add order some products. or pull-up to reload data" />}
+                            renderItem={({ item }) => <CardsContainer products={item} showCancelCartBtn={false} />}
+                            ListEmptyComponent={() => <ListEmptyComponent title="You did not order yet" message="Looks like you have not ordered anything. Go back to the products screen and add order some products. or pull-up to reload data" />}
                         />
                         :
                         <ListEmptyComponent
@@ -64,13 +65,6 @@ const Completed = () => {
                                 clickHandler={() => navigate("AuthStack")}
                             />
                         </ListEmptyComponent>
-                }
-                {
-                    odersData.length > 0 &&
-                    <CustomButton
-                        title="Complete"
-                        clickHandler={() => navigate('Map')}
-                    />
                 }
             </View>
         </ScrollView>
@@ -86,9 +80,9 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.bg_primary
     },
     orderViewCon: {
-        padding: "4%",
-        borderRadius: 7,
-        borderWidth: 0.7,
-        borderColor: COLORS.gray_color
+        // padding: "4%",
+        // borderRadius: 7,
+        // borderWidth: 0.7,
+        // borderColor: COLORS.gray_color
     }
 })

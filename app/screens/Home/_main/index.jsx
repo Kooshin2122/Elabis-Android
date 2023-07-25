@@ -9,6 +9,7 @@ import { HomeHeader, SpecialCards, AvailableCategoryCard, } from './components';
 import { StyleSheet, View, SafeAreaView, ScrollView, FlatList, RefreshControl, Text } from 'react-native';
 import { Devider, MyStatusBar, Container, PopularBrandsCard, ProductCard, LoadingModal } from '../../../components';
 import { useAppContext } from '../../../context';
+import { Toast } from 'react-native-ui-lib';
 //
 const HomeScreen = () => {
     //
@@ -93,6 +94,15 @@ const HomeScreen = () => {
             >
                 <Devider />
                 <View style={styles.container}>
+                    {/* <Toast
+                        visible={true}
+                        position={'top'}
+                        autoDismiss={500}
+                    >
+                        <View>
+                            <Text>Maanka</Text>
+                        </View>
+                    </Toast> */}
                     <Container title="Popular Brands" seeMore style={styles.brandsCon} onPressSeeMore={onPressPopularBrandsSeeMore}  >
                         {
                             populaBrandsData.map(brandInfo => (

@@ -6,10 +6,12 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const SubHeader = ({ title = 'Title', backTo = null }) => {
     const navigation = useNavigation()
-
+    console.log("backTo--", backTo);
     const backToPreviousScreen = () => {
         if (backTo == "OrdersStack")
             navigation.navigate("OrdersStack");
+        else if (backTo == "CheckOut")
+            navigation.navigate('OrdersStack', { initial: false, screen: "CheckOut", })
         else if (backTo)
             navigation.navigate("Home")
         navigation.goBack();

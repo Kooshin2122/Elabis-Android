@@ -21,7 +21,7 @@ function MaterialTopTabs() {
         tabBarActiveTintColor: '#000',
         tabBarInactiveTintColor: 'gray',
         // tabBarStyle: { marginHorizontal: '3%' },
-        tabBarLabelStyle: { fontSize: 15, fontWeight: '500' },
+        tabBarLabelStyle: { fontSize: 13, fontWeight: '500' },
       }}
     >
       <Tab.Screen name="Basket" component={Basket} />

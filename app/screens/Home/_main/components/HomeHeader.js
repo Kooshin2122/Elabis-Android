@@ -37,8 +37,9 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
-        padding: LAY_OUT.padding,
         borderBottomWidth: 0.5,
+        paddingHorizontal: "4%",
+        paddingVertical: LAY_OUT.padding,
         borderBottomColor: COLORS.gray_color
     },
     logoCon: {

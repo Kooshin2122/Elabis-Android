@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         borderBottomWidth: 0.6,
         borderColor: COLORS.gray_color,
-        paddingVertical: LAY_OUT.paddingY,
-        paddingHorizontal: LAY_OUT.paddingX,
+        paddingHorizontal: "4%",
+        paddingVertical: LAY_OUT.padding,
     },
     labelTxt: {
         fontSize: 16,

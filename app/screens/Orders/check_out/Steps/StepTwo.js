@@ -57,7 +57,7 @@ const StepTwo = ({ changeCurrentPosition = () => { } }) => {
                     <View>
                         <Text style={styles.desc}>
                             This is your address that the delivery guy will pick up you order to your location. keep it correct information.
-                    </Text>
+                        </Text>
                         <Devider />
                         <AddressView {...deliveyAdd} selectAddress={deliveyAdd.id} />
                         <Devider />

@@ -1,13 +1,13 @@
 //
-import React, { useEffect, useState } from 'react';
-import { BasketCards, OnProcessCard, ProductStatusCard } from '../components';
+import React, { useEffect, useState, useCallback } from 'react';
+import { CardsContainer } from '../components';
 import { fetchGetAuthData } from '../../../../API';
-import { useNavigation } from '@react-navigation/core';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
+import { useNavigation, useFocusEffect } from '@react-navigation/core';
 import { FlatList, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { CustomButton, Devider, ListEmptyComponent, LoadingModal } from '../../../../components';
-import { readData } from '../../../../utils/localStorage/AsyncStorage';
-
+// import { readData } from '../../../../utils/localStorage/AsyncStorage';
+//
 const OnProcess = () => {
     const { navigate } = useNavigation();
     const [loading, setLoading] = useState(false);
@@ -19,12 +19,13 @@ const OnProcess = () => {
         try {
             setLoading(true);
             setRefresh(false);
-            const response = await fetchGetAuthData("buyer/cart/order/view");
-            const filteredData = response?.data.filter((item) => item.status < 5) ?? [];
-            console.log("filteredData------->", filteredData);
+            const response = await fetchGetAuthData("buyer/cart/order/ongoing");
+            // console.log("filteredData------->", response?.data);
             setLoading(false);
-            setOdersData(filteredData);
-            setIsUserLoging(true);
+            if (response.data) {
+                setOdersData(response?.data);
+                setIsUserLoging(true);
+            }
         } catch (error) {
             setLoading(false);
             if (error == "TypeError: Cannot read property 'token_type' of null") {
@@ -35,9 +36,13 @@ const OnProcess = () => {
         }
     }
     //
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
         getOrdersDataAsync();
-    }, []);
+    }, []));
+    //
+    // useEffect(() => {
+    //     getOrdersDataAsync();
+    // }, []);
     //
     return (
         <ScrollView
@@ -50,9 +55,9 @@ const OnProcess = () => {
                 {
                     isUserLoging ?
                         <FlatList
-                            data={odersData}
+                            data={Object.values(odersData)}
                             scrollEnabled={false}
-                            renderItem={({ item }) => <OnProcessCard {...item} />}
+                            renderItem={({ item, index }) => <CardsContainer title={`Order ${index + 1}`} products={item} showCancelCartBtn={false} />}
                             ListEmptyComponent={() => <ListEmptyComponent title="You did not order yet" message="Looks like you have not ordered anything. Go back to the products screen and add order some products. or pull-up to reload data" />}
                         />
                         :
@@ -67,14 +72,8 @@ const OnProcess = () => {
                             />
                         </ListEmptyComponent>
                 }
-                {
-                    odersData.length > 0 &&
-                    <CustomButton
-                        title="Track Order"
-                        clickHandler={() => navigate('Map')}
-                    />
-                }
             </View>
+            <Devider />
         </ScrollView>
     )
 }
@@ -88,9 +87,6 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.bg_primary
     },
     orderViewCon: {
-        padding: "4%",
-        borderRadius: 7,
-        borderWidth: 0.7,
         borderColor: COLORS.gray_color
     }
 })

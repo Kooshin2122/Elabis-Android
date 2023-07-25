@@ -7,14 +7,20 @@ import { Button, FlatList, RefreshControl, SafeAreaView, StyleSheet, Text, View 
 import { ShopsCard } from './components';
 //
 const ShopsScreen = ({ navigation }) => {
+    const [refresh, setRefresh] = useState(true);
     const [loading, setLoading] = useState(false);
     const [shopsData, setShopsData] = useState([]);
     //
     const getShopsDataAsync = async () => {
         // console.log("Shops");
-        const response = await fetchGetData("buyer/shop/view", setLoading);
-        console.log(response.data);
-        setShopsData(response.data);
+        try {
+            setRefresh(false);
+            const response = await fetchGetData("buyer/shop/view", setLoading);
+            console.log(response.data);
+            setShopsData(response.data);
+        } catch (error) {
+            console.log("Error happen when fetching Shops Data in the products screen Shops Tab");
+        }
         // console.log("response----------->", response.data);
     };
     //
@@ -29,13 +35,12 @@ const ShopsScreen = ({ navigation }) => {
             <FlatList
                 data={shopsData}
                 keyExtractor={(item) => item.id}
-                refreshControl={<RefreshControl />}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.flatListContainer}
                 renderItem={({ item }) => <ShopsCard {...item} />}
                 ListEmptyComponent={() => <ListEmptyComponent title="Sorry" />}
+                refreshControl={<RefreshControl refreshing={refresh} onRefresh={getShopsDataAsync} />}
             />
-
         </SafeAreaView>
     )
 }

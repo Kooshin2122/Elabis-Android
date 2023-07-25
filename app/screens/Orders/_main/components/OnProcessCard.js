@@ -7,18 +7,18 @@ import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 //
 const OnProcessCard = ({ shop_id, title, status, dateAndTime }) => {
     //
-    const [shopData, setShopData] = useState([]);
+    // const [shopData, setShopData] = useState([]);
     const [loading, setLoading] = useState(false);
     //
-    const getShopInfoAsync = async () => {
-        const shop = await fetchGetData(`buyer/shop/view/${shop_id}`)
-        setShopData(shop?.data)
-    }
-    console.log("shopData--------->", shopData?.name);
+    // const getShopInfoAsync = async () => {
+    //     const shop = await fetchGetData(`buyer/shop/view/${shop_id}`)
+    //     setShopData(shop?.data)
+    // }
+    // console.log("shopData--------->", shopData?.name);
     //
-    useEffect(() => {
-        getShopInfoAsync();
-    }, [])
+    // useEffect(() => {
+    //     getShopInfoAsync();
+    // }, [])
     //
     return (
         <View style={styles.container}>

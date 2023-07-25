@@ -9,7 +9,7 @@ import { Dimensions, Image, Pressable, StyleSheet, Text, TouchableOpacity, View 
 //
 const { width, height } = Dimensions.get('screen');
 //
-const BasketCard = ({ id, UPID, name, brand, category, quantity, quantity_avaliable, photo, price, reloadData = () => { } }) => {
+const BasketCard = ({ id, UPID, name, brand, status, category, quantity, quantity_avaliable, photo, price, reloadData = () => { }, showCancelCartBtn = true, }) => {
     //
     const { navigate } = useNavigation();
     //
@@ -42,55 +42,53 @@ const BasketCard = ({ id, UPID, name, brand, category, quantity, quantity_avalia
                 />
             </View>
             {/* Content Container ------------------------------------------------- */}
-            <View style={styles.contentContainer}>
+            <View style={[styles.contentContainer, { justifyContent: status ? "flex-start" : "space-between" }]}>
                 {/* Section One --------------------------------------------------- */}
                 <View style={styles.sectionOne}>
                     <Text style={styles.proName}>
                         {sliceText(name, 18)}
                     </Text>
-                    <Pressable onPress={onRemoveCart} style={styles.cartRemoveCon}>
-                        <MaterialCommunityIcons name="cart-remove" size={18} color="#f7847f" />
-                    </Pressable>
+                    {
+                        showCancelCartBtn &&
+                        <Pressable onPress={onRemoveCart} style={styles.cartRemoveCon}>
+                            <MaterialCommunityIcons name="cart-remove" size={14} color="#f7847f" />
+                        </Pressable>
+                    }
                 </View>
                 {/* Section Two --------------------------------------------------- */}
-                <View style={styles.sectionTwo}>
-                    <Text style={styles.itemInfo}>
-                        Brand: {sliceText(brand?.name, 18)}
-                    </Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: "wrap", overflow: 'hidden' }}>
-                        <Text style={styles.itemInfo}>
-                            Available Quantities: {quantity_avaliable}
+                {
+                    status ?
+                        <Text style={styles.status}>
+                            {status}
                         </Text>
-                    </View>
-
-                </View>
-                {/* Section Three --------------------------------------------------- */}
-                <View style={styles.sectionThree}>
-                    <View style={{ alignItems: "center" }}>
-                        <Text style={styles.price}>
-                            ${price}
+                        :
+                        <View style={[styles.sectionThree]}>
+                            <View style={{ alignItems: "center" }}>
+                                <Text style={styles.price}>
+                                    ${price}
+                                </Text>
+                                <Text style={styles.subtitleTxt}>
+                                    Single Price
+                                 </Text>
+                            </View>
+                            <View style={{ alignItems: "center" }}>
+                                <Text style={styles.price}>
+                                    {quantity}
+                                </Text>
+                                <Text style={styles.subtitleTxt}>
+                                    Quantity
                         </Text>
-                        <Text style={styles.subtitleTxt}>
-                            Single Price
+                            </View>
+                            <View style={{ alignItems: "center" }}>
+                                <Text style={styles.price}>
+                                    ${price * quantity}
+                                </Text>
+                                <Text style={styles.subtitleTxt}>
+                                    Total Price
                         </Text>
-                    </View>
-                    <View style={{ alignItems: "center" }}>
-                        <Text style={styles.price}>
-                            {quantity}
-                        </Text>
-                        <Text style={styles.subtitleTxt}>
-                            Quantity
-                        </Text>
-                    </View>
-                    <View style={{ alignItems: "center" }}>
-                        <Text style={styles.price}>
-                            ${price * quantity}
-                        </Text>
-                        <Text style={styles.subtitleTxt}>
-                            Total Price
-                        </Text>
-                    </View>
-                </View>
+                            </View>
+                        </View>
+                }
             </View>
         </Pressable>
     )
@@ -109,9 +107,9 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.bg_primary,
     },
     imageContainer: {
-        height: 100,
+        height: 70,
         borderRadius: 5,
-        width: width / 3.4,
+        width: width / 4,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: COLORS.bg_tertiary
@@ -135,8 +133,8 @@ const styles = StyleSheet.create({
     },
     proName: {
         flex: 1,
-        fontSize: 20,
-        fontWeight: '400',
+        fontSize: 14,
+        fontWeight: '600',
         letterSpacing: 0.5
     },
     cartRemoveCon: {
@@ -174,7 +172,7 @@ const styles = StyleSheet.create({
         textDecorationLine: 'line-through'
     },
     price: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: '500'
     },
     discountCon: {
@@ -199,7 +197,7 @@ const styles = StyleSheet.create({
         marginHorizontal: '3%'
     },
     subtitleTxt: {
-        fontSize: 10,
+        fontSize: 8,
         color: "gray",
         letterSpacing: 0.7
     }

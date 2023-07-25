@@ -1,10 +1,10 @@
 //
 import { useSelector } from 'react-redux';
-import { fetchGetAuthData } from '../../../../API';
-import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/core';
-import { BasketCards, ServicesCard } from '../components';
+import { fetchGetAuthData, fetchPostAuthData } from '../../../../API';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigation, useFocusEffect } from '@react-navigation/core';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
+import { BasketCards, CardsContainer, ServicesCard } from '../components';
 import { basketProductInfo, paymentServiceCompanies } from '../services';
 import { Container, Devider, ListEmptyComponent, LoadingModal } from '../../../../components';
 import { FlatList, Modal, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -24,13 +24,19 @@ const Basket = () => {
         try {
             setLoading(true);
             setRefresh(false);
-            const response = await fetchGetAuthData("buyer/cart/view");
-            console.log("Response Cart----------->", response);
+            // const response = await fetchGetAuthData("buyer/cart/view");
+            const response = await fetchPostAuthData("buyer/cart/view");
+            // console.log("Response Cart----------->", response);
             setLoading(false);
             if (response.status == "successful") {
                 setCartData(response.data.cart_details);
-                setCartTotal(response.data.total_price);
-                setCartProducts(response.data.products_in_cart)
+                console.log(typeof response.data.service_price + "---------------");
+                setCartTotal([
+                    response.data.total_product_price.toFixed(0),
+                    response.data.service_price.toFixed(2),
+                    response.data.total_price.toFixed(2),
+                ]);
+                setCartProducts(response.data.grouped_data)
             }
         } catch (error) {
             setLoading(false);
@@ -42,9 +48,13 @@ const Basket = () => {
         }
     }
     //
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
         getCartDataAsync();
-    }, []);
+    }, []));
+
+    // useEffect(() => {
+    //     getCartDataAsync();
+    // }, []);
     //
     const goCheckOutScreen = async () => {
         if (cartProducts?.length < 1) {
@@ -67,11 +77,11 @@ const Basket = () => {
             {loading && <LoadingModal />}
             <View style={styles.scrollCon} >
                 <FlatList
-                    data={cartProducts}
-                    keyExtractor={(item) => item.UPID}
+                    data={Object.values(cartProducts)}
+                    keyExtractor={(item) => item}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.flatListItemsCon}
-                    renderItem={({ item }) => <BasketCards {...item} reloadData={getCartDataAsync} />}
+                    renderItem={({ item }) => <CardsContainer products={item} reloadData={getCartDataAsync} />}
                     refreshControl={<RefreshControl refreshing={refresh} onRefresh={getCartDataAsync} />}
                     ListEmptyComponent={() => (
                         <ListEmptyComponent title="Your Cart Is Empty" message="Looks like you have not added anything to your cart. Go back to the products screen and add some products. or pull-up to reload data" />
@@ -86,21 +96,29 @@ const Basket = () => {
                                     }
                                 </Container>
                                 <Devider />
-                                <View style={[LAY_OUT.flex_row, styles.contentCon]}>
-                                    <View>
-                                        <Text style={styles.title}>
+                                <View style={[styles.contentCon]}>
+                                    <View style={LAY_OUT.flex_row}>
+                                        <Text style={[styles.title, { fontSize: 14, fontWeight: "400", letterSpacing: 0.5 }]}>
                                             Basket Total
                                         </Text>
-                                        <Text style={styles.subTitle}>
-                                            Quantity: 5
-                                         </Text>
-                                    </View>
-                                    <View style={{ alignItems: 'flex-end' }} >
                                         <Text style={styles.priceTxt}>
-                                            $ {cartTotal}
+                                            $ {cartTotal[0]}
                                         </Text>
-                                        <Text style={styles.subTitle}>
-                                            Quantity: {cartProducts.length}
+                                    </View>
+                                    <View style={LAY_OUT.flex_row}>
+                                        <Text style={[styles.title, { fontSize: 14, fontWeight: "400", letterSpacing: 0.5 }]}>
+                                            Service Price
+                                        </Text>
+                                        <Text style={styles.priceTxt}>
+                                            $ {cartTotal[1]}
+                                        </Text>
+                                    </View>
+                                    <View style={LAY_OUT.flex_row}>
+                                        <Text style={[styles.title, { fontSize: 15, fontWeight: "600", letterSpacing: 0.7 }]}>
+                                            Total Price
+                                        </Text>
+                                        <Text style={styles.priceTxt}>
+                                            $ {cartTotal[2]}
                                         </Text>
                                     </View>
                                 </View>
@@ -179,7 +197,7 @@ const styles = StyleSheet.create({
         marginBottom: 3,
         fontWeight: '500',
         letterSpacing: 0.7,
-        textTransform: 'uppercase',
+        // textTransform:"cap"
     },
     subTitle: {
         fontSize: 14,
