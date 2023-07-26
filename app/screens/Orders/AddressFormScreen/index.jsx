@@ -61,41 +61,49 @@ const AddressFormScreen = ({ route }) => {
     }
     //
     const saveAddress = async (values) => {
-        if (userLocation?.coords?.latitude == null) {
-            alert('hello')
-            await getPermisionAsync();
-        }
-        const address = {
-            ...values,
-            latitude: userLocation?.coords?.latitude,
-            longitude: userLocation?.coords?.longitude,
-        }
-        console.log("address------>", address);
-        const formData = await formDataGenerator(address);
-        setLoading(true);
-        const res = await fetchPostAuthData("buyer/address/add", formData);
-        console.log("address------>", res);
-        setLoading(false);
-        if (res?.status == "success") {
-            navigate("AddressesScreen")
-            return
+        try {
+            if (userLocation?.coords?.latitude == null) {
+                alert('hello')
+                await getPermisionAsync();
+            }
+            const address = {
+                ...values,
+                latitude: userLocation?.coords?.latitude,
+                longitude: userLocation?.coords?.longitude,
+            }
+            console.log("address------>", address);
+            const formData = await formDataGenerator(address);
+            setLoading(true);
+            const res = await fetchPostAuthData("buyer/address/add", formData);
+            console.log("address------>", res);
+            setLoading(false);
+            if (res?.status == "success") {
+                navigate("AddressesScreen")
+                return
+            }
+        } catch (error) {
+            alert(error)
         }
     }
     //
     const updateAddress = async (values) => {
-        const address = {
-            UAID: UAID,
-            ...values,
-            latitude: userLocation?.coords.latitude,
-            longitude: userLocation?.coords.longitude,
-        }
-        const formData = await formDataGenerator(address);
-        setLoading(true);
-        const res = await fetchPostAuthData("buyer/address/update", formData);
-        setLoading(false);
-        if (res?.status == "Updated successfully") {
-            navigate("AddressesScreen")
-            return
+        try {
+            const address = {
+                UAID: UAID,
+                ...values,
+                latitude: userLocation?.coords.latitude,
+                longitude: userLocation?.coords.longitude,
+            }
+            const formData = await formDataGenerator(address);
+            setLoading(true);
+            const res = await fetchPostAuthData("buyer/address/update", formData);
+            setLoading(false);
+            if (res?.status == "Updated successfully") {
+                navigate("AddressesScreen")
+                return
+            }
+        } catch (error) {
+            alert(error)
         }
     }
     // //

@@ -8,7 +8,7 @@ import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { CustomButton, Devider } from '../../../../components';
 //
 const CardsContainer = ({ title = "Shop Name", products = [], showTrackBtn = false, showCancelCartBtn = true, reloadData = () => { } }) => {
-    // console.log("Products", products);
+    console.log("Products", products);
     const { navigate } = useNavigation();
     const [arrowToggle, setArrowToggle] = useState(true);
     return (

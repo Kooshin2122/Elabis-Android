@@ -17,12 +17,23 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
     const { navigate } = useNavigation();
     const [userInfo, setUserInfo] = useState();
     const [loading, setLoading] = useState(false);
+    const [paymentMoney, setPaymentMoney] = useState();
     const [orderToggle, setOrderToggle] = useState(false);
     const { personalInfo, deliveryAddress, paymentInfo } = useSelector((state) => state.ordersSlice);
     //
     const getUserInfoAsync = async () => {
-        const res = await fetchGetAuthData("buyer/user/view");
-        setUserInfo(res.data[0]);
+        try {
+            const res = await fetchGetAuthData("buyer/user/view");
+            setUserInfo(res.data[0]);
+            const addressPayload = { UAID: deliveryAddress.UAID };
+            const formData = await formDataGenerator(addressPayload);
+            const response = await fetchPostAuthData("buyer/cart/order/processing", formData);
+            // console.log("Res----------->>", response);
+            if (response.status == "successful")
+                setPaymentMoney(response?.data);
+        } catch (error) {
+            console.log(`error happen in the CheckOut Screen Step Four`);
+        }
     }
     //
     useEffect(() => {
@@ -147,36 +158,55 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
                 <View style={styles.paymentContainer}>
                     <Text style={styles.checkAddress}>
                         Payment Process
-                </Text>
+                     </Text>
                     <Devider />
                     <View style={[LAY_OUT.flex_row, styles.priceView]} >
                         <Text style={styles.paymentTitle}>
-                            Basket Total
+                            Number Of Shops
                     </Text>
                         <Text style={styles.paymentTitle}>
-                            ${cartTotal}
+                            {paymentMoney?.shop_wise_price?.length}
+                        </Text>
+                    </View>
+                    {
+                        paymentMoney?.shop_wise_price?.map((price, index) => {
+                            return (
+                                <View style={[LAY_OUT.flex_row, styles.priceView]} >
+                                    <Text style={styles.paymentTitle}>
+                                        Delivery Price {index + 1}
+                                    </Text>
+                                    <Text style={styles.paymentTitle}>
+                                        ${price.toFixed(2)}
+                                    </Text>
+                                </View>
+                            )
+                        })
+                    }
+                    <View style={[LAY_OUT.flex_row, styles.priceView]} >
+                        <Text style={styles.paymentTitle}>
+                            Service Price
+                    </Text>
+                        <Text style={styles.paymentTitle}>
+                            ${paymentMoney?.service_price.toFixed(2)}
                         </Text>
                     </View>
                     <View style={[LAY_OUT.flex_row, styles.priceView]} >
                         <Text style={styles.paymentTitle}>
-                            Delivery Fee
-                    </Text>
+                            Total Products Price
+                        </Text>
                         <Text style={styles.paymentTitle}>
-                            $2
-                    </Text>
+                            ${paymentMoney?.total_product_price.toFixed(2)}
+                        </Text>
                     </View>
                     <View style={[LAY_OUT.flex_row, styles.priceView]} >
                         <Text style={styles.paymentTitle}>
                             Total Price
-                    </Text>
+                        </Text>
                         <Text style={styles.paymentTitle}>
-                            ${cartTotal + 2}
+                            ${paymentMoney?.total_price.toFixed(2)}
                         </Text>
                     </View>
                     <View style={[LAY_OUT.flex_row, { marginTop: 10, paddingHorizontal: "2%" }]}>
-                        <Text style={styles.description}>
-                            Quantity: 5
-                    </Text>
                         <Text style={styles.description}>
                             Payment Number : {paymentInfo.phoneNumber}
                         </Text>
@@ -186,7 +216,7 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
                     <Pressable onPress={OrderMethod} style={styles.paymentButton} >
                         <Text style={styles.paymentButtonTxt} >
                             Order Now
-                    </Text>
+                        </Text>
                     </Pressable>
                 </View>
             </View>

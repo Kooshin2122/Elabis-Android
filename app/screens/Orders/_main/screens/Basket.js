@@ -26,17 +26,16 @@ const Basket = () => {
             setRefresh(false);
             // const response = await fetchGetAuthData("buyer/cart/view");
             const response = await fetchPostAuthData("buyer/cart/view");
-            // console.log("Response Cart----------->", response);
+            console.log("Response Cart----------->", response?.data?.grouped_data);
             setLoading(false);
             if (response.status == "successful") {
-                setCartData(response.data.cart_details);
-                console.log(typeof response.data.service_price + "---------------");
+                setCartData(response?.data?.cart_details);
+                setCartProducts(response?.data?.grouped_data);
                 setCartTotal([
-                    response.data.total_product_price.toFixed(0),
-                    response.data.service_price.toFixed(2),
-                    response.data.total_price.toFixed(2),
+                    response?.data?.total_product_price?.toFixed(0),
+                    response?.data?.service_price?.toFixed(2),
+                    response?.data?.total_price?.toFixed(2),
                 ]);
-                setCartProducts(response.data.grouped_data)
             }
         } catch (error) {
             setLoading(false);
@@ -51,7 +50,6 @@ const Basket = () => {
     useFocusEffect(useCallback(() => {
         getCartDataAsync();
     }, []));
-
     // useEffect(() => {
     //     getCartDataAsync();
     // }, []);
@@ -78,10 +76,9 @@ const Basket = () => {
             <View style={styles.scrollCon} >
                 <FlatList
                     data={Object.values(cartProducts)}
-                    keyExtractor={(item) => item}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.flatListItemsCon}
-                    renderItem={({ item }) => <CardsContainer products={item} reloadData={getCartDataAsync} />}
+                    renderItem={({ item, index }) => <CardsContainer title={`Shop ${index + 1}`} products={item} reloadData={getCartDataAsync} />}
                     refreshControl={<RefreshControl refreshing={refresh} onRefresh={getCartDataAsync} />}
                     ListEmptyComponent={() => (
                         <ListEmptyComponent title="Your Cart Is Empty" message="Looks like you have not added anything to your cart. Go back to the products screen and add some products. or pull-up to reload data" />

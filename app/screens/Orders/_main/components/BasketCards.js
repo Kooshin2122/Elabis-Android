@@ -1,17 +1,35 @@
 //
 import React from 'react'
 import { fetchPostAuthData } from '../../../../API';
-import { useNavigation } from '@react-navigation/core';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import { formDataGenerator, sliceText } from '../../../../utils';
+import { useNavigation, useFocusEffect } from '@react-navigation/core';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Dimensions, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { useCallback } from 'react';
 //
 const { width, height } = Dimensions.get('screen');
 //
 const BasketCard = ({ id, UPID, name, brand, status, category, quantity, quantity_avaliable, photo, price, reloadData = () => { }, showCancelCartBtn = true, }) => {
     //
     const { navigate } = useNavigation();
+    const [statusTxt, setStatusTxt] = useState("");
+    // alert("Hi")
+    //
+    const generateStatusTxt = (status) => {
+        if (status == 1)
+            setStatusTxt("Your order is pending")
+        else if (status == 2)
+            setStatusTxt("Seller accepted your order")
+        else if (status == 3)
+            setStatusTxt("Delivery guy accepted your order")
+        else if (status == 4)
+            setStatusTxt("Delivery guy picked up your order")
+        else if (status == 5)
+            setStatusTxt("Now your order is completed")
+    }
     //
     const onViewDetails = () => {
         navigate('ProductStack', {
@@ -31,6 +49,14 @@ const BasketCard = ({ id, UPID, name, brand, status, category, quantity, quantit
         // console.log("onRemoveCart", res);
         reloadData();
     }
+    //
+    // useFocusEffect(useCallback(() => {
+    //     generateStatusTxt(status);
+    // }, [status]));
+    //
+    useEffect(() => {
+        generateStatusTxt(status);
+    }, [status])
     //
     return (
         <Pressable onPress={onViewDetails} style={styles.container}>
@@ -59,7 +85,10 @@ const BasketCard = ({ id, UPID, name, brand, status, category, quantity, quantit
                 {
                     status ?
                         <Text style={styles.status}>
-                            {status}
+                            <Text style={{ color: COLORS.primary_color }}>
+                                Order Status
+                            </Text>
+                            : {statusTxt}
                         </Text>
                         :
                         <View style={[styles.sectionThree]}>
@@ -200,6 +229,13 @@ const styles = StyleSheet.create({
         fontSize: 8,
         color: "gray",
         letterSpacing: 0.7
+    },
+    status: {
+        fontSize: 12,
+        fontWeight: "500",
+        letterSpacing: 0.5,
+        marginTop: "2%",
+        color: COLORS.black_color
     }
 })
 

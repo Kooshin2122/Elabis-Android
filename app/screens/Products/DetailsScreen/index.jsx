@@ -16,10 +16,10 @@ import { readData } from '../../../utils/localStorage/AsyncStorage';
 const { width, height } = Dimensions.get('screen');
 //
 const ProductDetailsScreen = ({ route }) => {
-    const { navigate } = useNavigation();
     const [loading, setLoading] = useState();
     const [images, setImages] = useState([]);
     const [counter, setCounter] = useState(1);
+    const { navigate, goBack } = useNavigation();
     const [distance, setDistance] = useState(0);
     const [shopData, setShopData] = useState([]);
     const [productData, setProductData] = useState();
@@ -91,8 +91,10 @@ const ProductDetailsScreen = ({ route }) => {
         const formData = formDataGenerator(cartData);
         const res = await fetchPostAuthData("buyer/cart/product/add", formData, setLoading);
         //
-        if (res.status == "added successfully")
+        if (res.status == "added successfully") {
+            goBack();
             navigate("OrdersStack")
+        }
         else if (res?.status == "A open Cart is not avaliable") {
             const creatCart = await fetchPostAuthData("buyer/cart/create",)
             const response = await fetchPostAuthData("buyer/cart/product/add", formData, setLoading)

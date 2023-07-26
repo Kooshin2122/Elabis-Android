@@ -24,7 +24,7 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
             initial: false,
             params: {
                 UPID,
-                parentScreen
+                parentScreen,
             }
         });
     }

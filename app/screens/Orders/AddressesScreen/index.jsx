@@ -39,7 +39,7 @@ const AddressesScreen = () => {
             setIsLoading(false);
             // await console.log("res-------------->", res.data);
             if (res?.status == "success")
-                setAddresses(res.data)
+                setAddresses(res?.data)
         } catch (error) {
             setIsLoading(false);
             console.log(`error happen when getting Address Data in the AddressesScreen `);
