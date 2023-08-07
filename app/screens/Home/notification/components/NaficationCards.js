@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 //
-const NaficationCards = ({ title, description, dateAndTime }) => {
+const NaficationCards = ({ data }) => {
     return (
         <View style={styles.container}>
             {/* icon container */}
@@ -14,12 +14,12 @@ const NaficationCards = ({ title, description, dateAndTime }) => {
             <View style={styles.contentCon}>
                 <Text style={styles.content}>
                     <Text style={styles.title}>
-                        {title + ' '}
+                        {data?.notification?.title + ' '}
                     </Text>
-                    {description}
+                    {data?.notification?.body}
                 </Text>
                 <Text style={styles.date}>
-                    {dateAndTime}
+                    {data?.sentTime}
                 </Text>
             </View>
         </View>

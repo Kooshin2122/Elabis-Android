@@ -12,13 +12,14 @@ import { readData, removeData, storeData } from '../../utils/localStorage/AsyncS
 const { height } = Dimensions.get('screen');
 //
 const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, quantity_avaliable, parentScreen = null, hideCart = false, reloadScreen = () => { } }) => {
-    const { navigate } = useNavigation();
+    const { navigate, goBack } = useNavigation();
     const [isInCart, setIsInCart] = useState(false);
     const [cartLoading, setCartLoading] = useState(false);
     const [isInWishList, setIsInWishList] = useState(false);
     const [heartLoading, setHeartLoading] = useState(false);
     //
     const navigateDetailsScreen = () => {
+        goBack();
         navigate('ProductStack', {
             screen: 'DetailsScreen',
             initial: false,
@@ -113,7 +114,7 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
         const res = await readData("wishListProducts");
         res?.filter((id) => {
             if (id == UPID) {
-                setIsInWishList(true)
+                setIsInWishList(true);
             }
         })
     }

@@ -58,7 +58,7 @@ const HomeScreen = () => {
     useEffect(() => {
         getHomeDataAsync();
         getPermisionAsync();
-    }, [])
+    }, []);
     //
     const onPressPopularBrandsSeeMore = () => {
         navigate("ProductStack", {
@@ -86,8 +86,8 @@ const HomeScreen = () => {
     return (
         <SafeAreaView style={styles.mainContainer}>
             <MyStatusBar />
-            {loading && <LoadingModal />}
             <HomeHeader />
+            {loading && <LoadingModal />}
             <ScrollView
                 refreshControl={<RefreshControl refreshing={refresh} onRefresh={getHomeDataAsync} />}
                 style={styles.scrollCon} showsVerticalScrollIndicator={false}

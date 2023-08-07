@@ -35,7 +35,7 @@ const ProductDetailsScreen = ({ route }) => {
         setCounter(counter - 1)
     }
     const onIncreasement = () => {
-        if (counter > productData?.quantity_avaliable)
+        if (counter >= productData?.quantity_avaliable)
             return
         setCounter(counter + 1)
     }
@@ -196,7 +196,7 @@ const ProductDetailsScreen = ({ route }) => {
                             keyExtractor={(item) => item.UPID}
                             showsVerticalScrollIndicator={false}
                             contentContainerStyle={styles.productsCon}
-                            renderItem={({ item }) => <ProductCard {...item} hideCart={true} />}
+                            renderItem={({ item }) => <ProductCard {...item} hideCart={true} parentScreen="ProductsScreen" />}
                             ListHeaderComponent={() => (
                                 <ListHeader name={shopData?.name} shopProducts={shopProducts} />
                             )}

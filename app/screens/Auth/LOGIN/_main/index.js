@@ -11,6 +11,7 @@ import { formDataGenerator } from '../../../../utils';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import { storeData, readData } from '../../../../utils/localStorage/AsyncStorage';
 import { useAppContext } from '../../../../context';
+import messaging from '@react-native-firebase/messaging';
 //
 const LoginScreen = () => {
     const { navigate } = useNavigation();
@@ -20,6 +21,19 @@ const LoginScreen = () => {
     const { setIsUserLogin, setUserData } = useAppContext();
     //
     const loginInfo = { email: '', password: '' };
+    //
+    async function requestUserPermission() {
+        //
+        const authStatus = await messaging().requestPermission();
+        const enabled =
+            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+            authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+        //
+        if (enabled) {
+            console.log('Authorization status:', authStatus);
+        }
+        //
+    }
     //
     const onLogin = async (values) => {
         setResError(false);
@@ -53,16 +67,38 @@ const LoginScreen = () => {
                 setUserData(result.user)
                 const createCartRes = await fetchPostAuthData("buyer/cart/create");
                 // console.log("createCartRes---------------------->", createCartRes);
+                //
+                if (requestUserPermission()) {
+                    // return fcm token for the device
+                    messaging().getToken().then(token => {
+                        console.log("FCM Token inside Login ----------", token);
+                        try {
+                            const payload = { fcm: token };
+                            const formData = formDataGenerator(payload);
+                            fetchPostAuthData('buyer/user/updateFCM', formData)
+                                .then(res => console.log("FCM Token inside Login ------------>", res));
+                        } catch (error) {
+                            console.log("Error happen when updating FCM Token in App.js");
+                        }
+                    })
+                }
+                else {
+                    console.log("Failed Token Status", authStatus);
+                }
                 navigate('SettingStack');
-                setLoading(false)
+                //
+                setLoading(false);
                 return
             }
             setResError("Error happen please try again");
+            //
+            //
             setLoading(false);
         } catch (error) {
             console.log(`error ayaa ka jiro loging screenka --------> ${error}`);
             setLoading(false)
-        }
+        };
+
     }
     //
     return (

@@ -5,19 +5,26 @@ import { COLORS, LAY_OUT } from '../../Theme/GLOBAL_STYLES';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const SubHeader = ({ title = 'Title', backTo = null }) => {
-    const navigation = useNavigation()
-    console.log("backTo--", backTo);
+    //
+    const navigation = useNavigation();
+    // console.log("backTo--", backTo);
+    //
     const backToPreviousScreen = () => {
         if (backTo == "OrdersStack")
             navigation.navigate("OrdersStack");
         else if (backTo == "CheckOut")
             navigation.navigate('OrdersStack', { initial: false, screen: "CheckOut", })
+        else if (backTo == "ProductsScreen") {
+            navigation.navigate('ProductStack', { initial: false, screen: "ProductsScreen", })
+        }
+        else if (backTo == "WishListScreen")
+            navigation.navigate("WishListScreen")
         else if (backTo)
             navigation.navigate("Home")
         navigation.goBack();
         backTo = null
     }
-
+    //
     return (
         <View style={styles.container}>
             <TouchableOpacity activeOpacity={0.7} onPress={backToPreviousScreen} style={styles.iconCon}>

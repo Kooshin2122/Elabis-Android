@@ -1,12 +1,12 @@
 //
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { fetchGetAuthData } from '../../../../API';
 import { CustomButton, Devider, ListEmptyComponent, LoadingModal } from '../../../../components';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import { CardsContainer, OnProcessCard, ProductStatusCard } from '../components';
-import { basketProductInfo } from '../services';
-
+import { useFocusEffect } from '@react-navigation/core';
+//
 const Completed = () => {
     const [loading, setLoading] = useState(false);
     const [refresh, setRefresh] = useState(true);
@@ -34,9 +34,12 @@ const Completed = () => {
         }
     }
     //
-    useEffect(() => {
+    // useEffect(() => {
+    //     getOrdersDataAsync();
+    // }, []);
+    useFocusEffect(useCallback(() => {
         getOrdersDataAsync();
-    }, []);
+    }, []));
     //
     return (
         <ScrollView

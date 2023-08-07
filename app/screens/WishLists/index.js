@@ -57,7 +57,7 @@ const WishListScreen = () => {
                             contentContainerStyle={styles.flatListCon}
                             ListHeaderComponent={() => <ListHeader name="Wish List" shopProducts={wishListData} />}
                             ListEmptyComponent={() => <ListEmptyComponent title="Sorry You do not have" />}
-                            renderItem={({ item }) => <ProductCard {...item} parentScreen="HomeStack" />
+                            renderItem={({ item }) => <ProductCard {...item} parentScreen="WishListScreen" />
                             }
                         />
                         :

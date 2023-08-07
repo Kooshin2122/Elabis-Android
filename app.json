@@ -16,10 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.example.Elabis",
-      "config": {
-        "googleMapsApiKey": "AIzaSyBHB6AZMc3WTBqQQ4_D0V5jXKPj9J-rinU"
-      }
+      "bundleIdentifier": "com.example.MAKAANIC"
     },
     "android": {
       "adaptiveIcon": {
@@ -33,7 +30,12 @@
         "android.permission.FOREGROUND_SERVICE"
       ],
       "package": "com.example.Elabis",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCsJ_JBbomxUgMeWecFqNcOEk2g60NfKow"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

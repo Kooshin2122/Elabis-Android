@@ -6,6 +6,8 @@ import { Devider } from '../../../../components';
 import { useAppContext } from '../../../../context';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import { removeData } from '../../../../utils/localStorage/AsyncStorage';
+import { formDataGenerator } from '../../../../utils';
+import { fetchPostAuthData } from '../../../../API';
 //
 const LoginModal = ({ modalVisible, changeModalVisible = () => { } }) => {
     //
@@ -13,7 +15,16 @@ const LoginModal = ({ modalVisible, changeModalVisible = () => { } }) => {
     //
     const onLogout = async () => {
         // log out user
+        try {
+            const payload = { fcm: null };
+            const formData = formDataGenerator(payload);
+            fetchPostAuthData('buyer/user/updateFCM', formData)
+                .then(res => console.log("Token------------>", res));
+        } catch (error) {
+            console.log("Error happen when updating FCM Token in LogOut Modal");
+        }
         await removeData("userInfo");
+        await removeData("notifications");
         await removeData("DefaultAddress");
         await removeData("wishListProducts");
         await setIsUserLogin(false);

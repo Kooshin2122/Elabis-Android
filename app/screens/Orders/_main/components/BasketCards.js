@@ -129,9 +129,9 @@ const styles = StyleSheet.create({
     container: {
         padding: '3%',
         borderRadius: 7,
-        borderWidth: 0.5,
         marginBottom: '5%',
         flexDirection: 'row',
+        borderBottomWidth: 0.5,
         borderColor: COLORS.gray_color,
         backgroundColor: COLORS.bg_primary,
     },

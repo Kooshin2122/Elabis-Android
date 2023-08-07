@@ -47,14 +47,14 @@ const ProductDetailCard = ({ id, UPID, name, email, distance, landmark, photo, p
                     <Text style={styles.proName}>
                         From {name}
                     </Text>
-                    <Pressable onPress={onAddToWishList} style={styles.addWishListCon}>
+                    {/* <Pressable onPress={onAddToWishList} style={styles.addWishListCon}>
                         {
                             heartLoading ?
                                 <ActivityIndicator size={20} />
                                 :
                                 <MaterialCommunityIcons name="cards-heart-outline" size={18} color={COLORS.black_color} />
                         }
-                    </Pressable>
+                    </Pressable> */}
                 </View>
                 {/* Section Two --------------------------------------------------- */}
                 <View style={styles.sectionTwo}>

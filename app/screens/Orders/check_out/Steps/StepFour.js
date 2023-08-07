@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { Devider, LoadingModal, ModalContainer } from '../../../../components';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { showPaymentLoadingModal } from '../../../../ReduxStore/OrdersSlice';
 import { fetchGetAuthData, fetchPostAuthData } from '../../../../API';
 import { formDataGenerator } from '../../../../utils';
@@ -19,6 +19,7 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
     const [loading, setLoading] = useState(false);
     const [paymentMoney, setPaymentMoney] = useState();
     const [orderToggle, setOrderToggle] = useState(false);
+    const [paymentLoading, setPaymentLoading] = useState(false);
     const { personalInfo, deliveryAddress, paymentInfo } = useSelector((state) => state.ordersSlice);
     //
     const getUserInfoAsync = async () => {
@@ -27,12 +28,15 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
             setUserInfo(res.data[0]);
             const addressPayload = { UAID: deliveryAddress.UAID };
             const formData = await formDataGenerator(addressPayload);
+            setPaymentLoading(true);
             const response = await fetchPostAuthData("buyer/cart/order/processing", formData);
+            setPaymentLoading(false);
             // console.log("Res----------->>", response);
             if (response.status == "successful")
                 setPaymentMoney(response?.data);
         } catch (error) {
             console.log(`error happen in the CheckOut Screen Step Four`);
+            setPaymentLoading(false);
         }
     }
     //
@@ -41,15 +45,20 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
     }, [])
     // On Order Method 
     const OrderMethod = async () => {
-        setOrderToggle(false);
-        const orderData = { UAID: deliveryAddress.UAID }
-        const formData = await formDataGenerator(orderData);
-        setLoading(true);
-        const res = await fetchPostAuthData("buyer/cart/order", formData,);
-        const results = await fetchPostAuthData("buyer/cart/product/removeall", formData,);
-        console.log("resutl of remove", results);
-        setLoading(false);
-        setOrderToggle(true);
+        try {
+            setOrderToggle(false);
+            const orderData = { UAID: deliveryAddress.UAID }
+            const formData = await formDataGenerator(orderData);
+            setLoading(true);
+            const res = await fetchPostAuthData("buyer/cart/order", formData);
+            const results = await fetchPostAuthData("buyer/cart/product/removeall", formData,);
+            console.log("Clear Cart", results);
+            setLoading(false);
+            setOrderToggle(true);
+        } catch (error) {
+            setLoading(false);
+            console.log(`Error happen when Ordering Products -----> ${error}`);
+        }
     }
     //
     return (
@@ -160,64 +169,72 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
                         Payment Process
                      </Text>
                     <Devider />
-                    <View style={[LAY_OUT.flex_row, styles.priceView]} >
-                        <Text style={styles.paymentTitle}>
-                            Number Of Shops
-                    </Text>
-                        <Text style={styles.paymentTitle}>
-                            {paymentMoney?.shop_wise_price?.length}
-                        </Text>
-                    </View>
                     {
-                        paymentMoney?.shop_wise_price?.map((price, index) => {
-                            return (
+                        paymentLoading ?
+                            <ActivityIndicator size="large" />
+                            :
+                            <View>
                                 <View style={[LAY_OUT.flex_row, styles.priceView]} >
                                     <Text style={styles.paymentTitle}>
-                                        Delivery Price {index + 1}
+                                        Number Of Shops
                                     </Text>
                                     <Text style={styles.paymentTitle}>
-                                        ${price.toFixed(2)}
+                                        {paymentMoney?.shop_wise_price?.length}
                                     </Text>
                                 </View>
-                            )
-                        })
+                                {
+                                    paymentMoney?.shop_wise_price?.map((price, index) => {
+                                        return (
+                                            <View key={index} style={[LAY_OUT.flex_row, styles.priceView]} >
+                                                <Text style={styles.paymentTitle}>
+                                                    Delivery Price {index + 1}
+                                                </Text>
+                                                <Text style={styles.paymentTitle}>
+                                                    ${price.toFixed(2)}
+                                                </Text>
+                                            </View>
+                                        )
+                                    })
+                                }
+                                <View style={[LAY_OUT.flex_row, styles.priceView]} >
+                                    <Text style={styles.paymentTitle}>
+                                        Service Price
+                                    </Text>
+                                    <Text style={styles.paymentTitle}>
+                                        ${paymentMoney?.service_price.toFixed(2)}
+                                    </Text>
+                                </View>
+                                <View style={[LAY_OUT.flex_row, styles.priceView]} >
+                                    <Text style={styles.paymentTitle}>
+                                        Total Products Price
+                                    </Text>
+                                    <Text style={styles.paymentTitle}>
+                                        ${paymentMoney?.total_product_price.toFixed(2)}
+                                    </Text>
+                                </View>
+                                <View style={[LAY_OUT.flex_row, styles.priceView]} >
+                                    <Text style={styles.paymentTitle}>
+                                        Total Price
+                                    </Text>
+                                    <Text style={styles.paymentTitle}>
+                                        ${paymentMoney?.total_price.toFixed(2)}
+                                    </Text>
+                                </View>
+                                <View style={[LAY_OUT.flex_row, { marginTop: 10, paddingHorizontal: "2%" }]}>
+                                    <Text style={styles.description}>
+                                        Payment Number : {paymentInfo.phoneNumber}
+                                    </Text>
+                                </View>
+                                <Devider />
+                                {/* Payment Button */}
+                                <Pressable onPress={OrderMethod} style={styles.paymentButton} >
+                                    <Text style={styles.paymentButtonTxt} >
+                                        Order Now
+                            </Text>
+                                </Pressable>
+                            </View>
+
                     }
-                    <View style={[LAY_OUT.flex_row, styles.priceView]} >
-                        <Text style={styles.paymentTitle}>
-                            Service Price
-                    </Text>
-                        <Text style={styles.paymentTitle}>
-                            ${paymentMoney?.service_price.toFixed(2)}
-                        </Text>
-                    </View>
-                    <View style={[LAY_OUT.flex_row, styles.priceView]} >
-                        <Text style={styles.paymentTitle}>
-                            Total Products Price
-                        </Text>
-                        <Text style={styles.paymentTitle}>
-                            ${paymentMoney?.total_product_price.toFixed(2)}
-                        </Text>
-                    </View>
-                    <View style={[LAY_OUT.flex_row, styles.priceView]} >
-                        <Text style={styles.paymentTitle}>
-                            Total Price
-                        </Text>
-                        <Text style={styles.paymentTitle}>
-                            ${paymentMoney?.total_price.toFixed(2)}
-                        </Text>
-                    </View>
-                    <View style={[LAY_OUT.flex_row, { marginTop: 10, paddingHorizontal: "2%" }]}>
-                        <Text style={styles.description}>
-                            Payment Number : {paymentInfo.phoneNumber}
-                        </Text>
-                    </View>
-                    <Devider />
-                    {/* Payment Button */}
-                    <Pressable onPress={OrderMethod} style={styles.paymentButton} >
-                        <Text style={styles.paymentButtonTxt} >
-                            Order Now
-                        </Text>
-                    </Pressable>
                 </View>
             </View>
         </View>

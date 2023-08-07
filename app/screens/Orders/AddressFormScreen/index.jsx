@@ -17,6 +17,8 @@ import { useAppContext } from '../../../context';
 const formValidation = Yup.object().shape({
     title: Yup.string().required('Required'),
     landmark: Yup.string().required('Required'),
+    state: Yup.string().required('Required'),
+    region: Yup.string().required('Required'),
 });
 //
 const AddressFormScreen = ({ route }) => {
@@ -63,8 +65,9 @@ const AddressFormScreen = ({ route }) => {
     const saveAddress = async (values) => {
         try {
             if (userLocation?.coords?.latitude == null) {
-                alert('hello')
                 await getPermisionAsync();
+                // alert("Please turn-on your location to save your new address")
+                return
             }
             const address = {
                 ...values,
@@ -88,6 +91,10 @@ const AddressFormScreen = ({ route }) => {
     //
     const updateAddress = async (values) => {
         try {
+            if (userLocation?.coords?.latitude == null) {
+                await getPermisionAsync();
+                return
+            }
             const address = {
                 UAID: UAID,
                 ...values,
@@ -97,8 +104,10 @@ const AddressFormScreen = ({ route }) => {
             const formData = await formDataGenerator(address);
             setLoading(true);
             const res = await fetchPostAuthData("buyer/address/update", formData);
+            console.log("------------", res);
             setLoading(false);
-            if (res?.status == "Updated successfully") {
+            if (res.status == "success") {
+                alert("hello")
                 navigate("AddressesScreen")
                 return
             }
@@ -118,28 +127,6 @@ const AddressFormScreen = ({ route }) => {
             >
                 <ScrollView stickyHeaderIndices={[0]} style={styles.scrollCon} showsVerticalScrollIndicator={false}>
                     <View>
-                        {/* <MapView
-                            style={styles.map}
-                        mapType="satellite"
-                        zoomEnabled
-                        showsUserLocation={true}
-                        region={{
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
-                            latitude: userLocation?.coords?.latitude,
-                            longitude: userLocation?.coords?.longitude,
-                        }}
-                        >
-                            <Marker
-                                title="Maker"
-                                coordinate={{
-                                    latitudeDelta: 0.0922,
-                                    longitudeDelta: 0.0421,
-                                    latitude: userLocation?.coords?.latitude,
-                                    longitude: userLocation?.coords?.longitude,
-                                }}
-                            />
-                        </MapView> */}
                         <Pressable onPress={() => goBack()} style={styles.backBtnIconCon}>
                             <AntDesign name="left" size={23} color="#ffffff" />
                         </Pressable>
@@ -149,7 +136,7 @@ const AddressFormScreen = ({ route }) => {
                         validationSchema={formValidation}
                         onSubmit={UAID ? updateAddress : saveAddress}
                     >
-                        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue }) => {
+                        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched }) => {
                             return (
                                 <View style={styles.formContainer}>
                                     <View style={styles.line} />
@@ -179,8 +166,8 @@ const AddressFormScreen = ({ route }) => {
                                         onPress={getStatesAsync}
                                         placeholderTextColor="#000"
                                         placeholder={statesPlaceholder}
-                                        fieldStyle={styles.statePickerCon}
-                                        onChange={(value) => console.log('value', value)}
+                                        fieldStyle={[styles.statePickerCon, { borderColor: errors.title && touched.title ? "red" : COLORS.black_color }]}
+                                    // onChange={(value) => }
                                     >
                                         <FlatList
                                             data={states}
@@ -191,6 +178,7 @@ const AddressFormScreen = ({ route }) => {
                                                     onPress={() => {
                                                         setFieldValue("state", item.id)
                                                         setStatesPlaceholder(item.name)
+                                                        setFieldTouched(state, true, false)
                                                     }}
                                                 />
                                             )}

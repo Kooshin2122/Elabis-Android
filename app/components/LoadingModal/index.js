@@ -7,22 +7,28 @@ const { width, height } = Dimensions.get('screen');
 //
 const LoadingModal = () => {
     return (
-        <Modal
-            transparent={true}
-        >
+        // <Modal
+        //     transparent={true}
+        // >
+        <View style={styles.container} >
             <View style={styles.centeredView}>
                 <Lottie source={require('./loading.json')} autoPlay loop />
             </View>
-        </Modal>
+        </View>
+        // </Modal>
     );
 };
 //
 const styles = StyleSheet.create({
+    container: {
+        width: "100%",
+        height: height,
+    },
     centeredView: {
         width: width,
         justifyContent: "flex-start",
         backgroundColor: "rgba(255, 255, 255, 0.82)",
-        height: height - StatusBar.currentHeight * 4,
+        height: height / 1.3 - StatusBar.currentHeight * 4,
     },
 });
 //

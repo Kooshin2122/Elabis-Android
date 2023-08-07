@@ -19,7 +19,7 @@ const CardsContainer = ({ title = "Shop Name", products = [], showTrackBtn = fal
                 </Text>
                 <AntDesign
                     size={18}
-                    color={COLORS.primary_color}
+                    color={COLORS.black_color}
                     name={arrowToggle ? "up" : "down"}
                 />
             </Pressable>
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         borderRadius: 7,
         borderWidth: 0.7,
         marginBottom: '5%',
-        borderColor: COLORS.primary_color
+        borderColor: COLORS.gray_color
     },
     head: {
         padding: "4%",
@@ -60,13 +60,13 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         borderBottomWidth: 0.8,
-        borderColor: COLORS.primary_color,
+        borderColor: COLORS.gray_color,
     },
     title: {
         fontSize: 14,
         fontWeight: "500",
         letterSpacing: 0.7,
-        color: COLORS.primary_color
+        color: COLORS.black_color
     },
     body: {
         padding: "4%",

@@ -22,7 +22,7 @@ const SettingScreen = ({ route }) => {
         if (res) {
             setIsUserLogin(true);
             const res = await fetchGetAuthData("buyer/user/view", setUserData);
-            console.log("User info", res);
+            console.log("User info -------", res);
         }
     }
     //

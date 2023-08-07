@@ -5,10 +5,11 @@ import Root from './app/routes';
 import { Provider } from 'react-redux';
 import { store } from './app/ReduxStore';
 import { SafeAreaView, Text } from 'react-native';
-import AppContext from './app/context';
+import AppContext, { useAppContext } from './app/context';
 import messaging from '@react-native-firebase/messaging';
 import { fetchPostAuthData } from './app/API';
 import { formDataGenerator } from './app/utils';
+import { readData, storeData } from './app/utils/localStorage/AsyncStorage';
 //
 export default function App() {
   //
@@ -68,13 +69,26 @@ export default function App() {
     });
     //
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log("remoteMessage--------", JSON.stringify(remoteMessage));
-      alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      console.log("remoteMessage--------", remoteMessage);
+      //
+      // let notifications = [];
+      // const oldNotifications = await readData("notifications");
+      // //
+      // if (oldNotifications) {
+      //   const newNotif = [...oldNotifications, remoteMessage]
+      //   notifications.push(newNotif);
+      //   const res = await storeData("notifications", notifications);
+      // }
+      // else {
+      //   notifications.push(remoteMessage)
+      //   const res = await storeData("notifications", notifications);
+      // }
+      alert(`${remoteMessage.notification.title} \n ${remoteMessage.notification.body} `);
     });
     return unsubscribe;
     // end
   }, []);
-
+  //
   return (
     <Provider store={store}>
       <AppContext>

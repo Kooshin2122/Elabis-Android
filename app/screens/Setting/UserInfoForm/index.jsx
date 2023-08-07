@@ -32,12 +32,11 @@ const UserInfoForm = ({ route }) => {
             })
             :
             navigate('EditProfile')
-
     }
     //
     return (
         <SafeAreaView style={styles.container} >
-            <SubHeader title="Form" />
+            <SubHeader title="Form" backTo={parentScreen} />
             {loading && <LoadingModal />}
             <KeyboardAvoidingView
                 keyboardVerticalOffset={15}

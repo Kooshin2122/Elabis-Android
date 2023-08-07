@@ -31,7 +31,6 @@ const SignUpScreen = () => {
                 return
             }
             if (data?.name) {
-                alert("jfwduwdw")
                 setError(data?.name[0]);
                 return
             }
