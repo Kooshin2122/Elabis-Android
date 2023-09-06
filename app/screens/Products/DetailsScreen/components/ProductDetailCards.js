@@ -75,7 +75,7 @@ const ProductDetailCard = ({ id, UPID, name, email, distance, landmark, photo, p
                         name="social-distance-2-meters"
                     />
                     <Text style={styles.itemInfo}>
-                        {distance} away for you
+                        {distance < 1 ? `${distance.toFixed(0)} meters` : `${distance.toFixed(2)} km`}
                     </Text>
                     <MaterialCommunityIcons
                         size={23}

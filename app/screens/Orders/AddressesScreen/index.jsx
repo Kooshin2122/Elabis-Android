@@ -62,7 +62,7 @@ const AddressesScreen = () => {
                             Select your default address
                         </Text>
                     </View>
-                    <Pressable onPress={() => navigate("Map")} style={styles.addAddressBtn}>
+                    <Pressable onPress={() => navigate("AddressFormScreen")} style={styles.addAddressBtn}>
                         <Fontisto
                             name="plus-a"
                             size={16} color="#ffffff"
@@ -82,7 +82,7 @@ const AddressesScreen = () => {
                     keyExtractor={(item) => item.id}
                     ListEmptyComponent={() => (
                         <ListEmptyComponent message="No Addresses Found Please Add New Address" >
-                            <CustomButton title="Add New Address" clickHandler={() => navigate("Map")} />
+                            <CustomButton title="Add New Address" clickHandler={() => navigate("AddressFormScreen")} />
                         </ListEmptyComponent>
                     )}
                     renderItem={({ item }) => <AddressCard key={item.id} {...item} selectAddress={selectedAddress} changeSelectAddress={setSelectedAddress} reloadScreen={getAddressesAsync} />}

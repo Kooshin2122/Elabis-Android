@@ -11,17 +11,21 @@ import { ActivityIndicator, Dimensions, FlatList, KeyboardAvoidingView, Pressabl
 import { fetchGetData, fetchPostAuthData, fetchPostData } from '../../../API';
 import { useAppContext } from '../../../context';
 import { getDistance, } from "geolib"
+import Geolocation from 'react-native-geolocation-service';
 import { readData } from '../../../utils/localStorage/AsyncStorage';
 //
 const { width, height } = Dimensions.get('screen');
 //
 const ProductDetailsScreen = ({ route }) => {
+    //
     const [loading, setLoading] = useState();
     const [images, setImages] = useState([]);
     const [counter, setCounter] = useState(1);
     const { navigate, goBack } = useNavigation();
     const [distance, setDistance] = useState(0);
     const [shopData, setShopData] = useState([]);
+    const [location1, setLocation1] = useState(null);
+    const [location2, setLocation2] = useState(null);
     const [productData, setProductData] = useState();
     const [shopProducts, setShopProducts] = useState([]);
     const { userLocation, setUserLocation, } = useAppContext();
@@ -40,19 +44,35 @@ const ProductDetailsScreen = ({ route }) => {
         setCounter(counter + 1)
     }
     //
+    const getUserLocation = () => {
+        Geolocation.getCurrentPosition(
+            (position) => {
+                setLocation1({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                });
+            },
+            (error) => {
+                console.error(error);
+            },
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+        );
+    }
+    //
     const calculateDistance = (shopLocation = {}) => {
-        const userLoc = {
-            latitude: userLocation?.coords.latitude,
-            longitude: userLocation?.coords.longitude,
-        }
-        let dis = getDistance(userLoc, shopLocation);
-        setDistance(dis)
+        // const userLoc = {
+        //     latitude: userLocation?.coords.latitude,
+        //     longitude: userLocation?.coords.longitude,
+        // }
+        // let dis = getDistance(userLoc, shopLocation);
+        // setDistance(dis)
     }
     //
     const getSignleProductDataAsync = async () => {
         try {
             setLoading(true);
             const response = await fetchGetData(`buyer/products/view/${UPID}`)
+            // console.log("Products Data..................", response?.data[0]);
             setProductData(response?.data[0]);
             setImages(response?.images);
             setLoading(false);
@@ -65,14 +85,43 @@ const ProductDetailsScreen = ({ route }) => {
             setShopProducts(products?.data)
             setProductsLoading(false);
             const shopLocation = { latitude: shopRes?.data.latitude, longitude: shopRes?.data.longitude }
+            // console.log("shopLocation.............", shopRes?.data);
+            setLocation2(shopLocation);
             calculateDistance(shopLocation);
         } catch (error) {
             console.log("Fetch Error Ayaa ka jiro Details Screenks", error);
         }
     }
+    //
+    useEffect(() => {
+        if (location1 && location2) {
+            // Calculate the distance between Location 1 and Location 2 using the Haversine formula
+            const radianFactor = Math.PI / 180;
+            const lat1 = location1.latitude * radianFactor;
+            const lon1 = location1.longitude * radianFactor;
+            const lat2 = location2.latitude * radianFactor;
+            const lon2 = location2.longitude * radianFactor;
+
+            const dlon = lon2 - lon1;
+            const dlat = lat2 - lat1;
+
+            const a =
+                Math.pow(Math.sin(dlat / 2), 2) +
+                Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dlon / 2), 2);
+
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            const earthRadius = 6371; // Radius of the Earth in kilometers
+
+            const calculatedDistance = earthRadius * c; // Distance in kilometers
+
+            setDistance(calculatedDistance);
+        }
+    }, [location1, location2]);
     // Hiding Bottom Tab Navigation
     useEffect(() => {
         getSignleProductDataAsync()
+        getUserLocation();
     }, [])
     //
     const addToCart = async () => {
@@ -132,11 +181,13 @@ const ProductDetailsScreen = ({ route }) => {
                             <Text style={styles.title}>
                                 Item Info
                             </Text>
-                            <ItemContainer title="Item Type" value={productData?.productcategory.name} />
-                            <ItemContainer title="Brand" value={productData?.brand?.name} />
-                            <ItemContainer title="Category" value={productData?.category?.name} />
+                            <ItemContainer title="Color" color={productData?.color} />
+                            <ItemContainer title="Size" value={`${productData?.size}`} />
                             <ItemContainer title="Single Price" value={`$${productData?.price}`} />
                             <ItemContainer title="Available Quantities" value={productData?.quantity_avaliable} />
+                            <ItemContainer title="Brand" value={productData?.brand?.name} />
+                            <ItemContainer title="Category" value={productData?.category?.name} />
+                            <ItemContainer title="Item Type" value={productData?.productcategory.name} />
                         </View>
                         <Devider />
                         {/* Product Details */}
@@ -377,16 +428,27 @@ const styles = StyleSheet.create({
     },
 })
 //
-const ItemContainer = ({ title, value }) => {
-    const navigation = useNavigation()
+const ItemContainer = ({ title, value, color = "" }) => {
+    //
+    const navigation = useNavigation();
+    const bgColor = color.toLowerCase();
+    // console.log("bgColor......", bgColor);
+
+    //
     return (
         <View style={styles.itemContainer}>
             <Text style={{ fontWeight: '300', fontSize: 15, color: "gray" }}>
                 {title}
             </Text>
-            <Text style={{ fontWeight: '400', fontSize: 15, color: "#394043" }}>
-                {value}
-            </Text>
+            {
+                color ?
+                    <View style={{ width: 20, height: 20, borderRadius: 40, backgroundColor: bgColor }} />
+                    :
+                    <Text style={{ fontWeight: '400', fontSize: 15, color: "#394043" }}>
+                        {value}
+                    </Text>
+            }
+
         </View>
     )
 }

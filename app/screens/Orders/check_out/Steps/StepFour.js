@@ -32,6 +32,7 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
             const response = await fetchPostAuthData("buyer/cart/order/processing", formData);
             setPaymentLoading(false);
             // console.log("Res----------->>", response);
+            console.log("responsedata...........", response);
             if (response.status == "successful")
                 setPaymentMoney(response?.data);
         } catch (error) {

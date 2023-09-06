@@ -86,6 +86,11 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
     }
     //
     const onAddToWishList = async () => {
+        const token = await readData("userInfo");
+        if (token == null) {
+            navigate("AuthStack")
+            return
+        }
         const payload = { UPID };
         const formData = await formDataGenerator(payload);
         storeWishListProductsAsync();
@@ -98,6 +103,11 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
     }
     //
     const onRemoveFromWishList = async () => {
+        const token = await readData("userInfo");
+        if (token == null) {
+            navigate("AuthStack")
+            return
+        }
         const payload = { UPID };
         const formData = await formDataGenerator(payload);
         removeWishListProductAsync();
@@ -147,10 +157,10 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
                         <Text style={styles.proBrandName}>
                             Quantity : {sliceText(quantity_avaliable, 5)}
                         </Text>
-                        <Text style={[styles.proBrandName, { letterSpacing: 2, fontWeight: "bold", color: "orange" }]}>
+                        {/* <Text style={[styles.proBrandName, { letterSpacing: 2, fontWeight: "bold", color: "orange" }]}>
                             <AntDesign name="star" size={12} color="orange" />
                             {rating}.0
-                        </Text>
+                        </Text> */}
                     </View>
                 </View>
             </Pressable>

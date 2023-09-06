@@ -5,13 +5,15 @@ import { fetchGetAuthData } from '../../../../API';
 import { CustomButton, Devider, ListEmptyComponent, LoadingModal } from '../../../../components';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import { CardsContainer, OnProcessCard, ProductStatusCard } from '../components';
-import { useFocusEffect } from '@react-navigation/core';
+import { useFocusEffect, useNavigation } from '@react-navigation/core';
 //
 const Completed = () => {
     const [loading, setLoading] = useState(false);
     const [refresh, setRefresh] = useState(true);
     const [odersData, setOdersData] = useState([]);
     const [isUserLoging, setIsUserLoging] = useState(true);
+    //
+    const { navigate } = useNavigation();
     //
     const getOrdersDataAsync = async () => {
         try {
