@@ -57,7 +57,7 @@ const OnProcess = () => {
                         <FlatList
                             scrollEnabled={false}
                             data={Object.values(odersData)}
-                            renderItem={({ item, index }) => <CardsContainer title={`Order ${index + 1}`} products={item} showCancelCartBtn={false} />}
+                            renderItem={({ item, index }) => <CardsContainer title={`Order ${index + 1}`} products={item} isThereOrderDetail={true} showCancelCartBtn={false} />}
                             ListEmptyComponent={() => <ListEmptyComponent title="You did not order yet" message="Looks like you have not ordered anything. Go back to the products screen and add order some products. or pull-up to reload data" />}
                         />
                         :

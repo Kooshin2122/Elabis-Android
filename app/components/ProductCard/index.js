@@ -145,16 +145,16 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
                 </View>
                 <View style={styles.contentContainer}>
                     {/* Product Name */}
-                    <Text style={styles.proName}>
-                        {sliceText(name, 15)}
+                    <Text numberOfLines={1} style={styles.proName}>
+                        {name}
                     </Text>
                     {/* product Brand Name */}
                     <Devider height={5} />
-                    <Text style={styles.proBrandName}>
+                    <Text numberOfLines={1} style={styles.proBrandName}>
                         Brand : {brand?.name}
                     </Text>
                     <View style={LAY_OUT.flex_row}>
-                        <Text style={styles.proBrandName}>
+                        <Text numberOfLines={1} style={styles.proBrandName}>
                             Quantity : {sliceText(quantity_avaliable, 5)}
                         </Text>
                         {/* <Text style={[styles.proBrandName, { letterSpacing: 2, fontWeight: "bold", color: "orange" }]}>

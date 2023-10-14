@@ -14,14 +14,15 @@ const formVerificationSchema = yup.object().shape({
     phoneNumber: yup.string().required("required"),
 })
 //
-const PamentCards = ({ id, serviceName, companyName, imageUrl, expand = false, changeCurrentPosition = () => { }, changeSelectPayment = () => { } }) => {
+const PamentCards = ({ id, serviceName, payment_method, companyName, imageUrl, expand = false, changeCurrentPosition = () => { }, changeSelectPayment = () => { } }) => {
+    //
     const dispatch = useDispatch()
     const { paymentInfo } = useSelector((state) => state.ordersSlice)
     const initialData = { phoneNumber: paymentInfo.serviceName == serviceName ? paymentInfo.phoneNumber : null };
     // Next Button
     const onNextHandler = (values) => {
         changeCurrentPosition(3)
-        const paymentInformation = { serviceName, phoneNumber: values.phoneNumber, imageUrl }
+        const paymentInformation = { serviceName, payment_method, phoneNumber: values.phoneNumber, imageUrl }
         dispatch(changePaymentInfo(paymentInformation))
     }
     // Click on cards
@@ -52,13 +53,20 @@ const PamentCards = ({ id, serviceName, companyName, imageUrl, expand = false, c
             </View>
             {/* Form */}
             <Formik
-                initialValues={initialData}
                 validationSchema={formVerificationSchema}
+                initialValues={initialData}
                 onSubmit={onNextHandler}
             >
                 {({ handleChange, handleBlur, handleSubmit, values, errors }) => {
                     return (
                         <View style={[styles.formContainer, { display: expand ? 'flex' : 'none' }]}>
+                            {/* <CustomInput
+                                name='phoneNumber'
+                                label='payment number'
+                                value={values.phoneNumber}
+                                placeholder="XXX-X-XX-XX-XX"
+                                onChangeText={handleChange("phoneNumber")}
+                            /> */}
                             <MasketFeild
                                 name='phoneNumber'
                                 label='payment number'

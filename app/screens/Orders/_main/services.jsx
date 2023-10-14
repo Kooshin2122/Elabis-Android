@@ -7,7 +7,7 @@ export const basketProductInfo = [
 ]
 
 export const paymentServiceCompanies = [
-    { id: 1, serviceName: 'EVC-Plus', companyName: 'Hormuud', imageUrl: require('../../../../assets/images/Services/Evc.jpeg') },
-    { id: 2, serviceName: 'Jeeb', companyName: 'Somnet', imageUrl: require('../../../../assets/images/Services/jeeb.png') },
-    { id: 3, serviceName: 'E-Dahab', companyName: 'Somtel', imageUrl: require('../../../../assets/images/Services/E-dahab.png') },
+    { id: 1, serviceName: 'EVC-Plus', companyName: 'Hormuud', payment_method: "EVCPLUS", imageUrl: require('../../../../assets/images/Services/Evc.jpeg') },
+    { id: 2, serviceName: 'Jeeb', companyName: 'Somnet', payment_method: "ZAAD", imageUrl: require('../../../../assets/images/Services/jeeb.png') },
+    { id: 3, serviceName: 'E-Dahab', companyName: 'Somtel', payment_method: "SAHAL", imageUrl: require('../../../../assets/images/Services/E-dahab.png') },
 ]

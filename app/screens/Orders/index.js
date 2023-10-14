@@ -6,6 +6,7 @@ import CheckOutScreen from './check_out';
 import MapScreen from './Map';
 import AddressesScreen from './AddressesScreen';
 import AddressFormScreen from './AddressFormScreen';
+import OrderDetailsScreen from './orderDetailScreen';
 //
 const Stack = createNativeStackNavigator();
 //
@@ -16,6 +17,7 @@ const OrdersStack = () => {
             <Stack.Screen name="Map" component={MapScreen} />
             <Stack.Screen name="CheckOut" component={CheckOutScreen} />
             <Stack.Screen name="AddressesScreen" component={AddressesScreen} />
+            <Stack.Screen name="OrderDetails" component={OrderDetailsScreen} />
             <Stack.Screen name="AddressFormScreen" component={AddressFormScreen} />
         </Stack.Navigator>
     )

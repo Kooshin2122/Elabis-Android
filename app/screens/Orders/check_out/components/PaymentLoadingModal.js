@@ -1,13 +1,29 @@
 //
-import React, { useEffect } from 'react';
-import { Devider } from '../../../../components';
+import React, { useEffect, useState } from 'react';
+import { CustomButton, Devider } from '../../../../components';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import Octicons from 'react-native-vector-icons/Octicons';
 import { ActivityIndicator, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { showPaymentErrorModal, showPaymentLoadingModal, showPaymentSuccessfullModal } from '../../../../ReduxStore/OrdersSlice';
 
-const PaymentLoadingModal = ({ paymentNumber }) => {
+const PaymentLoadingModal = ({ paymentNumber, closeModal = () => { } }) => {
+    //
+    const [seconds, setSeconds] = useState(30);
+    const [tryAgain, setTryAgain] = useState(false);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+
+            if (seconds > 0) {
+                setSeconds(seconds - 1);
+            }
+            else setTryAgain(true);
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [seconds]);
+
     //
     return (
         <Modal
@@ -24,8 +40,25 @@ const PaymentLoadingModal = ({ paymentNumber }) => {
                             Completing payment process
                         </Text>
                         <Text style={styles.subTitle}>
-                            Please check the mobile where this sim card {paymentNumber} is plugged
+                            Please check the mobile where this sim
+                            card  {""}
+                            <Text style={styles.boldSubTitle}>
+                                {paymentNumber}
+                            </Text> {""}
+                            is plugged {""}
+                            <Text style={styles.boldSubTitle}>
+                                {seconds}s
+                            </Text>
                         </Text>
+                        <Devider />
+                        {
+                            tryAgain &&
+                            <Pressable style={styles.tryAgainBtn}>
+                                <Text style={[styles.boldSubTitle, { color: "#fff" }]}>
+                                    Try Again
+                                </Text>
+                            </Pressable>
+                        }
                     </View>
                 </View>
             </Pressable>
@@ -64,6 +97,11 @@ const styles = StyleSheet.create({
         fontWeight: '300',
         textAlign: 'center'
     },
+    boldSubTitle: {
+        fontSize: 13,
+        fontWeight: '500',
+        textAlign: 'center'
+    },
     controlsCon: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -83,6 +121,12 @@ const styles = StyleSheet.create({
         fontSize: 18,
         textAlign: 'center',
         color: '#137cf3'
+    },
+    tryAgainBtn: {
+        borderRadius: 4,
+        paddingVertical: "3%",
+        paddingHorizontal: "10%",
+        backgroundColor: COLORS.primary_color
     }
 })
 

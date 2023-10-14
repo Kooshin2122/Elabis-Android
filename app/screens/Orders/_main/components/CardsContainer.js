@@ -7,8 +7,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { CustomButton, Devider } from '../../../../components';
 //
-const CardsContainer = ({ title = "Shop Name", products = [], showTrackBtn = false, showCancelCartBtn = true, reloadData = () => { } }) => {
-    console.log("Products", products);
+const CardsContainer = ({ title = "Shop Name", products = [], isThereOrderDetail = false, showTrackBtn = false, showCancelCartBtn = true, reloadData = () => { } }) => {
+    // console.log("Products.........", products);
     const { navigate } = useNavigation();
     const [arrowToggle, setArrowToggle] = useState(true);
     return (
@@ -30,7 +30,7 @@ const CardsContainer = ({ title = "Shop Name", products = [], showTrackBtn = fal
                     <FlatList
                         data={products}
                         scrollEnabled={false}
-                        renderItem={({ item }) => <BasketCards {...item} reloadData={reloadData} showCancelCartBtn={showCancelCartBtn} />}
+                        renderItem={({ item }) => <BasketCards {...item} reloadData={reloadData} showCancelCartBtn={showCancelCartBtn} isThereOrderDetail={isThereOrderDetail} />}
                     />
                     {
                         showTrackBtn &&

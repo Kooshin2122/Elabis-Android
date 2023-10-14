@@ -161,7 +161,8 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 9.1
+        justifyContent: "space-between",
+        rowGap: 9.1
     },
     categoriesCon: {
         flexWrap: 'wrap',

@@ -1,13 +1,17 @@
 import React from 'react';
 import { COLORS } from '../../Theme/GLOBAL_STYLES';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const CustomButton = ({ title = 'Click me!', clickHandler = () => { }, style = {}, textColor = "#fff" }) => {
+const CustomButton = ({ title = 'Click me!', isLoading = false, clickHandler = () => { }, style = {}, textColor = "#fff" }) => {
     return (
         <TouchableOpacity activeOpacity={0.6} onPress={clickHandler} style={[styles.container, { ...style }]}>
-            <Text style={[styles.btnText, { color: textColor }]}>
-                {title}
-            </Text>
+            {
+                isLoading ?
+                    <ActivityIndicator color="#ffffff" /> :
+                    <Text style={[styles.btnText, { color: textColor }]}>
+                        {title}
+                    </Text>
+            }
         </TouchableOpacity>
     )
 }

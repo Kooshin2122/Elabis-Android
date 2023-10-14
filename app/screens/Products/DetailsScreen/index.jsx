@@ -118,7 +118,7 @@ const ProductDetailsScreen = ({ route }) => {
             setDistance(calculatedDistance);
         }
     }, [location1, location2]);
-    // Hiding Bottom Tab Navigation
+    //
     useEffect(() => {
         getSignleProductDataAsync()
         getUserLocation();

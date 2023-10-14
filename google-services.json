@@ -1,126 +1,45 @@
 {
   "project_info": {
-    "project_number": "368684225337",
-    "project_id": "mechanic-a5ecd",
-    "storage_bucket": "mechanic-a5ecd.appspot.com"
+    "project_number": "610831677388",
+    "project_id": "mechanic-79706",
+    "storage_bucket": "mechanic-79706.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:368684225337:android:5843efc9fffa9b22cdcee8",
-        "android_client_info": {
-          "package_name": "com.darawal.mechanic"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "368684225337-af0u01fqk15d541d7dkhl3aaeh60svfo.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.darawal.mechanic",
-            "certificate_hash": "8e37bc457b9b4800820be1540af9899aa1ecf637"
-          }
-        },
-        {
-          "client_id": "368684225337-hh6r6oqnsb4ieeq6imsjkcm3j2j7msst.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.darawal.mechanic",
-            "certificate_hash": "a6df80955f88bcce0809904042ec7299c21d234a"
-          }
-        },
-        {
-          "client_id": "368684225337-3v87khmsgc6r21d4cujchtbh53oj1kfc.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDqDa2m7C4I35V8g1BcL9ZXLS7ATZyGyRQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "368684225337-3v87khmsgc6r21d4cujchtbh53oj1kfc.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:368684225337:android:35ff49f968e78d9bcdcee8",
+        "mobilesdk_app_id": "1:610831677388:android:39e9c26329fc2bcfc9cf69",
         "android_client_info": {
           "package_name": "com.dukaan.mechanic"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "368684225337-47ebmmc3tfcc5uph4f5uk16ig5h03297.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.dukaan.mechanic",
-            "certificate_hash": "2d06f57b1a808d0b0cf5a02b18b94bcccd898930"
-          }
-        },
-        {
-          "client_id": "368684225337-bngj2tu8sn39okfic82j4kv02m6fjda9.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.dukaan.mechanic",
-            "certificate_hash": "0727adf7b85b894280e06817d9705bf6de7c4c77"
-          }
-        },
-        {
-          "client_id": "368684225337-3v87khmsgc6r21d4cujchtbh53oj1kfc.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDqDa2m7C4I35V8g1BcL9ZXLS7ATZyGyRQ"
+          "current_key": "AIzaSyBvYongfPx6npxwfdpwJU85WZT6O2idfEY"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "368684225337-3v87khmsgc6r21d4cujchtbh53oj1kfc.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:368684225337:android:25051996e927c5edcdcee8",
+        "mobilesdk_app_id": "1:610831677388:android:dddb7d72e3bb4df5c9cf69",
         "android_client_info": {
           "package_name": "com.example.Elabis"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "368684225337-3v87khmsgc6r21d4cujchtbh53oj1kfc.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDqDa2m7C4I35V8g1BcL9ZXLS7ATZyGyRQ"
+          "current_key": "AIzaSyBvYongfPx6npxwfdpwJU85WZT6O2idfEY"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "368684225337-3v87khmsgc6r21d4cujchtbh53oj1kfc.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

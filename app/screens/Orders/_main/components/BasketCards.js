@@ -12,14 +12,16 @@ import { useCallback } from 'react';
 //
 const { width, height } = Dimensions.get('screen');
 //
-const BasketCard = ({ id, UPID, name, brand, status, category, quantity, quantity_avaliable, photo, price, reloadData = () => { }, showCancelCartBtn = true, }) => {
+const BasketCard = ({ id, UOID, UPID, name, brand, status, category, quantity, quantity_avaliable, photo, price, reloadData = () => { }, showCancelCartBtn = true, isThereOrderDetail = false }) => {
     //
     const { navigate } = useNavigation();
     const [statusTxt, setStatusTxt] = useState("");
     // alert("Hi")
     //
     const generateStatusTxt = (status) => {
-        if (status == 1)
+        if (status < 0)
+            setStatusTxt("The seller declined your order; please verify your bank account to confirm if the funds have been refunded.")
+        else if (status == 1)
             setStatusTxt("Your order is pending")
         else if (status == 2)
             setStatusTxt("Seller accepted your order")
@@ -32,14 +34,18 @@ const BasketCard = ({ id, UPID, name, brand, status, category, quantity, quantit
     }
     //
     const onViewDetails = () => {
-        navigate('ProductStack', {
-            screen: 'DetailsScreen',
-            initial: false,
-            params: {
-                UPID,
-                parentScreen: "OrdersStack"
-            }
-        });
+        if (isThereOrderDetail) {
+            navigate("OrderDetails", { UOID, UPID })
+        }
+        else
+            navigate('ProductStack', {
+                screen: 'DetailsScreen',
+                initial: false,
+                params: {
+                    UPID,
+                    parentScreen: "OrdersStack"
+                }
+            });
     }
     //
     const onRemoveCart = async () => {
@@ -106,7 +112,7 @@ const BasketCard = ({ id, UPID, name, brand, status, category, quantity, quantit
                                 </Text>
                                 <Text style={styles.subtitleTxt}>
                                     Quantity
-                        </Text>
+                                  </Text>
                             </View>
                             <View style={{ alignItems: "center" }}>
                                 <Text style={styles.price}>

@@ -6,7 +6,7 @@ import { Devider, LoadingModal, ModalContainer } from '../../../../components';
 import { COLORS, LAY_OUT } from '../../../../Theme/GLOBAL_STYLES';
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { showPaymentLoadingModal } from '../../../../ReduxStore/OrdersSlice';
-import { fetchGetAuthData, fetchPostAuthData } from '../../../../API';
+import { fetchGetAuthData, fetchPostAuthData, paymentProcess } from '../../../../API';
 import { formDataGenerator } from '../../../../utils';
 import PaymentLoadingModal from '../components/PaymentLoadingModal';
 import { PaymentResponseModal } from '../components';
@@ -19,6 +19,7 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
     const [loading, setLoading] = useState(false);
     const [paymentMoney, setPaymentMoney] = useState();
     const [orderToggle, setOrderToggle] = useState(false);
+    const [paymentResponse, setPaymentResponse] = useState(false);
     const [paymentLoading, setPaymentLoading] = useState(false);
     const { personalInfo, deliveryAddress, paymentInfo } = useSelector((state) => state.ordersSlice);
     //
@@ -32,7 +33,7 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
             const response = await fetchPostAuthData("buyer/cart/order/processing", formData);
             setPaymentLoading(false);
             // console.log("Res----------->>", response);
-            console.log("responsedata...........", response);
+            // console.log("responsedata...........", response);
             if (response.status == "successful")
                 setPaymentMoney(response?.data);
         } catch (error) {
@@ -48,17 +49,23 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
     const OrderMethod = async () => {
         try {
             setOrderToggle(false);
-            const orderData = { UAID: deliveryAddress.UAID }
+            const orderData = { UAID: deliveryAddress.UAID, account_number: paymentInfo.phoneNumber, payment_method: paymentInfo.payment_method }
             const formData = await formDataGenerator(orderData);
             setLoading(true);
-            const res = await fetchPostAuthData("buyer/cart/order", formData);
-            const results = await fetchPostAuthData("buyer/cart/product/removeall", formData,);
-            console.log("Clear Cart", results);
+            const res = await paymentProcess("buyer/cart/order", formData);
+            console.log("Payment response.............. ", res);
+            if (res.status == true) {
+                const results = await fetchPostAuthData("buyer/cart/product/removeall", formData,);
+            }
             setLoading(false);
             setOrderToggle(true);
+            setPaymentResponse(res)
         } catch (error) {
             setLoading(false);
-            console.log(`Error happen when Ordering Products -----> ${error}`);
+            setOrderToggle(false);
+            console.log(`Error happen when IN THE PAYMENT METHOD -----> ${error}`);
+        } finally {
+            setLoading(false);
         }
     }
     //
@@ -69,18 +76,20 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
                 <PaymentResponseModal
                     iconName='check-circle'
                     title="Completed successfully"
+                    status={paymentResponse?.status}
+                    message={paymentResponse?.message}
                     changeModalVisible={setOrderToggle}
                     discription='Thank you for completed order payment, delivery team ships your order.'
                 />
             }
             <View style={styles.container}>
-                {loading && <PaymentLoadingModal paymentNumber={paymentInfo.phoneNumber} />}
+                {loading && <PaymentLoadingModal paymentNumber={paymentInfo.phoneNumber} closeModal={setLoading} />}
                 <Devider />
                 {/* Adress Container */}
                 <View style={styles.addressContainer}>
                     <Text style={styles.checkAddress}>
                         Check Your Address
-                </Text>
+                    </Text>
                     <Devider />
                     {/* personal info */}
                     <View>
@@ -106,7 +115,7 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
                         <View style={LAY_OUT.flex_row} >
                             <Text style={styles.title}>
                                 {deliveryAddress.title} Address Information
-                        </Text>
+                            </Text>
                             <Pressable onPress={() => changeCurrentPosition(1)} >
                                 <Text style={styles.title}>
                                     Edit
@@ -127,11 +136,11 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
                         <View style={LAY_OUT.flex_row} >
                             <Text style={styles.title}>
                                 Payment Method
-                        </Text>
+                            </Text>
                             <Pressable onPress={() => changeCurrentPosition(2)} >
                                 <Text style={styles.title}>
                                     Edit
-                            </Text>
+                                 </Text>
                             </Pressable>
                         </View>
                         <View style={[LAY_OUT.flex_row, { marginTop: '2%', alignItems: 'flex-start' }]}>
@@ -230,8 +239,8 @@ const StepFour = ({ changeCurrentPosition, cartTotal = 0 }) => {
                                 {/* Payment Button */}
                                 <Pressable onPress={OrderMethod} style={styles.paymentButton} >
                                     <Text style={styles.paymentButtonTxt} >
-                                        Order Now
-                            </Text>
+                                        PAY NOW ${paymentMoney?.total_price.toFixed(2)}
+                                    </Text>
                                 </Pressable>
                             </View>
 

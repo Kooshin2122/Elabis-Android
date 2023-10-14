@@ -45,7 +45,7 @@ const BotomTabs = () => {
             />
             <Tab.Screen name="OrdersStack" component={OrdersStack}
                 options={{
-                    tabBarBadge: 1,
+                    // tabBarBadge: 1,
                     tabBarLabel: 'Orders',
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="cart-outline" color={color} size={size} />

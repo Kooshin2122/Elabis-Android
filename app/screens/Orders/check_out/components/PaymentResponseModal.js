@@ -8,7 +8,7 @@ import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from 'rea
 import { useDispatch } from 'react-redux';
 import { showPaymentErrorModal, showPaymentLoadingModal, showPaymentSuccessfullModal } from '../../../../ReduxStore/OrdersSlice';
 
-const PaymentResponseModal = ({ iconName, title, discription, isVisible, changeModalVisible = () => { } }) => {
+const PaymentResponseModal = ({ status = false, message = "", iconName, title, discription, isVisible, changeModalVisible = () => { } }) => {
     const { navigate } = useNavigation();
     //
     const onCloseModal = () => {
@@ -19,27 +19,44 @@ const PaymentResponseModal = ({ iconName, title, discription, isVisible, changeM
         <View style={styles.container}>
             <Pressable style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Octicons name={iconName} size={50} color={iconName == 'check-circle' ? COLORS.primary_color : 'red'} />
+                    {
+                        status ?
+                            <Octicons name="check-circle" size={50} color={COLORS.primary_color} />
+                            :
+                            <Octicons name="stop" size={50} color={'red'} />
+                    }
                     <Devider height={7} />
                     {/* Content Container */}
                     <View style={styles.contentCon}>
                         <Text style={styles.title}>
-                            {title}
+                            {
+                                status ?
+                                    "Payment Completed"
+                                    :
+                                    "Payment Failed"
+                            }
                         </Text>
                         <Text style={styles.subTitle}>
-                            {discription}
+                            {message}
                         </Text>
                     </View>
                     <Devider />
                     {/* controls */}
-                    <View style={styles.controlsCon}>
-                        <Pressable onPress={onCloseModal} style={styles.cancelBtn}>
-                            <Text style={styles.buttonTxt}>Close</Text>
-                        </Pressable>
-                        <Pressable onPress={() => navigate("Orders", { screen: "On-Process", initial: false })} style={styles.ViewOrderBtn}>
-                            <Text style={styles.buttonTxt}>View Order</Text>
-                        </Pressable>
-                    </View>
+                    {
+                        status ?
+                            <View style={styles.controlsCon}>
+                                <Pressable onPress={onCloseModal} style={styles.cancelBtn}>
+                                    <Text style={styles.buttonTxt}>Close</Text>
+                                </Pressable>
+                                <Pressable onPress={() => navigate("Orders", { screen: "On-Process", initial: false })} style={styles.ViewOrderBtn}>
+                                    <Text style={styles.buttonTxt}>View Order</Text>
+                                </Pressable>
+                            </View>
+                            :
+                            <Pressable onPress={onCloseModal} style={styles.tryAgainBtn}>
+                                <Text style={styles.buttonTxt}>Try Again</Text>
+                            </Pressable>
+                    }
                 </View>
             </Pressable>
         </View>
@@ -113,6 +130,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         textTransform: "uppercase",
     },
-
+    tryAgainBtn: {
+        width: '100%',
+        padding: '4%',
+        borderTopWidth: 0.7,
+        alignItems: "center",
+        borderColor: COLORS.gray_color
+    }
 })
 

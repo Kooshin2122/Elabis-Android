@@ -12,26 +12,26 @@ export const getServiceMask = (companyName) => {
     // Hormuud Mask
     if (companyName == 'Hormuud')
         return {
-            placeHolder: '(61) X-XX-XX-XX',
-            mask: ['(', /[6-7]/, /[1]/, ')', ' ', /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]
+            placeHolder: '(061/71) X-XX-XX-XX',
+            mask: [/[0]/, /[6-7]/, /[1]/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]
         }
     // Somtel Mask
     else if (companyName == 'Somtel')
         return {
-            placeHolder: '(62) X-XX-XX-XX',
-            mask: ['(', /[6]/, /[2]/, ')', ' ', /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]
+            placeHolder: '(062) X-XX-XX-XX',
+            mask: [/[0]/, /[6]/, /[2]/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]
         }
     // Somnet Mask
     else if (companyName == 'Somnet')
         return {
-            placeHolder: '(68) X-XX-XX-XX',
-            mask: ['(', /[6]/, /[8]/, ')', ' ', /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]
+            placeHolder: '(068) X-XX-XX-XX',
+            mask: [/[0]/, /[6]/, /[8]/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]
         }
     // Defaul Mask
     else
         return {
-            placeHolder: '(61) X-XX-XX-XX',
-            mask: ['(', /[6-7]/, /[1]/, ')', ' ', /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/]
+            placeHolder: '(061) X-XX-XX-XX',
+            mask: [/[0]/, /[6-7]/, /[1]/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]
         }
 }
 

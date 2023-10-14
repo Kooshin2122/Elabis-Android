@@ -64,9 +64,11 @@ const AddressFormScreen = ({ route }) => {
     //
     const saveAddress = async (values) => {
         try {
+            setLoading(true);
             if (userLocation?.coords?.latitude == null) {
                 await getPermisionAsync();
-                // alert("Please turn-on your location to save your new address")
+                setLoading(false);
+                alert("Please turn-on your location to save your new address")
                 return
             }
             const address = {
@@ -76,7 +78,6 @@ const AddressFormScreen = ({ route }) => {
             }
             console.log("address------>", address);
             const formData = await formDataGenerator(address);
-            setLoading(true);
             const res = await fetchPostAuthData("buyer/address/add", formData);
             console.log("address------>", res);
             setLoading(false);
@@ -209,12 +210,14 @@ const AddressFormScreen = ({ route }) => {
                                     </Picker>
                                     <PaperTextInput
                                         multiline
+                                        numberOfLines={5}
                                         label="Additional Info"
                                         placeholder="Additional Information"
                                         value={values.additional_information}
                                         onChangeText={handleChange("additional_information")}
                                     />
                                     <CustomButton
+                                        isLoading={loading}
                                         clickHandler={handleSubmit}
                                         title={UAID ? "Update" : "Save"}
                                     />

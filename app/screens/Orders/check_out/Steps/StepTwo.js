@@ -36,8 +36,8 @@ const StepTwo = ({ changeCurrentPosition = () => { } }) => {
         dispatch(changeDeliveryAddress(deliveyAdd))
     }
     //
-    const navigateAddressFormScreen = () => {
-        navigate("AddressFormScreen");
+    const navigateAddressScreen = () => {
+        navigate("AddressesScreen");
     }
     // ---------------------------------------->
     return (
@@ -72,7 +72,7 @@ const StepTwo = ({ changeCurrentPosition = () => { } }) => {
                             Please provide your address that the delivery guy will pick up you order to your location. keep it correct information.
                          </Text>
                         <Devider />
-                        <Pressable onPress={navigateAddressFormScreen} style={styles.nextBtnCon}>
+                        <Pressable onPress={navigateAddressScreen} style={styles.nextBtnCon}>
                             <Text style={styles.nextBtnTxt}>Add New Address</Text>
                         </Pressable>
                         <Devider />

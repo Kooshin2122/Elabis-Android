@@ -69,7 +69,7 @@ const ProductDetailCard = ({ id, UPID, name, email, distance, landmark, photo, p
                     </Text>
                 </View >
                 {/* Section Three --------------------------------------------------- */}
-                <View style={styles.sectionThree}>
+                {/* <View style={styles.sectionThree}>
                     <MaterialCommunityIcons
                         size={23}
                         name="social-distance-2-meters"
@@ -81,7 +81,7 @@ const ProductDetailCard = ({ id, UPID, name, email, distance, landmark, photo, p
                         size={23}
                         name="social-distance-2-meters"
                     />
-                </View>
+                </View> */}
             </View>
         </View>
     )
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.bg_primary,
     },
     imageContainer: {
-        height: 120,
+        height: 100,
         borderRadius: 7,
         width: width / 3.4,
         overflow: "hidden",
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     contentContainer: {
         flex: 1,
         marginLeft: '2%',
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
     },
     // Section One --------------->
     sectionOne: {
