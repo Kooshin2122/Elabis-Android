@@ -63,7 +63,7 @@ const SettingScreen = ({ route }) => {
                 <Devider />
                 {/* Setting Cards Container */}
                 <View style={styles.settingCardsContainer}>
-                    <SettingCards leftIconName="bell" label="General Notification" switchValue={notifToggle} onSwitchValueChange={setNotifToggle} />
+                    {/* <SettingCards leftIconName="bell" label="General Notification" switchValue={notifToggle} onSwitchValueChange={setNotifToggle} /> */}
                     <SettingCards leftIconName="unlock" label="Privacy & Policy" rightIconName="right" clickHandler={() => navigate('PrivacyAndPolocy')} />
                     <SettingCards leftIconName="help-circle" label="Help-Center" rightIconName="right" clickHandler={() => navigate('HelpCenter')} />
                     {

@@ -35,13 +35,13 @@ const Header = ({ icon1 = null, label = 'screen', icon2 = 'bell', icon3 = 'shopp
             </View>
             {/* left icons */}
             <View style={LAY_OUT.flex_row}>
-                {
+                {/* {
                     icon2
                     &&
                     <TouchableOpacity onPress={goToNavigations}>
                         <Feather name={icon2} size={20} style={{ marginRight: "2%" }} />
                     </TouchableOpacity>
-                }
+                } */}
                 {
                     icon3
                     &&

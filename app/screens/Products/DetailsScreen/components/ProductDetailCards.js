@@ -36,7 +36,8 @@ const ProductDetailCard = ({ id, UPID, name, email, distance, landmark, photo, p
             <ImageBackground
                 resizeMode="cover"
                 style={styles.imageContainer}
-                source={{ uri: `https://sweyn.co.uk/storage/images/shops/${photo}` }}
+
+                source={{ uri: `https://api.elabis.app/storage/images/shops/${photo}` }}
             >
                 <View style={{ width: "100%", height: "100%", backgroundColor: "rgba(33, 25, 25, 0.01)", borderRadius: 7 }} />
             </ImageBackground>

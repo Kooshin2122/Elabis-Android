@@ -26,7 +26,7 @@ const ShopsCard = ({ id, USID, name, phone_number, email, photos, }) => {
                 <Image
                     resizeMode="cover"
                     style={{ width: "100%", height: "100%", borderRadius: 7, }}
-                    source={{ uri: `https://sweyn.co.uk/storage/images/shops/${photos}` }}
+                    source={{ uri: `https://api.elabis.app/storage/images/shops/${photos}` }}
                 />
             </View>
             {/* content container */}
@@ -72,7 +72,8 @@ const styles = StyleSheet.create({
         width: 140,
         height: 120,
         borderRadius: 7,
-        backgroundColor: COLORS.bg_secondary
+        backgroundColor: COLORS.bg_secondary,
+        // backgroundColor: "blue"
     },
     contentContainer: {
         flex: 1,

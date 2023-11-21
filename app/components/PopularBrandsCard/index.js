@@ -26,8 +26,8 @@ const PopularBrandsCard = ({ id, name, logo, brandName, brandImageUrl, parentScr
         <TouchableOpacity activeOpacity={0.6} onPress={navigateToBrandsScreen} style={[styles.container, style]}>
             <Image
                 style={styles.image}
-                resizeMode="contain"
-                source={{ uri: `https://sweyn.co.uk/storage/images/brands/${logo}` }}
+                resizeMode="cover"
+                source={{ uri: `https://api.elabis.app/storage/images/brands/${logo}` }}
             />
         </TouchableOpacity>
     )

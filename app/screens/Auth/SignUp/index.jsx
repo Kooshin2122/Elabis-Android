@@ -112,11 +112,6 @@ const SignUpScreen = () => {
                         }}
                     </Formik>
                     <Devider height={20} />
-                    <Text style={styles.termsTxt}>
-                        By clicking the Sign Up button, I agree to the terms
-                        and conditions of SPORT ON
-                    </Text>
-                    <Devider height={20} />
                     <View style={styles.signUpCon}>
                         <Text style={styles.signUpTxt1}>
                             Already have an account?

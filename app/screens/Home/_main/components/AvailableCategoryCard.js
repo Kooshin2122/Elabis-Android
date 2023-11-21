@@ -27,6 +27,7 @@ const AvailableCategoryCard = ({ id, name, icon, categoryName, categoryImageUrl 
             }
         })
     }
+    console.log(`https://api.elabis.app/storage/images/categories/${icon}`);
     //
     return (
         <TouchableOpacity onPress={navigateProductsScreen} style={styles.container}>
@@ -34,7 +35,7 @@ const AvailableCategoryCard = ({ id, name, icon, categoryName, categoryImageUrl 
                 <Image
                     style={styles.image}
                     resizeMode="contain"
-                    source={{ uri: `https://sweyn.co.uk/storage/images/catgeories/${icon}` }}
+                    source={{ uri: `https://api.elabis.app/storage/images/categories/${icon}` }}
                 />
             </View>
             <Text style={styles.itemName}>
@@ -63,8 +64,8 @@ const styles = StyleSheet.create({
         borderColor: COLORS.gray_color,
     },
     image: {
-        width: '80%',
-        height: '80%'
+        width: '60%',
+        height: '60%'
     },
     itemName: {
         fontSize: 12,

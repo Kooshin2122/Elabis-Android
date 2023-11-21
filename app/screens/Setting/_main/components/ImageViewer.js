@@ -14,7 +14,7 @@ const ImageViewer = ({ image = null }) => {
                     <Image
                         resizeMode="cover"
                         style={{ width: '100%', height: '100%' }}
-                        source={{ uri: `https://sweyn.co.uk/storage/images/avatar/${userData.profile_picture}` }}
+                        source={{ uri: `https://api.elabis.app/storage/images/avatar/${userData.profile_picture}` }}
                     />
                     :
                     <FontAwesome5 name="user-alt" size={50} />

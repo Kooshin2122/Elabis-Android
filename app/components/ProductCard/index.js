@@ -12,14 +12,18 @@ import { readData, removeData, storeData } from '../../utils/localStorage/AsyncS
 const { height } = Dimensions.get('screen');
 //
 const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, quantity_avaliable, parentScreen = null, hideCart = false, reloadScreen = () => { } }) => {
-    const { navigate, goBack } = useNavigation();
+    //
+    const { navigate, goBack, getParent } = useNavigation();
     const [isInCart, setIsInCart] = useState(false);
     const [cartLoading, setCartLoading] = useState(false);
     const [isInWishList, setIsInWishList] = useState(false);
     const [heartLoading, setHeartLoading] = useState(false);
     //
     const navigateDetailsScreen = () => {
-        goBack();
+        let isHasParent = getParent().canGoBack();
+        //
+        isHasParent && goBack()
+        //
         navigate('ProductStack', {
             screen: 'DetailsScreen',
             initial: false,
@@ -140,7 +144,7 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
                     <Image
                         resizeMode="contain"
                         style={styles.image}
-                        source={{ uri: `https://sweyn.co.uk/storage/images/${photo}` }}
+                        source={{ uri: `https://api.elabis.app/storage/images/${photo}` }}
                     />
                 </View>
                 <View style={styles.contentContainer}>
@@ -167,7 +171,7 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
             <Devider height={10} />
             <View style={styles.controlsCon}>
                 <View style={[LAY_OUT.flex_row, { alignSelf: 'flex-end' }]}>
-                    {
+                    {/* {
                         heartLoading ? <ActivityIndicator size="small" />
                             :
                             <Pressable onPress={isInWishList ? onRemoveFromWishList : onAddToWishList} style={styles.iconCon}>
@@ -177,7 +181,7 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
                                     name={isInWishList ? "cards-heart" : "cards-heart-outline"}
                                 />
                             </Pressable>
-                    }
+                    } */}
                     {
                         hideCart &&
                         <View style={styles.iconCon}>

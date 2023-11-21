@@ -52,14 +52,14 @@ const BotomTabs = () => {
                     ),
                 }}
             />
-            <Tab.Screen name="WishListScreen" component={WishListScreen}
+            {/* <Tab.Screen name="WishListScreen" component={WishListScreen}
                 options={{
                     tabBarLabel: 'Wish List',
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="cards-heart-outline" color={color} size={size} />
                     ),
                 }}
-            />
+            /> */}
             <Tab.Screen name="SettingStack" component={SettingStack}
                 options={{
                     tabBarLabel: 'Settings',

@@ -20,10 +20,10 @@ const HomeHeader = () => {
                 />
             </View>
             <View style={styles.iconsCon}>
-                <Pressable onPress={() => navigate('Notifications')}>
+                {/* <Pressable onPress={() => navigate('Notifications')}>
                     <FontAwesome name="bell-o" size={21} color={COLORS.black_color} />
-                </Pressable>
-                <Pressable onPress={() => navigate('Notifications')} style={{ marginLeft: '3%' }}>
+                </Pressable> */}
+                <Pressable onPress={() => navigate('OrdersStack')} style={{ marginLeft: '3%' }}>
                     <MaterialCommunityIcons name="cart-outline" size={22} color={COLORS.black_color} />
                 </Pressable>
             </View>

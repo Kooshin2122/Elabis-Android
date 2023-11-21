@@ -35,7 +35,7 @@ const SideBarCards = ({ id, name, icon, setSubCatLoading = () => { } }) => {
         <Pressable onPress={onSelectCategory} style={styles.container}>
             <View style={activeCategory ? styles.activeImageContainer : styles.inActiveImageContainer}>
                 <Image
-                    source={{ uri: `https://sweyn.co.uk/storage/images/catgeories/${icon}` }}
+                    source={{ uri: `https://api.elabis.app/storage/images/categories/${icon}` }}
                     resizeMode="contain"
                     style={{ width: '45%', height: '50%' }}
                 />
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: COLORS.tertiary_color
+        backgroundColor: COLORS.tertiary_color,
     },
     activeText: {
         fontSize: 11,

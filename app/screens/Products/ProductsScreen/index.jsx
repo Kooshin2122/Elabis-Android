@@ -61,7 +61,7 @@ const ProductsScreen = () => {
                     keyExtractor={(item) => item.UPID}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.productsCon}
-                    renderItem={({ item }) => <ProductCard {...item} parentScreen="ProductsScreen" reloadScreen={getProductsDataAsync} />}
+                    renderItem={({ item }) => <ProductCard {...item} hideCart={true} parentScreen="ProductsScreen" reloadScreen={getProductsDataAsync} />}
                     refreshControl={<RefreshControl refreshing={refresh} onRefresh={getProductsDataAsync} />}
                     ListHeaderComponent={() => <ResutlView productsData={productsData} reloadScreen={getProductsDataAsync} />}
                     ListEmptyComponent={() => <ListEmptyComponent title="Sorry" message={emptyListMessage} />}

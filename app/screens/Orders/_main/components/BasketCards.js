@@ -70,7 +70,7 @@ const BasketCard = ({ id, UOID, UPID, name, brand, status, category, quantity, q
                 <Image
                     style={styles.img}
                     resizeMode="contain"
-                    source={{ uri: `https://sweyn.co.uk/storage/images/${photo}` }}
+                    source={{ uri: `https://api.elabis.app/storage/images/${photo}` }}
                 />
             </View>
             {/* Content Container ------------------------------------------------- */}

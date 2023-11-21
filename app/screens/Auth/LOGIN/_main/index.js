@@ -11,7 +11,6 @@ import { formDataGenerator } from '../../../../utils';
 import { COLORS } from '../../../../Theme/GLOBAL_STYLES';
 import { storeData, readData } from '../../../../utils/localStorage/AsyncStorage';
 import { useAppContext } from '../../../../context';
-import messaging from '@react-native-firebase/messaging';
 //
 const LoginScreen = () => {
     const { navigate } = useNavigation();
@@ -22,18 +21,7 @@ const LoginScreen = () => {
     //
     const loginInfo = { email: '', password: '' };
     //
-    async function requestUserPermission() {
-        //
-        const authStatus = await messaging().requestPermission();
-        const enabled =
-            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-            authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-        //
-        if (enabled) {
-            console.log('Authorization status:', authStatus);
-        }
-        //
-    }
+
     //
     const onLogin = async (values) => {
         setResError(false);
@@ -170,7 +158,7 @@ const LoginScreen = () => {
                     <Devider height={20} />
                     <View style={styles.signUpCon}>
                         <Text style={styles.signUpTxt1}>
-                            New to Sport-On?
+                            New to Elabis?
                         </Text>
                         <Text onPress={() => navigate('SignUpScreen')} style={styles.signUpTxt2}>
                             Sign Up Now

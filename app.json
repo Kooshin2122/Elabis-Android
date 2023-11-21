@@ -16,7 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.example.MAKAANIC"
+      "bundleIdentifier": "com.example.Elabis"
     },
     "android": {
       "adaptiveIcon": {
@@ -30,7 +30,6 @@
         "android.permission.FOREGROUND_SERVICE"
       ],
       "package": "com.example.Elabis",
-      "googleServicesFile": "./google-services.json",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyCsJ_JBbomxUgMeWecFqNcOEk2g60NfKow"
@@ -53,11 +52,6 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ]
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "104ed489-1bea-4d08-8080-2979cda75c2a"
-      }
-    }
+    ]
   }
 }

@@ -1,3 +1,70 @@
 
 //
 "googleServicesFile": "./google-services.json",
+
+"react-native-reanimated": "2.14.4",
+    "react-native-reanimated": "3.0.0-rc.2",
+
+// eas json
+{
+  "cli": {
+    "version": ">= 3.7.2"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true,
+        "resourceClass": "m1-medium"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": {
+        "simulator": true,
+        "resourceClass": "m1-medium"
+      }
+    },
+    "production": {
+      "distribution": "internal",
+      "ios": {
+        "simulator": true,
+        "resourceClass": "m1-medium"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
+// end
+
+
+
+
+
+
+
+
+
+
+
+
+4) In dugaanlaha uu macaamiil cusub page ufuri karo, pagekaas oo kasoo muuqanaayaan waxyaabaha hoos ku qoran.
+   >> Profile Avatar uu ku dhax jiro magaciisa xarafka u horeeyo.
+   >> Magaciisha oo seddexan.
+   >> Taleefoon lambarkiis.
+   >> Isku darka lacagta lagu leeyahay
+
+
+
+
+
+
+2) In macaamiilka loo furi karo page waqti ka waqti ah.
+   >> Tusaale in page loo furo macaamiilka 3 bisha ilaa 3 bisha kle.
+   1)
+3) In fariin (SMS) ah loo diro macaamiilka markii lagaaro waqtiga uu bixin lahaa daynta.
+4) In Notification loo diro dugaanlaha markii lagaaro waqtiga uu balanta la lahaa macaamiilka.
+//

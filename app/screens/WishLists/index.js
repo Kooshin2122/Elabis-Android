@@ -1,9 +1,9 @@
 //
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 //
 import { fetchGetAuthData } from '../../API';
 import { COLORS } from '../../Theme/GLOBAL_STYLES';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation, useFocusEffect } from '@react-navigation/core';
 import { CustomButton, Devider, Header, ListEmptyComponent, LoadingModal, ProductCard } from '../../components';
 import { Dimensions, FlatList, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 //
@@ -34,9 +34,12 @@ const WishListScreen = () => {
             console.log(`error happened in the WishList Screen ---> ${error}`);
         }
     };
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
         getWishListDataAsync();
-    }, []);
+    }, []))
+    // useEffect(() => {
+    //     getWishListDataAsync();
+    // }, []);
     //
     console.log("wishListData--------->", wishListData?.id);
     return (

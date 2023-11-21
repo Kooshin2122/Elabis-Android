@@ -110,7 +110,7 @@ const HomeScreen = () => {
                             ))
                         }
                     </Container>
-                    <Devider />
+                    {/* <Devider />
                     <Container title="Special Offers" style={LAY_OUT.flex_row}  >
                         <FlatList
                             horizontal
@@ -120,9 +120,9 @@ const HomeScreen = () => {
                             )}
                             showsHorizontalScrollIndicator={false}
                         />
-                    </Container>
+                    </Container> */}
                     <Devider />
-                    <Container title="Available Categories" seeMore style={styles.categoriesCon} onPressSeeMore={onPressAvailableProductsSeeMore}  >
+                    <Container title="Available Categories" seeMore style={styles.availableCatCon} onPressSeeMore={onPressAvailableProductsSeeMore}  >
                         {
                             categoriesData.map(categoryInfo => (
                                 <AvailableCategoryCard key={categoryInfo.id} {...categoryInfo} />
@@ -163,6 +163,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: "space-between",
         rowGap: 9.1
+    },
+    availableCatCon: {
+        columnGap: 9.1,
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        alignItems: 'flex-start',
     },
     categoriesCon: {
         flexWrap: 'wrap',

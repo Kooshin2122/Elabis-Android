@@ -5,6 +5,7 @@ import { Image, ImageBackground, Platform, StyleSheet, View } from 'react-native
 import { Carousel } from 'react-native-ui-lib/src/components/carousel';
 //
 const ImageCarousel = ({ images = [] }) => {
+    console.log("images.............", images);
     return (
         <Carousel
             loop
@@ -16,9 +17,9 @@ const ImageCarousel = ({ images = [] }) => {
             {
                 images.map((item, index) => (
                     <ImageBackground
-                        resizeMode="contain"
+                        resizeMode="cover"
                         key={index} style={styles.imagesCon}
-                        source={{ uri: `https://sweyn.co.uk/storage/images/${images[index]}` }}
+                        source={{ uri: `https://api.elabis.app/storage/images/${images[index]}` }}
                     >
                         <View
                             style={{ width: '100%', height: '100%', backgroundColor: "rgba(33, 25, 25, 0.07)" }}

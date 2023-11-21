@@ -22,7 +22,7 @@ const CategoriesCard = ({ id, name, icon }) => {
                 <Image
                     style={styles.image}
                     resizeMode="cover"
-                    source={{ uri: `https://sweyn.co.uk/storage/images/catgeories/${icon}` }}
+                    source={{ uri: `https://api.elabis.app/storage/images/catgeories/${icon}` }}
                 />
             </View>
             <Text style={styles.catName}>
