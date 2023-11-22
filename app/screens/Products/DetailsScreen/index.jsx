@@ -1,5 +1,6 @@
 //
 import React, { useEffect, useState } from 'react';
+import * as Location from 'expo-location';
 import { formDataGenerator, sliceText } from '../../../utils';
 import { useNavigation } from '@react-navigation/core';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -10,8 +11,8 @@ import { SubHeader, Devider, Container, LoadingModal, PaperTextInput, CustomButt
 import { ActivityIndicator, Dimensions, FlatList, KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { fetchGetData, fetchPostAuthData, fetchPostData } from '../../../API';
 import { useAppContext } from '../../../context';
-import { getDistance, } from "geolib"
-import Geolocation from 'react-native-geolocation-service';
+// // import { getDistance, } from "geolib"
+// import Geolocation from 'react-native-geolocation-service';
 import { readData } from '../../../utils/localStorage/AsyncStorage';
 //
 const { width, height } = Dimensions.get('screen');
@@ -44,28 +45,23 @@ const ProductDetailsScreen = ({ route }) => {
         setCounter(counter + 1)
     }
     //
-    const getUserLocation = () => {
-        Geolocation.getCurrentPosition(
-            (position) => {
-                setLocation1({
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                });
-            },
-            (error) => {
-                console.error(error);
-            },
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-        );
-    }
-    //
-    const calculateDistance = (shopLocation = {}) => {
-        // const userLoc = {
-        //     latitude: userLocation?.coords.latitude,
-        //     longitude: userLocation?.coords.longitude,
-        // }
-        // let dis = getDistance(userLoc, shopLocation);
-        // setDistance(dis)
+
+    const getUserLocation = async () => {
+        try {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+            }
+            console.log("Status---------", status);
+            Location.getCurrentPositionAsync().then(location => {
+                console.log("Location-------->", location);
+                setUserLocation(location);
+            }).catch((error) => console.log("error--", error))
+            // setUserLocation(location);
+        } catch (error) {
+            console.log("error happen when getting permision in the expo", error);
+        }
     }
     //
     const getSignleProductDataAsync = async () => {
@@ -93,31 +89,31 @@ const ProductDetailsScreen = ({ route }) => {
         }
     }
     //
-    useEffect(() => {
-        if (location1 && location2) {
-            // Calculate the distance between Location 1 and Location 2 using the Haversine formula
-            const radianFactor = Math.PI / 180;
-            const lat1 = location1.latitude * radianFactor;
-            const lon1 = location1.longitude * radianFactor;
-            const lat2 = location2.latitude * radianFactor;
-            const lon2 = location2.longitude * radianFactor;
+    // useEffect(() => {
+    //     if (location1 && location2) {
+    //         // Calculate the distance between Location 1 and Location 2 using the Haversine formula
+    //         const radianFactor = Math.PI / 180;
+    //         const lat1 = location1.latitude * radianFactor;
+    //         const lon1 = location1.longitude * radianFactor;
+    //         const lat2 = location2.latitude * radianFactor;
+    //         const lon2 = location2.longitude * radianFactor;
 
-            const dlon = lon2 - lon1;
-            const dlat = lat2 - lat1;
+    //         const dlon = lon2 - lon1;
+    //         const dlat = lat2 - lat1;
 
-            const a =
-                Math.pow(Math.sin(dlat / 2), 2) +
-                Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dlon / 2), 2);
+    //         const a =
+    //             Math.pow(Math.sin(dlat / 2), 2) +
+    //             Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dlon / 2), 2);
 
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    //         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-            const earthRadius = 6371; // Radius of the Earth in kilometers
+    //         const earthRadius = 6371; // Radius of the Earth in kilometers
 
-            const calculatedDistance = earthRadius * c; // Distance in kilometers
+    //         const calculatedDistance = earthRadius * c; // Distance in kilometers
 
-            setDistance(calculatedDistance);
-        }
-    }, [location1, location2]);
+    //         setDistance(calculatedDistance);
+    //     }
+    // }, [location1, location2]);
     //
     useEffect(() => {
         getSignleProductDataAsync()

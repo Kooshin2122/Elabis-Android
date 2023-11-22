@@ -50,9 +50,9 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.bg_tertiary,
     },
     image: {
-        width: '60%',
-        height: '60%',
-        // borderRadius: 50,
+        width: 50,
+        height: 50,
+        borderRadius: 40,
     },
     catName: {
         fontSize: 11,

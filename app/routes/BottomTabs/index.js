@@ -3,11 +3,12 @@ import { Platform } from 'react-native';
 import { COLORS } from '../../Theme/GLOBAL_STYLES';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // Icons
+import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Feather from 'react-native-vector-icons/Feather'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 // screens
 import { HomeStack, ProductStack, OrdersStack, WishListScreen, SettingStack, } from '../../screens';
+
 //
 const Tab = createBottomTabNavigator();
 //

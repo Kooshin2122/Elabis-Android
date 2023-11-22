@@ -118,7 +118,7 @@ const AddressFormScreen = ({ route }) => {
     }
     // //
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <SubHeader title="Add New Address" backTo="CheckOut" />
             <KeyboardAvoidingView
                 enabled
@@ -228,7 +228,7 @@ const AddressFormScreen = ({ route }) => {
                     </Formik>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </View>
+        </SafeAreaView>
     )
 }
 //

@@ -38,15 +38,17 @@ export default PopularBrandsCard;
 const styles = StyleSheet.create({
     container: {
         height: 65,
-        width: "23%",
+        width: "18%",
         borderWidth: 0.6,
         borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'center',
         borderColor: COLORS.gray_color,
+        backgroundColor: COLORS.gray_color,
     },
     image: {
-        width: '80%',
-        height: '80%'
+        width: '95%',
+        height: '95%',
+        borderRadius: 5,
     }
 })

@@ -36,8 +36,8 @@ const SideBarCards = ({ id, name, icon, setSubCatLoading = () => { } }) => {
             <View style={activeCategory ? styles.activeImageContainer : styles.inActiveImageContainer}>
                 <Image
                     source={{ uri: `https://api.elabis.app/storage/images/categories/${icon}` }}
-                    resizeMode="contain"
-                    style={{ width: '45%', height: '50%' }}
+                    resizeMode="stretch"
+                    style={{ width: 50, height: 50, borderRadius: 55 / 2, }}
                 />
             </View>
             <Text style={activeCategory ? styles.activeText : styles.inActiveText}>

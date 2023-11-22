@@ -6,10 +6,9 @@ import { specialOffersEndPoint } from './services';
 import { useNavigation } from '@react-navigation/core';
 import { COLORS, LAY_OUT } from '../../../Theme/GLOBAL_STYLES';
 import { HomeHeader, SpecialCards, AvailableCategoryCard, } from './components';
-import { StyleSheet, View, SafeAreaView, ScrollView, FlatList, RefreshControl, Text } from 'react-native';
 import { Devider, MyStatusBar, Container, PopularBrandsCard, ProductCard, LoadingModal } from '../../../components';
 import { useAppContext } from '../../../context';
-import { Toast } from 'react-native-ui-lib';
+import { StyleSheet, View, SafeAreaView, ScrollView, FlatList, RefreshControl, Text } from 'react-native';
 //
 const HomeScreen = () => {
     //
@@ -94,15 +93,6 @@ const HomeScreen = () => {
             >
                 <Devider />
                 <View style={styles.container}>
-                    {/* <Toast
-                        visible={true}
-                        position={'top'}
-                        autoDismiss={500}
-                    >
-                        <View>
-                            <Text>Maanka</Text>
-                        </View>
-                    </Toast> */}
                     <Container title="Popular Brands" seeMore style={styles.brandsCon} onPressSeeMore={onPressPopularBrandsSeeMore}  >
                         {
                             populaBrandsData.map(brandInfo => (
@@ -110,17 +100,6 @@ const HomeScreen = () => {
                             ))
                         }
                     </Container>
-                    {/* <Devider />
-                    <Container title="Special Offers" style={LAY_OUT.flex_row}  >
-                        <FlatList
-                            horizontal
-                            data={specialOffersEndPoint}
-                            renderItem={({ item }) => (
-                                <SpecialCards key={item.id} {...item} />
-                            )}
-                            showsHorizontalScrollIndicator={false}
-                        />
-                    </Container> */}
                     <Devider />
                     <Container title="Available Categories" seeMore style={styles.availableCatCon} onPressSeeMore={onPressAvailableProductsSeeMore}  >
                         {
@@ -161,8 +140,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: "space-between",
-        rowGap: 9.1
+        gap: 9
     },
     availableCatCon: {
         columnGap: 9.1,

@@ -142,7 +142,7 @@ const ProductCard = ({ id, UPID, shop_id, name, brand, price, photo, rating, qua
             <Pressable onPress={navigateDetailsScreen}>
                 <View style={styles.imageContainer}>
                     <Image
-                        resizeMode="contain"
+                        resizeMode="stretch"
                         style={styles.image}
                         source={{ uri: `https://api.elabis.app/storage/images/${photo}` }}
                     />

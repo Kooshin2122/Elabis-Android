@@ -34,7 +34,7 @@ const AvailableCategoryCard = ({ id, name, icon, categoryName, categoryImageUrl 
             <View style={styles.imageContainer}>
                 <Image
                     style={styles.image}
-                    resizeMode="contain"
+                    resizeMode="cover"
                     source={{ uri: `https://api.elabis.app/storage/images/categories/${icon}` }}
                 />
             </View>
@@ -49,14 +49,15 @@ export default AvailableCategoryCard;
 
 const styles = StyleSheet.create({
     container: {
+        gap: 6,
         width: '23%',
         marginBottom: '2%',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     imageContainer: {
         height: 70,
-        width: '100%',
+        width: "80%",
         borderRadius: 5,
         borderWidth: 0.6,
         alignItems: 'center',
@@ -64,8 +65,9 @@ const styles = StyleSheet.create({
         borderColor: COLORS.gray_color,
     },
     image: {
-        width: '60%',
-        height: '60%'
+        width: '100%',
+        height: '100%',
+        borderRadius: 5,
     },
     itemName: {
         fontSize: 12,
